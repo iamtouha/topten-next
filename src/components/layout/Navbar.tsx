@@ -5,7 +5,7 @@ import { type NextRouter, useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 // components and media imports
-import Button from "../design-system/Button";
+import Button from "../Button";
 import {
   Bars3Icon,
   CodeBracketIcon,
@@ -54,7 +54,7 @@ const Navbar = () => {
   const router = useRouter();
 
   // Auth
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <section
@@ -79,7 +79,13 @@ const Navbar = () => {
           <div className={styles.authButtonWrapper}>
             <Button
               intent="primary"
-              text={session ? "Sign out" : "Sign in"}
+              text={
+                session
+                  ? "Sign out"
+                  : status === "loading"
+                  ? "Loading..."
+                  : "Sign in"
+              }
               onClick={session ? () => signOut() : () => signIn()}
             />
           </div>
@@ -112,7 +118,7 @@ type MobileLinksProps = {
 };
 
 const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <ul
@@ -140,7 +146,7 @@ const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
         className={styles.link}
         onClick={session ? () => signOut() : () => signIn()}
       >
-        {session ? "Sign out" : "Sign in"}
+        {session ? "Sign out" : status === "loading" ? "Loading..." : "Sign in"}
       </li>
     </ul>
   );

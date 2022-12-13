@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
 import Layout from "@/components/layout/Layout";
+import ToastWrapper from "@/components/ToastWrapper";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -15,6 +16,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <Layout>
         <Component {...pageProps} />
+        <ToastWrapper />
       </Layout>
     </SessionProvider>
   );
