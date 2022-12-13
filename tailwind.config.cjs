@@ -11,10 +11,11 @@ module.exports = {
         secondary: "hsla(220, 9%, 46%, 1)",
         success: "hsla(142, 71%, 45%,1)",
         danger: "hsla(0, 84%, 60%, 1)",
+        layout: "hsla(214, 32%, 91%, 1)",
         background: "hsla(0, 0%, 100%, 1)",
-        title: "hsla(0,0%,12%, 1)",
-        content: "hsla(0, 0%, 20%, 0.7)",
-        offwhite: "hsla(0, 0%, 100%, 0.7)",
+        title: "hsla(0, 0%, 0%, 1)",
+        content: "hsla(215, 28%, 17%, 1)",
+        lowkey: "hsla(220, 9%, 46%, 1)",
       },
       boxShadow: {
         square:
