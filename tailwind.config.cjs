@@ -1,7 +1,5 @@
-/* eslint @typescript-eslint/no-var-requires: "off" */
-
 /** @type {import('tailwindcss').Config} */
-const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -11,18 +9,13 @@ module.exports = {
         secondary: "hsla(220, 9%, 46%, 1)",
         success: "hsla(142, 71%, 45%,1)",
         danger: "hsla(0, 84%, 60%, 1)",
-        layout: "hsla(214, 32%, 91%, 1)",
-        background: "hsla(0, 0%, 100%, 1)",
-        title: "hsla(0, 0%, 0%, 1)",
-        content: "hsla(215, 28%, 17%, 1)",
+        layout: "hsla(220, 13%, 91%, 1)",
+        description: "hsla(215, 28%, 17%, 1)",
         lowkey: "hsla(220, 9%, 46%, 1)",
       },
       boxShadow: {
         square:
           "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-      },
-      fontFamily: {
-        sans: ["Nunito", ...defaultTheme.fontFamily.sans],
       },
     },
   },

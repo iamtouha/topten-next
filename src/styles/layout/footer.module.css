@@ -2,17 +2,17 @@
   @apply bg-layout;
 }
 .wrapper {
-  @apply mx-auto w-[89vw] max-w-screen-xl py-14;
+  @apply mx-auto w-[89vw] max-w-screen-xl py-10;
 }
 .column {
-  @apply mx-auto grid place-items-center gap-2;
+  @apply mx-auto grid place-items-center gap-2.5;
 }
 .title {
-  @apply text-xl font-medium text-title md:text-2xl;
+  @apply text-lg font-medium text-black md:text-xl;
 }
 .description {
-  @apply text-sm text-content md:text-base;
+  @apply text-sm text-description md:text-base;
 }
 .copyright {
-  @apply text-xs text-content md:text-sm;
+  @apply text-xs font-semibold text-lowkey md:text-sm;
 }
