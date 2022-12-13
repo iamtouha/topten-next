@@ -5,16 +5,16 @@
   @apply bg-layout shadow-lg;
 }
 .wrapper {
-  @apply mx-auto flex w-[89vw] max-w-7xl items-center justify-between py-6;
+  @apply mx-auto flex w-[89vw] max-w-screen-xl items-center justify-between py-5;
 }
 .logo {
-  @apply h-9 w-36 object-contain;
+  @apply aspect-square w-7 text-title transition-opacity hover:opacity-75 active:opacity-100;
 }
 .links {
   @apply fixed inset-0 h-full w-full flex-col items-center justify-between gap-7 whitespace-nowrap bg-transparent pt-10 text-sm transition-transform duration-500 md:text-base lg:relative lg:h-auto lg:w-auto lg:flex-row lg:pt-0 lg:pl-0;
 }
 .mobileLinks {
-  @apply inset-0 top-[5.2rem] flex translate-x-full items-center justify-center bg-title pb-28 lg:hidden;
+  @apply inset-0 top-[4.5rem] flex translate-x-full items-center justify-center bg-gradient-to-r from-purple-800 via-violet-900 to-purple-800 pb-28 lg:hidden;
 }
 .mobileLinksActive {
   @apply translate-x-0;
@@ -23,19 +23,19 @@
   @apply hidden lg:flex;
 }
 .link {
-  @apply text-white text-opacity-80 transition-opacity hover:text-opacity-90 lg:text-gray-700 lg:text-opacity-80;
+  @apply cursor-pointer font-semibold text-slate-400 transition hover:text-opacity-75 active:text-opacity-100 lg:text-gray-600;
 }
 .activeLink {
-  @apply font-medium text-white text-opacity-100 lg:text-title;
+  @apply font-bold text-layout transition hover:text-opacity-75 active:text-opacity-100 lg:text-gray-900;
 }
-.right {
-  @apply flex items-center;
+.endColumn {
+  @apply grid place-items-center;
 }
-.signupButtonWrapper {
+.authButtonWrapper {
   @apply hidden lg:block;
 }
 .mobileButton {
-  @apply block aspect-square w-7 cursor-pointer text-black transition-transform hover:scale-[105%] active:scale-[95%] lg:hidden;
+  @apply block aspect-square w-7 cursor-pointer text-title transition-transform hover:scale-[105%] active:scale-[95%] lg:hidden;
 }
 .stopOverflowY {
   @apply overflow-y-hidden lg:overflow-y-auto;
