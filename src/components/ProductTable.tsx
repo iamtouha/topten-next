@@ -3,8 +3,10 @@ import styles from "@/styles/producttable.module.css";
 import {
   type Column,
   type Table,
-  useReactTable,
   type ColumnFiltersState,
+  type FilterFn,
+  type ColumnDef,
+  useReactTable,
   getCoreRowModel,
   getFilteredRowModel,
   getFacetedRowModel,
@@ -12,12 +14,10 @@ import {
   getFacetedMinMaxValues,
   getPaginationRowModel,
   getSortedRowModel,
-  type FilterFn,
-  type ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
-import { type Product } from "@prisma/client";
+import type { Product } from "@prisma/client";
 import dayjs from "dayjs";
 
 // images import
@@ -61,7 +61,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
         footer: (props) => props.column.id,
       },
       {
-        accessorFn: (d) => dayjs(d.addedAt).format("DD/MM/YYYY"),
+        accessorFn: (d) => dayjs(d.addedAt).format("DD/MM/YYYY, hh:mmA"),
         id: "addedAt",
         cell: (info) => info.getValue(),
         header: () => <span>Added at</span>,
@@ -101,9 +101,14 @@ const ProductTable = ({ products }: { products: Product[] }) => {
   return (
     <section aria-label="products table">
       <div className={styles.wrapper}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Total Products</h1>
-          <p className={styles.title}>{products.length}</p>
+        <div className={styles.head}>
+          <h1 className={styles.title}>Total Products ({products.length})</h1>
+          <input
+            type="text"
+            placeholder="Search products..."
+            className={styles.globalInput}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
         </div>
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
@@ -165,62 +170,62 @@ const ProductTable = ({ products }: { products: Product[] }) => {
               })}
             </tbody>
           </table>
-          <div className={styles.paginateWrapper}>
-            <button
-              aria-label="paginate back by 1 page"
-              className="group grid aspect-square w-8 place-items-center rounded border border-neutral-500"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronLeftIcon
-                className="aspect-square w-6 text-black transition group-enabled:hover:w-7 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
-                aria-hidden="true"
-              />
-            </button>
-            <button
-              aria-label="paginate forward by 1 page"
-              className="group grid aspect-square w-8 place-items-center rounded border border-neutral-500"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronRightIcon
-                className="aspect-square w-6 text-black transition group-enabled:hover:w-7 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
-                aria-hidden="true"
-              />
-            </button>
-            <span className="flex items-center gap-1">
-              <div>Page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="hidden items-center gap-1 md:flex">
-              | Go to page:
-              <input
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="w-16 rounded border p-1"
-              />
-            </span>
-            <select
-              className="rounded py-1"
-              value={table.getState().pagination.pageSize}
+        </div>
+        <div className={styles.paginateWrapper}>
+          <button
+            aria-label="paginate back by 1 page"
+            className="group grid aspect-square w-8 place-items-center border border-neutral-500"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeftIcon
+              className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            aria-label="paginate forward by 1 page"
+            className="group grid aspect-square w-8 place-items-center border border-neutral-500"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronRightIcon
+              className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
+              aria-hidden="true"
+            />
+          </button>
+          <span className="flex items-center gap-1">
+            <div>Page</div>
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </strong>
+          </span>
+          <span className="hidden items-center gap-1 md:flex">
+            | Go to page:
+            <input
+              type="number"
+              defaultValue={table.getState().pagination.pageIndex + 1}
               onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
+                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                table.setPageIndex(page);
               }}
-            >
-              {[10, 20, 30, 40].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
+              className="w-16 border p-1"
+            />
+          </span>
+          <select
+            className="py-1"
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+          >
+            {[10, 20, 30, 40].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </section>

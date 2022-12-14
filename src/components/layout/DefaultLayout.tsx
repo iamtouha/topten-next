@@ -1,4 +1,6 @@
 import { type ReactNode } from "react";
+
+// components imports
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 

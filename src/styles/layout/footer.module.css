@@ -5,7 +5,7 @@
   @apply py-10 container-res;
 }
 .column {
-  @apply mx-auto grid gap-2.5;
+  @apply mx-auto grid place-items-center gap-2.5;
 }
 .title {
   @apply text-center text-lg font-medium text-black md:text-xl;
