@@ -1,5 +1,7 @@
-/** @type {import('tailwindcss').Config} */
+/* eslint @typescript-eslint/no-var-requires: "off" */
+const plugin = require("tailwindcss/plugin");
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -19,5 +21,29 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities(customClasses);
+    }),
+    require("@tailwindcss/forms"),
+  ],
 };
+
+const customClasses = [
+  {
+    ".container-res": {
+      marginLeft: "auto",
+      marginRight: "auto",
+      maxWidth: "1280px",
+      paddingLeft: "1rem",
+      paddingRight: "1rem",
+    },
+    "@media (min-width: 640px)": {
+      ".container-res": {
+        width: "89vw",
+        paddingLeft: "0",
+        paddingRight: "0",
+      },
+    },
+  },
+];

@@ -1,11 +1,11 @@
 .section {
-  @apply fixed top-0 left-0 z-40 w-full;
+  @apply fixed top-0 left-0 z-40 w-full bg-white;
 }
 .sectionScrolled {
   @apply bg-layout shadow-lg;
 }
 .wrapper {
-  @apply mx-auto flex w-[89vw] max-w-screen-xl items-center justify-between py-5;
+  @apply flex items-center justify-between py-5 container-res;
 }
 .logo {
   @apply aspect-square w-7 text-black transition-opacity hover:opacity-75 active:opacity-100;

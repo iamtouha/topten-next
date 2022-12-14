@@ -57,7 +57,7 @@ const Navbar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <section
+    <nav
       aria-label="navbar"
       className={
         isScrolled
@@ -105,7 +105,7 @@ const Navbar = () => {
           </button>
         </div>
       </div>
-    </section>
+    </nav>
   );
 };
 

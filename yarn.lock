@@ -213,6 +213,18 @@
     "@tanstack/query-core" "4.19.1"
     use-sync-external-store "^1.2.0"
 
+"@tanstack/react-table@^8.7.2":
+  version "8.7.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.7.2.tgz#d8826f60189c5158b10ba3613ab5bde9c93184d0"
+  integrity sha512-8SpMU/o5owFlVTiIZ9h6WzMF4o8eVEJqez+cXyCu27xo9/pETZLseLnyNlBDakA4z6evlDQGU91c5FdOoDgs1g==
+  dependencies:
+    "@tanstack/table-core" "8.7.2"
+
+"@tanstack/table-core@8.7.2":
+  version "8.7.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.7.2.tgz#31369fe09db19ec1270c8fca082946b47ddef4fd"
+  integrity sha512-Y+3AyuyFvjFlNdxbQ8Mm7muX5yUN31VSABDPyEpNsBIKyJre+AvqcsEdLoPGGAGtHsl+creH3xDOdn2ZPl19Cg==
+
 "@trpc/client@^10.0.0":
   version "10.4.3"
   resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.4.3.tgz#a0d9963481ac3ac6f3939f827654cdaa3a0c5fda"
