@@ -3,7 +3,7 @@ import styles from "@/styles/layout/navbar.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { type NextRouter, useRouter } from "next/router";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 // components imports
 import Button from "../Button";
@@ -13,14 +13,14 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const desktopLinks = [
   { label: "Home", url: "/" },
-  { label: "Stores", url: "/stores" },
+  { label: "Stores", url: "/app/stores" },
   { label: "About", url: "/about" },
   { label: "Playground", url: "/playground" },
 ];
 
 const mobileLinks = [
   { label: "Home", url: "/" },
-  { label: "Stores", url: "/stores" },
+  { label: "Stores", url: "/app/stores" },
   { label: "About", url: "/about" },
   { label: "Playground", url: "/playground" },
 ];
@@ -49,7 +49,7 @@ const Navbar = () => {
     return () => body?.classList.remove(stopOverflowY);
   }, [isMobile]);
 
-  // Configure activeClass on active link
+  // Configure activeClass && Handle routes
   const router = useRouter();
 
   // Auth
@@ -81,31 +81,41 @@ const Navbar = () => {
           setIsMobile={setIsMobile}
         />
         <DesktopLinks router={router} />
+
         <div className={styles.endColumn}>
           <div className={styles.authButtonWrapper}>
-            <Button
-              intent="primary"
-              onClick={session ? () => signOut() : () => signIn()}
-            >
-              {session
-                ? "Sign out"
-                : status === "loading"
-                ? "Loading..."
-                : "Sign in"}
-            </Button>
+            {session ? (
+              <Link href="/app/account">
+                <Image
+                  src={session.user?.image as string}
+                  alt={session.user?.name as string}
+                  width={48}
+                  height={48}
+                  className={`${
+                    router.pathname === "/app/account" &&
+                    "ring-2 ring-primary-700"
+                  } cursor-pointer rounded-full transition-opacity hover:opacity-80 active:opacity-100`}
+                  loading="lazy"
+                />
+              </Link>
+            ) : status === "loading" ? (
+              <p className="text-sm font-medium text-neutral-700 md:text-base">
+                Loading...
+              </p>
+            ) : (
+              <Button intent="primary" onClick={() => signIn()}>
+                Sign in
+              </Button>
+            )}
           </div>
           <button
             aria-label="toggle mobile-menu"
             onClick={() => setIsMobile(!isMobile)}
           >
             {isMobile ? (
-              <XMarkIcon aria-hidden="true" className={styles.mobileButton} />
+              <XMarkIcon className={styles.mobileButton} aria-hidden="true" />
             ) : (
-              <Bars3Icon
-                aria-hidden="true"
-                className={styles.mobileButton}
-                onClick={() => setIsMobile(!isMobile)}
-              />
+              <Bars3Icon className={styles.mobileButton} aria-hidden="true" />
             )}
           </button>
         </div>
@@ -148,10 +158,16 @@ const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
         );
       })}
       <li
-        className={styles.link}
-        onClick={session ? () => signOut() : () => signIn()}
+        className={
+          router.pathname === "/app/account" ? styles.activeLink : styles.link
+        }
+        onClick={
+          session
+            ? () => router.push("/app/account").then(() => setIsMobile(false))
+            : () => signIn()
+        }
       >
-        {session ? "Sign out" : status === "loading" ? "Loading..." : "Sign in"}
+        {session ? "Account" : status === "loading" ? "Loading..." : "Sign in"}
       </li>
     </ul>
   );

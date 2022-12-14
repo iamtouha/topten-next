@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import ProductTable from "@/components/ProductTable";
 
 // data imports
-import { products } from "@/components/data/products";
+import { products } from "@/data/products";
 
 const Playground: NextPage = () => {
   return (
@@ -16,7 +16,7 @@ const Playground: NextPage = () => {
       <Head>
         <title>Playground | Topten</title>
       </Head>
-      <main className="flex min-h-screen flex-col gap-8 py-20 container-res">
+      <main className="flex min-h-screen flex-col gap-8 py-10 container-res">
         <Button
           intent="primary"
           onClick={() => toast.success("Do a kickflip.")}
