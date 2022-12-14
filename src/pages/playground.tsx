@@ -3,11 +3,11 @@ import Head from "next/head";
 import React from "react";
 import { toast } from "react-toastify";
 
-// components import
+// components imports
 import Button from "@/components/Button";
 import ProductTable from "@/components/ProductTable";
 
-// data import
+// data imports
 import { products } from "@/components/data/products";
 
 const Playground: NextPage = () => {
@@ -16,7 +16,7 @@ const Playground: NextPage = () => {
       <Head>
         <title>Playground | Topten</title>
       </Head>
-      <main className="grid min-h-screen gap-8 py-20 container-res">
+      <main className="flex min-h-screen flex-col gap-8 py-20 container-res">
         <Button
           intent="primary"
           onClick={() => toast.success("Do a kickflip.")}

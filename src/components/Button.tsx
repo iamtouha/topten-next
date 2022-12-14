@@ -2,7 +2,6 @@ import type { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from "react";
 
 type ButtonProps = {
   intent: "primary" | "secondary" | "success" | "danger";
-
   children: ReactNode;
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,

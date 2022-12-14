@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
 import styles from "@/styles/layout/navbar.module.css";
 import Link from "next/link";
+import Image from "next/image";
 import { type NextRouter, useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-// components and media imports
+// components imports
 import Button from "../Button";
-import {
-  Bars3Icon,
-  CodeBracketIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import Image from "next/image";
+
+// images imports
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const desktopLinks = [
   { label: "Home", url: "/" },
@@ -70,10 +68,11 @@ const Navbar = () => {
         <Link href="/" onClick={() => setIsMobile(false)}>
           <Image
             src={"/img/logo.png"}
-            width={160}
-            height={60}
+            width={125}
+            height={47}
             alt={"Top Ten logo"}
             className={styles.logo}
+            priority
           />
         </Link>
         <MobileLinks

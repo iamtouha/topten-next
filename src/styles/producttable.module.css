@@ -1,5 +1,5 @@
 .wrapper {
-  @apply rounded-xl container-res;
+  /* @apply container-res; */
 }
 .header {
   @apply flex justify-between;
@@ -8,10 +8,10 @@
   @apply text-base font-bold text-black md:text-lg;
 }
 .tableWrapper {
-  @apply mt-5 overflow-x-auto;
+  @apply overflow-x-auto py-5;
 }
 .table {
-  @apply w-full min-w-[640px];
+  @apply w-full min-w-[640px] overflow-x-auto;
 }
 .tableHead th {
   @apply border-2 border-lowkey px-4 pt-2 pb-1 text-left text-xs font-bold tracking-wide text-black md:text-sm;
