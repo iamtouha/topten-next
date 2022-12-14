@@ -25,6 +25,9 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
+  theme: {
+    logo: "/img/logo.png",
+  },
 };
 
 export default NextAuth(authOptions);
