@@ -19,6 +19,8 @@ import {
 import { rankItem } from "@tanstack/match-sorter-utils";
 import { type Product } from "@prisma/client";
 import dayjs from "dayjs";
+
+// images import
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
