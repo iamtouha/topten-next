@@ -15,7 +15,11 @@ const Account: NextPage = () => {
       <Head>
         <title>Account | Topten</title>
       </Head>
-      <main className="flex min-h-screen flex-col gap-8 py-10 container-res">
+      <main
+        className={`${
+          status === "loading" && "pt-0"
+        } flex min-h-screen flex-col gap-8 pt-20 container-res`}
+      >
         {session ? (
           <div className="grid place-items-center gap-2">
             <Image
@@ -23,7 +27,7 @@ const Account: NextPage = () => {
               alt={session.user?.name as string}
               width={125}
               height={125}
-              className="cursor-pointer rounded-full"
+              className="rounded-full"
               priority
             />
             <div className="flex items-center gap-2 ">

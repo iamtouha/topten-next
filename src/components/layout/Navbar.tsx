@@ -49,7 +49,7 @@ const Navbar = () => {
     return () => body?.classList.remove(stopOverflowY);
   }, [isMobile]);
 
-  // Configure activeClass && Handle routes
+  // Handle routes && Configure activeClass
   const router = useRouter();
 
   // Auth
@@ -81,7 +81,6 @@ const Navbar = () => {
           setIsMobile={setIsMobile}
         />
         <DesktopLinks router={router} />
-
         <div className={styles.endColumn}>
           <div className={styles.authButtonWrapper}>
             {session ? (
