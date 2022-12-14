@@ -1,0 +1,33 @@
+.wrapper {
+  @apply rounded-xl container-res;
+}
+.header {
+  @apply flex justify-between;
+}
+.title {
+  @apply text-base font-bold text-black md:text-lg;
+}
+.tableWrapper {
+  @apply mt-5 overflow-x-auto;
+}
+.table {
+  @apply w-full min-w-[640px];
+}
+.tableHead th {
+  @apply border-2 border-lowkey px-4 pt-2 pb-1 text-left text-xs font-bold tracking-wide text-black md:text-sm;
+}
+.tableBody {
+  @apply text-sm text-black md:text-base;
+}
+.tableBody tr {
+  @apply h-11 cursor-pointer transition-colors hover:bg-layout;
+}
+.tableBody td {
+  @apply border-2 border-lowkey px-4;
+}
+.debouncedInput {
+  @apply mt-1.5 mb-3 w-36 rounded border px-2.5 py-2 text-xs shadow focus:outline-none focus:ring-1 focus:ring-gray-900 md:text-sm;
+}
+.paginateWrapper {
+  @apply mt-5 flex w-full flex-wrap items-center gap-2 text-sm md:text-base;
+}

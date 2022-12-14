@@ -23,10 +23,10 @@
   @apply hidden lg:flex;
 }
 .link {
-  @apply cursor-pointer font-medium text-gray-400 transition hover:text-opacity-75 active:text-opacity-100 lg:text-gray-600;
+  @apply cursor-pointer font-medium text-neutral-400 transition hover:text-opacity-75 active:text-opacity-100 lg:text-neutral-600;
 }
 .activeLink {
-  @apply font-bold text-gray-200 transition hover:text-opacity-75 active:text-opacity-100 lg:text-gray-700;
+  @apply font-bold text-neutral-200 transition hover:text-opacity-75 active:text-opacity-100 lg:text-neutral-800;
 }
 .endColumn {
   @apply grid place-items-center;
