@@ -11,6 +11,7 @@ import {
   CodeBracketIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 const desktopLinks = [
   { label: "Home", url: "/" },
@@ -67,7 +68,13 @@ const Navbar = () => {
     >
       <div className={styles.wrapper}>
         <Link href="/" onClick={() => setIsMobile(false)}>
-          <CodeBracketIcon className={styles.logo} />
+          <Image
+            src={"/img/logo.png"}
+            width={160}
+            height={60}
+            alt={"Top Ten logo"}
+            className={styles.logo}
+          />
         </Link>
         <MobileLinks
           router={router}
@@ -79,15 +86,14 @@ const Navbar = () => {
           <div className={styles.authButtonWrapper}>
             <Button
               intent="primary"
-              text={
-                session
-                  ? "Sign out"
-                  : status === "loading"
-                  ? "Loading..."
-                  : "Sign in"
-              }
               onClick={session ? () => signOut() : () => signIn()}
-            />
+            >
+              {session
+                ? "Sign out"
+                : status === "loading"
+                ? "Loading..."
+                : "Sign in"}
+            </Button>
           </div>
           <button
             aria-label="toggle mobile-menu"
