@@ -12,6 +12,8 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
+        session.user.role = user.role;
+        session.user.profileId = user.profileId;
       }
       return session;
     },
@@ -22,11 +24,16 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      httpOptions: {
+        timeout: 40000,
+      },
     }),
     // ...add more providers here
   ],
   theme: {
     logo: "/img/logo.png",
+    colorScheme: "light",
+    brandColor: "hsl(158, 21%, 42%)",
   },
 };
 
