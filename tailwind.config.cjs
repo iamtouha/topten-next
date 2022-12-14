@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
 const plugin = require("tailwindcss/plugin");
+const colors = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -7,7 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "hsla(217, 91%, 60%, 1)",
+        primary: {
+          50: "hsl(176, 100%, 83%)",
+          100: "hsl(168, 100%, 83%)",
+          200: "hsl(165, 100%, 83%)",
+          300: "hsl(162, 100%, 83%)",
+          400: "hsl(158, 76%, 79%)",
+          500: "hsl(158, 41%, 66%)",
+          600: "hsl(158, 24%, 54%)",
+          700: "hsl(158, 21%, 42%)",
+          800: "hsl(158, 21%, 25%)",
+          900: "hsl(160, 21%, 16%)",
+        },
         secondary: "hsla(220, 9%, 46%, 1)",
         success: "hsla(142, 71%, 45%,1)",
         danger: "hsla(0, 84%, 60%, 1)",
