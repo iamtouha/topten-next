@@ -1,0 +1,24 @@
+.formTitle {
+  @apply text-center text-xl font-bold text-neutral-700 md:text-2xl;
+}
+.form {
+  @apply my-4 grid gap-5 whitespace-nowrap text-xs md:gap-4 md:text-sm;
+}
+.inputWrapper {
+  @apply grid w-full gap-2.5;
+}
+.inputLabel {
+  @apply text-xs font-medium text-black md:text-sm;
+}
+.input {
+  @apply w-full rounded-lg px-4 py-3 text-black transition-colors placeholder:text-[#888888];
+}
+.button {
+  @apply mt-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 px-2 py-3 text-base font-medium text-white shadow transition-opacity hover:opacity-90 active:opacity-100 md:text-sm;
+}
+.baseText {
+  @apply mb-8 text-center text-xs font-medium text-black md:text-sm;
+}
+.richText {
+  @apply text-primary-700;
+}
