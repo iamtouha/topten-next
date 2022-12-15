@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, employeeProcedure } from "../trpc";
 
 export const userRouter = router({
   createProfile: protectedProcedure

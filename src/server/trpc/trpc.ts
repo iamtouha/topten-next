@@ -43,6 +43,9 @@ export const employeeProcedure = t.procedure.use(
     if (!ctx.session || !ctx.session.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
+    if (!ctx.session.user.active) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
     if (!ctx.session.user.profileId) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
