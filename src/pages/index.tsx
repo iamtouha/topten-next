@@ -7,8 +7,6 @@ import StaticLayout from "@/components/layout/StaticLayout";
 import HeroSection from "@/components/home/HeroSection";
 
 const Home: NextPageWithLayout = () => {
-  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>

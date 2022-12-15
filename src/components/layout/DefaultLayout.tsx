@@ -12,7 +12,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession({ required: true });
 
   useEffect(() => {
-    if (!session?.user?.profileId) {
+    if (session?.user && !session?.user?.profileId) {
       Router.push("/complete-registration").then(() => {
         toast.error("Complete your registration.");
       });
