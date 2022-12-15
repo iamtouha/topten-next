@@ -5,19 +5,19 @@
   @apply my-4 grid gap-5 whitespace-nowrap text-xs md:gap-4 md:text-sm;
 }
 .inputWrapper {
-  @apply grid w-full gap-2.5;
+  @apply grid w-full gap-2;
 }
 .inputLabel {
-  @apply text-xs font-medium text-black md:text-sm;
+  @apply text-sm font-medium text-black md:text-base;
 }
 .input {
-  @apply w-full rounded-lg px-4 py-3 text-black transition-colors placeholder:text-[#888888];
+  @apply w-full rounded-lg px-4 py-2.5 text-black transition-colors placeholder:text-[#888888];
 }
 .button {
-  @apply mt-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 px-2 py-3 text-base font-medium text-white shadow transition-opacity hover:opacity-90 active:opacity-100 md:text-sm;
+  @apply mt-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 py-2.5 text-sm font-medium text-white shadow transition-opacity hover:opacity-90 active:opacity-100 md:text-base;
 }
 .baseText {
-  @apply mb-8 text-center text-xs font-medium text-black md:text-sm;
+  @apply mb-8 text-center text-sm font-medium text-black md:text-base;
 }
 .richText {
   @apply text-primary-700;
