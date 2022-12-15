@@ -1,8 +1,20 @@
+import { useSession } from "next-auth/react";
 import { type ReactNode } from "react";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const DefaultLayout = ({ children }: { children: ReactNode }) => {
+  const { data: session, status } = useSession({ required: true });
+  if (status === "loading") {
+    return (
+      <div className="grid place-items-center">
+        <div className="animate-spin">
+          <ArrowPathIcon />
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <Navbar />
@@ -13,4 +25,4 @@ const Layout = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default Layout;
+export default DefaultLayout;

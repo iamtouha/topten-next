@@ -1,8 +1,9 @@
-import { type NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
+import StaticLayout from "@/components/layout/StaticLayout";
+import type { NextPageWithLayout } from "./_app";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
 
   return (
@@ -15,5 +16,7 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+Home.getLayout = (page) => <StaticLayout>{page}</StaticLayout>;
 
 export default Home;
