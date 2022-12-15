@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import LoadingScreen from "@/components/LoadingScreen";
 
 type InputFields = {
   fullName: string;
@@ -53,6 +54,10 @@ const CompleteRegistration: NextPageWithLayout = () => {
   const onSubmit = (data: InputFields) => {
     createProfileMutation.mutate({ ...data });
   };
+
+  if (status === "loading") {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
