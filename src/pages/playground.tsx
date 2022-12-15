@@ -14,7 +14,7 @@ const Playground: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Playground | Topten</title>
+        <title>Playground | Top Ten Agro Chemicals</title>
       </Head>
       <main className="flex min-h-screen flex-col gap-8 py-10 container-res">
         <Button

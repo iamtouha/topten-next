@@ -23,7 +23,7 @@ const Footer = () => {
             Lorem, ipsum dolor sit amet consectetur adipisicing elit.
           </p>
           <p className={styles.copyright}>
-            Copyright &#169; {dayjs().format("YYYY")} Topten
+            Copyright &#169; {dayjs().format("YYYY")} Top Ten Agro Chemicals
           </p>
         </div>
       </div>

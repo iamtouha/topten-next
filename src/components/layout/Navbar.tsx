@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
 import styles from "@/styles/layout/navbar.module.css";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { type NextRouter, useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter, type NextRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 // components imports
 import Button from "../Button";
@@ -49,7 +49,7 @@ const Navbar = () => {
     return () => body?.classList.remove(stopOverflowY);
   }, [isMobile]);
 
-  // Handle routes && Configure activeClass
+  // activeLink > activeClass
   const router = useRouter();
 
   // Auth
@@ -65,7 +65,7 @@ const Navbar = () => {
       }
     >
       <div className={styles.wrapper}>
-        <Link href="/" onClick={() => setIsMobile(false)}>
+        <Link href={"/"} onClick={() => setIsMobile(false)}>
           <Image
             src={"/img/logo.png"}
             width={125}
@@ -84,7 +84,7 @@ const Navbar = () => {
         <div className={styles.endColumn}>
           <div className={styles.authButtonWrapper}>
             {session ? (
-              <Link href="/app/account">
+              <Link href={"/app/account"}>
                 <Image
                   src={session.user?.image as string}
                   alt={session.user?.name as string}
@@ -98,13 +98,16 @@ const Navbar = () => {
                 />
               </Link>
             ) : status === "loading" ? (
-              <p className="text-sm font-medium text-neutral-700 md:text-base">
+              <p
+                role="progressbar"
+                className="text-sm font-medium text-neutral-700 md:text-base"
+              >
                 Loading...
               </p>
             ) : (
-              <Button intent="primary" onClick={() => signIn()}>
-                Sign in
-              </Button>
+              <Link href={"/api/auth/signin"}>
+                <Button intent="primary">Sign in</Button>
+              </Link>
             )}
           </div>
           <button
@@ -160,13 +163,15 @@ const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
         className={
           router.pathname === "/app/account" ? styles.activeLink : styles.link
         }
-        onClick={
-          session
-            ? () => router.push("/app/account").then(() => setIsMobile(false))
-            : () => signIn()
-        }
+        onClick={() => setIsMobile(false)}
       >
-        {session ? "Account" : status === "loading" ? "Loading..." : "Sign in"}
+        <Link href={session ? "/app/account" : "/api/auth/signin"}>
+          {session
+            ? "Account"
+            : status === "loading"
+            ? "Loading..."
+            : "Sign in"}
+        </Link>
       </li>
     </ul>
   );
