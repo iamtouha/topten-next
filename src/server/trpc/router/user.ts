@@ -27,4 +27,9 @@ export const userRouter = router({
         },
       });
     }),
+
+  allProfiles: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+    return await prisma.profile.findMany();
+  }),
 });

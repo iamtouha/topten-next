@@ -16,12 +16,7 @@ const Footer = () => {
             className={styles.logo}
             priority
           />
-          <h1 className={styles.title}>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-          </h1>
-          <p className={styles.description}>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-          </p>
+          <h1 className={styles.title}>Agro chemicals service for your farm</h1>
           <p className={styles.copyright}>
             Copyright &#169; {dayjs().format("YYYY")} Top Ten Agro Chemicals
           </p>

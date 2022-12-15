@@ -17,11 +17,11 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
-import type { Product } from "@prisma/client";
-import dayjs from "dayjs";
+import type { Profile, Product } from "@prisma/client";
 
 // images import
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import Router from "next/router";
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -36,42 +36,17 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-const ProductTable = ({ products }: { products: Product[] }) => {
+type TableProps = {
+  intent: "profiles" | "products";
+  tableData: Profile[] | Product[];
+  columns: ColumnDef<Profile, any>[] | ColumnDef<Product, any>[];
+};
+
+const Table = ({ intent, tableData, columns }: TableProps) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const columns = useMemo<ColumnDef<Product, any>[]>(
-    () => [
-      {
-        accessorKey: "name",
-        cell: (info) => info.getValue(),
-        header: () => <span>Name</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "price",
-        cell: (info) => info.getValue(),
-        header: () => <span>Price</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "size",
-        cell: (info) => info.getValue(),
-        header: () => <span>Size</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorFn: (d) => dayjs(d.addedAt).format("DD/MM/YYYY, hh:mmA"),
-        id: "addedAt",
-        cell: (info) => info.getValue(),
-        header: () => <span>Added at</span>,
-        footer: (props) => props.column.id,
-      },
-    ],
-    []
-  );
-
-  const [data, setData] = useState(() => products);
+  const [data, setData] = useState(() => tableData);
 
   const table = useReactTable({
     data,
@@ -99,13 +74,13 @@ const ProductTable = ({ products }: { products: Product[] }) => {
   });
 
   return (
-    <section aria-label="products table">
+    <section aria-label={`${intent} table`}>
       <div className={styles.wrapper}>
         <div className={styles.head}>
-          <h1 className={styles.title}>Total Products ({products.length})</h1>
+          <h1 className={styles.title}>Total {`${intent} (${data.length})`}</h1>
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder={`Search ${intent}...`}
             className={styles.globalInput}
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
@@ -154,7 +129,15 @@ const ProductTable = ({ products }: { products: Product[] }) => {
             <tbody className={styles.tableBody}>
               {table.getRowModel().rows.map((row) => {
                 return (
-                  <tr key={row.id} onClick={() => console.log(row)}>
+                  <tr
+                    key={row.id}
+                    onClick={
+                      intent === "profiles"
+                        ? () =>
+                            Router.push(`/dashboard/users/${row.original.id}`)
+                        : () => console.log(row)
+                    }
+                  >
                     {row.getVisibleCells().map((cell) => {
                       return (
                         <td key={cell.id}>
@@ -232,7 +215,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
   );
 };
 
-export default ProductTable;
+export default Table;
 
 // Filter
 const Filter = ({

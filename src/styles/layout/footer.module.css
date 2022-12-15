@@ -1,5 +1,5 @@
 .section {
-  @apply bg-layout;
+  @apply w-full bg-layout;
 }
 .wrapper {
   @apply py-10 container-res;
@@ -10,9 +10,6 @@
 .title {
   @apply text-center text-lg font-medium text-black md:text-xl;
 }
-.description {
-  @apply text-center text-sm text-description md:text-base;
-}
 .copyright {
-  @apply mt-2.5 text-center text-xs font-semibold text-lowkey md:text-sm;
+  @apply text-center text-xs font-semibold text-lowkey md:text-sm;
 }

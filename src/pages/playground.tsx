@@ -1,16 +1,51 @@
+import type { Product } from "@prisma/client";
+import { type ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import { type NextPage } from "next";
 import Head from "next/head";
-import React from "react";
+import { useMemo } from "react";
 import { toast } from "react-toastify";
 
 // components imports
 import Button from "@/components/Button";
-import ProductTable from "@/components/ProductTable";
+import Table from "@/components/Table";
 
 // data imports
 import { products } from "@/data/products";
 
 const Playground: NextPage = () => {
+  // table columns
+  const productColumns = useMemo<ColumnDef<Product, any>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        cell: (info) => info.getValue(),
+        header: () => <span>Name</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "price",
+        cell: (info) => info.getValue(),
+        header: () => <span>Price</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "size",
+        cell: (info) => info.getValue(),
+        header: () => <span>Size</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorFn: (d) => dayjs(d.addedAt).format("DD/MM/YYYY, hh:mmA"),
+        id: "addedAt",
+        cell: (info) => info.getValue(),
+        header: () => <span>Added at</span>,
+        footer: (props) => props.column.id,
+      },
+    ],
+    []
+  );
+
   return (
     <>
       <Head>
@@ -25,7 +60,11 @@ const Playground: NextPage = () => {
         >
           Show toast
         </Button>
-        <ProductTable products={products} />
+        <Table
+          intent="products"
+          tableData={products}
+          columns={productColumns}
+        />
       </main>
     </>
   );
