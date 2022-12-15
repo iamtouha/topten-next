@@ -3,10 +3,12 @@ import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { trpc } from "../utils/trpc";
+import "@/styles/globals.css";
+
+// components imports
 import DefaultLayout from "@/components/layout/DefaultLayout";
 import ToastWrapper from "@/components/ToastWrapper";
-import { trpc } from "../utils/trpc";
-import "../styles/globals.css";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,

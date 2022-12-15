@@ -1,6 +1,8 @@
 import { useSession } from "next-auth/react";
 import { type ReactNode } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+
+// components imports
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
