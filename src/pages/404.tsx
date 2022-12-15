@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { NextPageWithLayout } from "./_app";
+import type { NextPageWithLayout } from "./_app";
 
 const Four0Four: NextPageWithLayout = () => {
   return (

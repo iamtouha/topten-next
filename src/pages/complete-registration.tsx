@@ -3,7 +3,6 @@ import Router from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "../utils/trpc";
 import { useForm } from "react-hook-form";
-import StaticLayout from "@/components/layout/StaticLayout";
 import type { NextPageWithLayout } from "./_app";
 import styles from "@/styles/completeregistration.module.css";
 import Link from "next/link";
@@ -11,7 +10,9 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import LoadingScreen from "@/components/LoadingScreen";
+
+// components imports
+import StaticLayout from "@/components/layout/StaticLayout";
 
 type InputFields = {
   fullName: string;
@@ -37,11 +38,13 @@ const CompleteRegistration: NextPageWithLayout = () => {
   });
   const createProfileMutation = trpc.user.createProfile.useMutation({
     onSuccess: () => {
-      toast.success("Registration completed!");
+      toast.success("Registration completed!", {
+        toastId: "createProfileSuccess",
+      });
       location.reload();
     },
     onError: () => {
-      toast.error("An Error occured!");
+      toast.error("An Error occured!", { toastId: "createProfileError" });
     },
   });
 
@@ -54,10 +57,6 @@ const CompleteRegistration: NextPageWithLayout = () => {
   const onSubmit = (data: InputFields) => {
     createProfileMutation.mutate({ ...data });
   };
-
-  if (status === "loading") {
-    return <LoadingScreen />;
-  }
 
   return (
     <>
@@ -72,13 +71,13 @@ const CompleteRegistration: NextPageWithLayout = () => {
         <div className="container mx-auto sm:max-w-screen-sm">
           <h1 className={styles.formTitle}>Complete registration</h1>
           <form
-            aria-label="complete-registration form"
+            aria-label="create-profile form"
             className={styles.form}
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className={styles.inputWrapper}>
               <label
-                htmlFor="complete_registration_fullName"
+                htmlFor="create_profile_fullName"
                 className={styles.inputLabel}
               >
                 {`Full name ( পূর্ণ নাম )`}
@@ -86,7 +85,7 @@ const CompleteRegistration: NextPageWithLayout = () => {
               <input
                 type="text"
                 className={styles.input}
-                id="complete_registration_fullName"
+                id="create_profile_fullName"
                 placeholder="Full name"
                 {...register("fullName", { required: true })}
               />
@@ -98,14 +97,14 @@ const CompleteRegistration: NextPageWithLayout = () => {
             </div>
             <div className={styles.inputWrapper}>
               <label
-                htmlFor="complete_registration_phone"
+                htmlFor="create_profile_phone"
                 className={styles.inputLabel}
               >
-                {`Phone No. ( ফোন নম্বর )`}
+                {`Phone number ( ফোন নম্বর )`}
               </label>
               <input
                 type="text"
-                id="complete_registration_phone"
+                id="create_profile_phone"
                 className={styles.input}
                 placeholder="Phone number"
                 {...register("phone", { required: true })}
@@ -118,14 +117,14 @@ const CompleteRegistration: NextPageWithLayout = () => {
             </div>
             <div className={styles.inputWrapper}>
               <label
-                htmlFor="complete_registration_designation"
+                htmlFor="create_profile_designation"
                 className={styles.inputLabel}
               >
                 {"Designation ( পদবী )"}
               </label>
               <input
                 type="text"
-                id="complete_registration_designation"
+                id="create_profile_designation"
                 className={styles.input}
                 placeholder="Designation"
                 {...register("designation", { required: true })}
@@ -144,7 +143,7 @@ const CompleteRegistration: NextPageWithLayout = () => {
             </button>
           </form>
           <p className={styles.baseText}>
-            Don&apos;t have an account?{" "}
+            {`Don't have an account? `}
             <Link href="/api/auth/signin">
               <span className={styles.richText}>Sign up</span>
             </Link>
