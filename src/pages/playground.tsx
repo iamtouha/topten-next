@@ -51,7 +51,7 @@ const Playground: NextPage = () => {
       <Head>
         <title>Playground | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="flex min-h-screen flex-col gap-8 py-10 container-res">
+      <main className="flex min-h-screen max-w-screen-xl flex-col gap-8 py-10 container-res">
         <Button
           intent="primary"
           onClick={() =>

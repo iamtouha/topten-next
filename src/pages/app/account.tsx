@@ -17,7 +17,7 @@ const Account: NextPage = () => {
       <main
         className={`${
           status === "loading" && "pt-0"
-        } flex h-screen flex-col items-center justify-center gap-8 pb-40 container-res`}
+        } flex h-screen max-w-screen-sm flex-col items-center justify-center gap-8 pb-40 container-res`}
       >
         {session ? (
           <div className="grid place-items-center gap-2">

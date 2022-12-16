@@ -67,88 +67,83 @@ const CompleteRegistration: NextPageWithLayout = () => {
           content="Complete your registration on Top Ten Agro Chemicals"
         />
       </Head>
-      <main className="py-5 container-res">
-        <div className="container mx-auto sm:max-w-screen-sm">
-          <h1 className={styles.formTitle}>Complete registration</h1>
-          <form
-            aria-label="create-profile form"
-            className={styles.form}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className={styles.inputWrapper}>
-              <label
-                htmlFor="create_profile_fullName"
-                className={styles.inputLabel}
-              >
-                {`Full name ( পূর্ণ নাম )`}
-              </label>
-              <input
-                type="text"
-                className={styles.input}
-                id="create_profile_fullName"
-                placeholder="Full name"
-                {...register("fullName", { required: true })}
-              />
-              {formState.errors.fullName ? (
-                <p className="text-sm text-danger">
-                  {formState.errors.fullName.message}
-                </p>
-              ) : null}
-            </div>
-            <div className={styles.inputWrapper}>
-              <label
-                htmlFor="create_profile_phone"
-                className={styles.inputLabel}
-              >
-                {`Phone number ( ফোন নম্বর )`}
-              </label>
-              <input
-                type="text"
-                id="create_profile_phone"
-                className={styles.input}
-                placeholder="Phone number"
-                {...register("phone", { required: true })}
-              />
-              {formState.errors.phone ? (
-                <p className="text-sm text-danger">
-                  {formState.errors.phone.message}
-                </p>
-              ) : null}
-            </div>
-            <div className={styles.inputWrapper}>
-              <label
-                htmlFor="create_profile_designation"
-                className={styles.inputLabel}
-              >
-                {"Designation ( পদবী )"}
-              </label>
-              <input
-                type="text"
-                id="create_profile_designation"
-                className={styles.input}
-                placeholder="Designation"
-                {...register("designation", { required: true })}
-              />
-              {formState.errors.designation ? (
-                <p className="text-sm text-danger">
-                  {formState.errors.designation.message}
-                </p>
-              ) : null}
-            </div>
-            <button
-              className={styles.button}
-              disabled={createProfileMutation.isLoading}
+      <main className="max-w-screen-sm py-5 container-res">
+        <h1 className={styles.formTitle}>Complete registration</h1>
+        <form
+          aria-label="create-profile form"
+          className={styles.form}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className={styles.inputWrapper}>
+            <label
+              htmlFor="create_profile_fullName"
+              className={styles.inputLabel}
             >
-              {createProfileMutation.isLoading ? "loading" : "Register"}
-            </button>
-          </form>
-          <p className={styles.baseText}>
-            {`Don't have an account? `}
-            <Link href="/api/auth/signin">
-              <span className={styles.richText}>Sign up</span>
-            </Link>
-          </p>
-        </div>
+              {`Full name ( পূর্ণ নাম )`}
+            </label>
+            <input
+              type="text"
+              className={styles.input}
+              id="create_profile_fullName"
+              placeholder="Full name"
+              {...register("fullName", { required: true })}
+            />
+            {formState.errors.fullName ? (
+              <p className="text-sm text-danger">
+                {formState.errors.fullName.message}
+              </p>
+            ) : null}
+          </div>
+          <div className={styles.inputWrapper}>
+            <label htmlFor="create_profile_phone" className={styles.inputLabel}>
+              {`Phone number ( ফোন নম্বর )`}
+            </label>
+            <input
+              type="text"
+              id="create_profile_phone"
+              className={styles.input}
+              placeholder="Phone number"
+              {...register("phone", { required: true })}
+            />
+            {formState.errors.phone ? (
+              <p className="text-sm text-danger">
+                {formState.errors.phone.message}
+              </p>
+            ) : null}
+          </div>
+          <div className={styles.inputWrapper}>
+            <label
+              htmlFor="create_profile_designation"
+              className={styles.inputLabel}
+            >
+              {"Designation ( পদবী )"}
+            </label>
+            <input
+              type="text"
+              id="create_profile_designation"
+              className={styles.input}
+              placeholder="Designation"
+              {...register("designation", { required: true })}
+            />
+            {formState.errors.designation ? (
+              <p className="text-sm text-danger">
+                {formState.errors.designation.message}
+              </p>
+            ) : null}
+          </div>
+          <button
+            className={styles.button}
+            disabled={createProfileMutation.isLoading}
+          >
+            {createProfileMutation.isLoading ? "loading" : "Register"}
+          </button>
+        </form>
+        <p className={styles.baseText}>
+          {`Don't have an account? `}
+          <Link href="/api/auth/signin">
+            <span className={styles.richText}>Sign up</span>
+          </Link>
+        </p>
       </main>
     </>
   );

@@ -20,7 +20,7 @@ const Users: NextPage = () => {
   const profileColumns = useMemo<ColumnDef<User, any>[]>(
     () => [
       {
-        header: "Profile",
+        header: "User profile",
         footer: (props) => props.column.id,
         columns: [
           {
@@ -44,7 +44,7 @@ const Users: NextPage = () => {
         ],
       },
       {
-        header: "User",
+        header: "User information",
         footer: (props) => props.column.id,
         columns: [
           {
@@ -90,7 +90,7 @@ const Users: NextPage = () => {
       <Head>
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen pt-5 pb-10 container-res">
+      <main className="min-h-screen max-w-screen-xl pt-5 pb-10 container-res">
         {status === "loading" ? (
           <Loader />
         ) : (

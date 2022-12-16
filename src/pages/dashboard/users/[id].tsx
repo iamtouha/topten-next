@@ -22,8 +22,14 @@ const User: NextPage = () => {
       <Head>
         <title>User | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen container-res">
-        <div>User: {id}</div>
+      <main className="min-h-screen max-w-screen-sm container-res">
+        <div className="flex flex-col">
+          <div className="flex gap-2">
+            <p>Name:</p>
+            <p>{user?.name}</p>
+          </div>
+          <p>{user?.name}</p>
+        </div>
       </main>
     </>
   );
