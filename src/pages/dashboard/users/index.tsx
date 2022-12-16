@@ -68,7 +68,17 @@ const Users: NextPage = () => {
           },
           {
             accessorKey: "role",
-            cell: (info) => info.getValue(),
+            cell: (info) =>
+              ((info
+                .getValue()
+                .replace(/_/g, " ")
+                .charAt(0)
+                .toUpperCase() as string) +
+                info
+                  .getValue()
+                  .replace(/_/g, " ")
+                  .slice(1)
+                  .toLowerCase()) as string,
             header: () => <span>Role</span>,
             footer: (props) => props.column.id,
           },

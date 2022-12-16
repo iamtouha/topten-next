@@ -37,7 +37,7 @@ const Account: NextPage = () => {
           <Loader />
         ) : (
           <p className="text-sm font-medium text-neutral-700 md:text-base">
-            No user found.
+            No user found
           </p>
         )}
       </main>
