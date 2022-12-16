@@ -3,36 +3,51 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
-import { type Profile } from "@prisma/client";
+import { type User } from "@prisma/client";
 
 // components imports
 import Table from "@/components/Table";
+import dayjs from "dayjs";
 
 const Users: NextPage = () => {
   // trpc
-  const { data: profiles, status } = trpc.user.allProfiles.useQuery(undefined, {
+  const { data: users, status } = trpc.user.allUsers.useQuery(undefined, {
     staleTime: 3000,
   });
 
   // table column
-  const profileColumns = useMemo<ColumnDef<Profile, any>[]>(
+  const profileColumns = useMemo<ColumnDef<User, any>[]>(
     () => [
       {
-        accessorKey: "fullName",
+        accessorKey: "name",
         cell: (info) => info.getValue(),
-        header: () => <span>Full name</span>,
+        header: () => <span>Name</span>,
         footer: (props) => props.column.id,
       },
       {
-        accessorKey: "phone",
+        accessorKey: "email",
         cell: (info) => info.getValue(),
-        header: () => <span>Phone number</span>,
+        header: () => <span>Email</span>,
         footer: (props) => props.column.id,
       },
       {
-        accessorKey: "designation",
+        accessorFn: (d) => dayjs(d.createdAt).format("DD/MM/YYYY, hh:mmA"),
+        id: "createdAt",
         cell: (info) => info.getValue(),
-        header: () => <span>Designation</span>,
+        header: () => <span>Created at</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "role",
+        cell: (info) => info.getValue(),
+        header: () => <span>Role</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorFn: (d) => (d.active ? "Active" : "Inactive"),
+        id: "active",
+        cell: (info) => info.getValue(),
+        header: () => <span>Status</span>,
         footer: (props) => props.column.id,
       },
     ],
@@ -54,11 +69,7 @@ const Users: NextPage = () => {
           </p>
         ) : (
           status === "success" && (
-            <Table
-              intent="profiles"
-              tableData={profiles}
-              columns={profileColumns}
-            />
+            <Table intent="users" tableData={users} columns={profileColumns} />
           )
         )}
       </main>

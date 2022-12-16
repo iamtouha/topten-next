@@ -28,8 +28,32 @@ export const userRouter = router({
       });
     }),
 
-  allProfiles: protectedProcedure.query(async ({ ctx }) => {
+  allUsers: protectedProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
-    return await prisma.profile.findMany();
+    const items = await prisma.user.findMany({
+      include: { profile: true },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return items;
   }),
+
+  findUserById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { id } = input;
+      const user = await prisma.user.findUnique({
+        where: { id },
+        include: { profile: true },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No user with id: ${id}`,
+        });
+      }
+      return user;
+    }),
 });

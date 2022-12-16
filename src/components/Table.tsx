@@ -17,7 +17,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
-import type { Profile, Product } from "@prisma/client";
+import type { Product, User } from "@prisma/client";
 
 // images import
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
@@ -37,9 +37,9 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 type TableProps = {
-  intent: "profiles" | "products";
-  tableData: Profile[] | Product[];
-  columns: ColumnDef<Profile, any>[] | ColumnDef<Product, any>[];
+  intent: "users" | "products";
+  tableData: User[] | Product[];
+  columns: ColumnDef<User, any>[] | ColumnDef<Product, any>[];
 };
 
 const Table = ({ intent, tableData, columns }: TableProps) => {
@@ -132,7 +132,7 @@ const Table = ({ intent, tableData, columns }: TableProps) => {
                   <tr
                     key={row.id}
                     onClick={
-                      intent === "profiles"
+                      intent === "users"
                         ? () =>
                             Router.push(`/dashboard/users/${row.original.id}`)
                         : () => console.log(row)

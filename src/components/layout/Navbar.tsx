@@ -2,7 +2,7 @@ import styles from "@/styles/layout/navbar.module.css";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import Router from "next/router";
+import { type NextRouter, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 // components imports
@@ -49,6 +49,9 @@ const Navbar = () => {
     return () => body?.classList.remove(stopOverflowY);
   }, [isMobile]);
 
+  // Add activeClass to activeLink
+  const router = useRouter();
+
   // Auth
   const { data: session, status } = useSession();
 
@@ -72,8 +75,12 @@ const Navbar = () => {
             priority
           />
         </Link>
-        <MobileLinks isMobile={isMobile} setIsMobile={setIsMobile} />
-        <DesktopLinks />
+        <MobileLinks
+          router={router}
+          isMobile={isMobile}
+          setIsMobile={setIsMobile}
+        />
+        <DesktopLinks router={router} />
         <div className={styles.endColumn}>
           <div className={styles.authButtonWrapper}>
             {session ? (
@@ -84,7 +91,7 @@ const Navbar = () => {
                   width={48}
                   height={48}
                   className={`${
-                    Router.pathname === "/app/account" &&
+                    router.pathname === "/app/account" &&
                     "ring-2 ring-primary-700"
                   } cursor-pointer rounded-full transition-opacity hover:opacity-80 active:opacity-100`}
                   loading="lazy"
@@ -122,11 +129,12 @@ const Navbar = () => {
 export default Navbar;
 
 type MobileLinksProps = {
+  router: NextRouter;
   isMobile: boolean;
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const MobileLinks = ({ isMobile, setIsMobile }: MobileLinksProps) => {
+const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
   const { data: session, status } = useSession();
 
   return (
@@ -141,7 +149,7 @@ const MobileLinks = ({ isMobile, setIsMobile }: MobileLinksProps) => {
             <Link
               href={navLink.url}
               className={
-                Router.pathname === navLink.url
+                router.pathname === navLink.url
                   ? styles.activeLink
                   : styles.link
               }
@@ -153,7 +161,7 @@ const MobileLinks = ({ isMobile, setIsMobile }: MobileLinksProps) => {
       })}
       <li
         className={
-          Router.pathname === "/app/account" ? styles.activeLink : styles.link
+          router.pathname === "/app/account" ? styles.activeLink : styles.link
         }
         onClick={() => setIsMobile(false)}
       >
@@ -169,7 +177,7 @@ const MobileLinks = ({ isMobile, setIsMobile }: MobileLinksProps) => {
   );
 };
 
-const DesktopLinks = () => {
+const DesktopLinks = ({ router }: { router: NextRouter }) => {
   return (
     <ul className={`${styles.links} ${styles.desktopLinks}`}>
       {desktopLinks.map((navLink, i) => {
@@ -178,7 +186,7 @@ const DesktopLinks = () => {
             <Link
               href={navLink.url}
               className={
-                Router.pathname === navLink.url
+                router.pathname === navLink.url
                   ? styles.activeLink
                   : styles.link
               }
