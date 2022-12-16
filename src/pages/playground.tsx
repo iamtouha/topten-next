@@ -62,7 +62,7 @@ const Playground: NextPage = () => {
         </Button>
         <Table
           intent="products"
-          tableData={products}
+          tableData={products ?? []}
           columns={productColumns}
         />
       </main>

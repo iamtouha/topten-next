@@ -1,3 +1,4 @@
+import { USER_ROLE } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { router, protectedProcedure, employeeProcedure } from "../trpc";
@@ -55,5 +56,39 @@ export const userRouter = router({
         });
       }
       return user;
+    }),
+
+  editRole: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        role: z.nativeEnum(USER_ROLE),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { id, role } = input;
+      if (session.user.role !== USER_ROLE.SUPER_ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Forbidden action",
+        });
+      }
+      if (session.user.id === id) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Bad action" });
+      }
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No user with id: ${id}`,
+        });
+      }
+      return prisma.user.update({
+        where: { id },
+        data: { role },
+      });
     }),
 });

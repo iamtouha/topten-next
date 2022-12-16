@@ -1,27 +1,26 @@
-  
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-    provider          = "mysql"
-    url               = env("DATABASE_URL")
-    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-    relationMode      = "prisma" 
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
 }
- 
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?    @db.Text
-  access_token      String?    @db.Text
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?    @db.Text
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -45,18 +44,13 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          USER_ROLE @default(USER)
+  profileId     String?   @unique
+  createdAt     DateTime  @default(now())
+  active        Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
-  role          USER_ROLE @default(USER)
-  active        Boolean   @default(false)
-  profile       Profile?  @relation(fields: [profileId], references: [id])  
-  profileId     String?   @unique
-  createdAt     DateTime @default(now())
-}
-enum USER_ROLE {
-  SUPER_ADMIN
-  ADMIN
-  USER
+  profile       Profile?  @relation(fields: [profileId], references: [id])
 }
 
 model VerificationToken {
@@ -68,70 +62,64 @@ model VerificationToken {
 }
 
 model Profile {
-  id          String  @id @default(cuid())
-  user        User?
+  id          String   @id @default(cuid())
   fullName    String
   designation String
   phone       String
-  roles       Role[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User?
+  roles       Role[]
 }
 
 model Store {
-  id          String  @id @default(cuid())
-  name        String
-  address     String
-  roles       Role[]
-  customers   Customer[]
-  stocks      Stock[]
-  restocks    Restock[] 
+  id        String     @id @default(cuid())
+  name      String
+  address   String
+  roles     Role[]
+  stocks    Stock[]
+  restocks  Restock[]
+  customers Customer[]
 }
 
 model Role {
-  store       Store @relation(fields: [storeId], references: [id]) 
-  storeId     String
-  profile     Profile @relation(fields: [profileId], references: [id])
-  profileId   String
-  addedAt     DateTime @default(now())
-  addedBy     String?
-  updatedAt   DateTime @updatedAt
-  updatedBy   String?
-  post        POST
+  storeId   String
+  profileId String
+  addedAt   DateTime @default(now())
+  addedBy   String?
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+  post      POST
+  store     Store    @relation(fields: [storeId], references: [id])
+  profile   Profile  @relation(fields: [profileId], references: [id])
 
   @@id([storeId, profileId])
   @@index([storeId])
   @@index([profileId])
 }
 
-enum POST {
-  DIRECTOR
-  MANAGER
-  OFFICER
-}
-
 model Product {
-  id          String  @id @default(cuid())
-  name        String
-  size        String
-  price       Float  
-  addedAt     DateTime @default(now())
-  addedBy     String?
-  updatedAt   DateTime @updatedAt
-  updatedBy   String?
-  stocks      Stock[]
-  orderItems  OrderItem[]
+  id           String        @id @default(cuid())
+  name         String
+  size         String
+  price        Float
+  addedAt      DateTime      @default(now())
+  addedBy      String?
+  updatedAt    DateTime      @updatedAt
+  updatedBy    String?
+  stocks       Stock[]
   restockItems RestockItem[]
+  orderItems   OrderItem[]
 }
 
-model Stock { 
-  product     Product @relation(fields: [productId], references: [id])
-  productId   String
-  store       Store @relation(fields: [storeId], references: [id])
-  storeId     String
-  quantity    Int
-  addedAt     DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Stock {
+  productId String
+  storeId   String
+  quantity  Int
+  addedAt   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id])
+  store     Store    @relation(fields: [storeId], references: [id])
 
   @@id([productId, storeId])
   @@index([productId])
@@ -139,25 +127,25 @@ model Stock {
 }
 
 model Restock {
-  id          String  @id @default(cuid())
-  store       Store @relation(fields: [storeId], references: [id])
-  storeId     String
-  quantity    Int
-  addedAt     DateTime @default(now())
-  addedBy     String?
-  updatedAt   DateTime @updatedAt
-  updatedBy   String?
-  items       RestockItem[]
+  id        String        @id @default(cuid())
+  storeId   String
+  quantity  Int
+  addedAt   DateTime      @default(now())
+  addedBy   String?
+  updatedAt DateTime      @updatedAt
+  updatedBy String?
+  store     Store         @relation(fields: [storeId], references: [id])
+  items     RestockItem[]
 
   @@index([storeId])
 }
 
 model RestockItem {
-  product     Product @relation(fields: [productId], references: [id])
-  productId   String
-  restock     Restock @relation(fields: [restockId], references: [id])
-  restockId   String
-  quantity    Int
+  productId String
+  restockId String
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  restock   Restock @relation(fields: [restockId], references: [id])
 
   @@id([productId, restockId])
   @@index([productId])
@@ -165,48 +153,57 @@ model RestockItem {
 }
 
 model Customer {
-  id          String  @id @default(cuid())
-  name        String
-  address     String
-  phone       String
-  store       Store @relation(fields: [storeId], references: [id])
-  storeId     String
-  orders      Order[]
-  addedAt     DateTime @default(now())
-  addedBy     String?
-  updatedAt   DateTime @updatedAt
-  updatedBy   String?
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  storeId   String
+  addedAt   DateTime @default(now())
+  addedBy   String?
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+  store     Store    @relation(fields: [storeId], references: [id])
+  orders    Order[]
 
   @@index([storeId])
 }
 
 model Order {
-  id          String  @id @default(cuid())
-  customer    Customer @relation(fields: [customerId], references: [id])
-  customerId  String
-  items       OrderItem[]
-  total       Float
-  approved    Boolean @default(false)
-  createdAt   DateTime @default(now())
-  createdBy   String?
-  updatedAt   DateTime @updatedAt
-  updatedBy   String?
+  id         String      @id @default(cuid())
+  customerId String
+  total      Float
+  approved   Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  createdBy  String?
+  updatedAt  DateTime    @updatedAt
+  updatedBy  String?
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  items      OrderItem[]
 
   @@index([customerId])
 }
 
-model OrderItem { 
-  product     Product @relation(fields: [productId], references: [id])
-  productId   String
-  order       Order @relation(fields: [orderId], references: [id])
-  orderId     String 
-  quantity    Int
-  price       Float
+model OrderItem {
+  productId String
+  orderId   String
+  quantity  Int
+  price     Float
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
 
   @@id([productId, orderId])
   @@index([productId])
   @@index([orderId])
 }
 
+enum USER_ROLE {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
 
- 
+enum POST {
+  DIRECTOR
+  MANAGER
+  OFFICER
+}

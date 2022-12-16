@@ -104,9 +104,11 @@ const Users: NextPage = () => {
         {status === "loading" ? (
           <Loader />
         ) : (
-          status === "success" && (
-            <Table intent="users" tableData={users} columns={profileColumns} />
-          )
+          <Table
+            intent="users"
+            tableData={users ?? []}
+            columns={profileColumns}
+          />
         )}
       </main>
     </>
