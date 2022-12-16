@@ -8,10 +8,11 @@ import { type User } from "@prisma/client";
 // components imports
 import Table from "@/components/Table";
 import dayjs from "dayjs";
+import Loader from "@/components/Loader";
 
 const Users: NextPage = () => {
   // trpc
-  const { data: users, status } = trpc.user.allUsers.useQuery(undefined, {
+  const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
     staleTime: 3000,
   });
 
@@ -19,36 +20,66 @@ const Users: NextPage = () => {
   const profileColumns = useMemo<ColumnDef<User, any>[]>(
     () => [
       {
-        accessorKey: "name",
-        cell: (info) => info.getValue(),
-        header: () => <span>Name</span>,
+        header: "Profile",
         footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: "profile.fullName",
+            cell: (info) => info.getValue(),
+            header: () => <span>Full name</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "profile.phone",
+            cell: (info) => info.getValue(),
+            header: () => <span>Phone number</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "profile.designation",
+            cell: (info) => info.getValue(),
+            header: () => <span>Designation</span>,
+            footer: (props) => props.column.id,
+          },
+        ],
       },
       {
-        accessorKey: "email",
-        cell: (info) => info.getValue(),
-        header: () => <span>Email</span>,
+        header: "User",
         footer: (props) => props.column.id,
-      },
-      {
-        accessorFn: (d) => dayjs(d.createdAt).format("DD/MM/YYYY, hh:mmA"),
-        id: "createdAt",
-        cell: (info) => info.getValue(),
-        header: () => <span>Created at</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "role",
-        cell: (info) => info.getValue(),
-        header: () => <span>Role</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorFn: (d) => (d.active ? "Active" : "Inactive"),
-        id: "active",
-        cell: (info) => info.getValue(),
-        header: () => <span>Status</span>,
-        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: "name",
+            cell: (info) => info.getValue(),
+            header: () => <span>Name</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "email",
+            cell: (info) => info.getValue(),
+            header: () => <span>Email</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorFn: (d) => dayjs(d.createdAt).format("DD/MM/YYYY, hh:mmA"),
+            id: "createdAt",
+            cell: (info) => info.getValue(),
+            header: () => <span>Created at</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "role",
+            cell: (info) => info.getValue(),
+            header: () => <span>Role</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorFn: (d) => (d.active ? "Active" : "Inactive"),
+            id: "active",
+            cell: (info) => info.getValue(),
+            header: () => <span>Status</span>,
+            footer: (props) => props.column.id,
+          },
+        ],
       },
     ],
     []
@@ -61,12 +92,7 @@ const Users: NextPage = () => {
       </Head>
       <main className="min-h-screen pt-5 pb-10 container-res">
         {status === "loading" ? (
-          <p
-            role="progressbar"
-            className="text-sm font-medium text-neutral-700 md:text-base"
-          >
-            Loading...
-          </p>
+          <Loader />
         ) : (
           status === "success" && (
             <Table intent="users" tableData={users} columns={profileColumns} />

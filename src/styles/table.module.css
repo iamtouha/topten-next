@@ -19,6 +19,9 @@
 .tableHead th {
   @apply border-2 border-lowkey px-4 pt-2 pb-3.5 text-left text-xs font-bold tracking-wide text-black md:text-sm;
 }
+.tableHead th div {
+  @apply grid place-items-center;
+}
 .tableBody {
   @apply text-sm text-black md:text-base;
 }

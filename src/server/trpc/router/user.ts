@@ -28,15 +28,15 @@ export const userRouter = router({
       });
     }),
 
-  allUsers: protectedProcedure.query(async ({ ctx }) => {
+  getAllUsers: protectedProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
-    const items = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       include: { profile: true },
       orderBy: {
         createdAt: "desc",
       },
     });
-    return items;
+    return users;
   }),
 
   findUserById: protectedProcedure

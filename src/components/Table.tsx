@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import styles from "@/styles/producttable.module.css";
+import styles from "@/styles/table.module.css";
 import {
   type Column,
   type Table,

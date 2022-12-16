@@ -4,6 +4,9 @@ import Head from "next/head";
 import React from "react";
 import { useRouter } from "next/router";
 
+// components imports
+import Loader from "@/components/Loader";
+
 const User: NextPage = () => {
   const id = useRouter().query.id as string;
 
@@ -11,14 +14,7 @@ const User: NextPage = () => {
   const { data: user, status } = trpc.user.findUserById.useQuery({ id });
 
   if (status === "loading") {
-    return (
-      <p
-        role="progressbar"
-        className="text-sm font-medium text-neutral-700 md:text-base"
-      >
-        Loading...
-      </p>
-    );
+    return <Loader className="min-h-screen container-res" />;
   }
 
   return (

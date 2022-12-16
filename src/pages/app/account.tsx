@@ -4,6 +4,7 @@ import Head from "next/head";
 
 // components imports
 import Button from "@/components/Button";
+import Loader from "@/components/Loader";
 
 const Account: NextPage = () => {
   const { data: session, status } = useSession();
@@ -16,7 +17,7 @@ const Account: NextPage = () => {
       <main
         className={`${
           status === "loading" && "pt-0"
-        } flex-col gap-8 py-20 container-res`}
+        } flex h-screen flex-col items-center justify-center gap-8 pb-40 container-res`}
       >
         {session ? (
           <div className="grid place-items-center gap-2">
@@ -33,12 +34,7 @@ const Account: NextPage = () => {
             </Button>
           </div>
         ) : status === "loading" ? (
-          <p
-            role="progressbar"
-            className="text-sm font-medium text-neutral-700 md:text-base"
-          >
-            Loading...
-          </p>
+          <Loader />
         ) : (
           <p className="text-sm font-medium text-neutral-700 md:text-base">
             No user found.

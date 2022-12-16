@@ -1,7 +1,7 @@
 const LoadingScreen = () => {
   return (
     <div
-      aria-label="progressbar"
+      aria-label="text progressbar"
       role="progressbar"
       className="z-50 grid h-screen place-items-center bg-black bg-opacity-20"
     >
