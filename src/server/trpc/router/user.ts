@@ -74,15 +74,6 @@ export const userRouter = router({
           message: "Only super admins can edit user role",
         });
       }
-      const user = await prisma.user.findUnique({
-        where: { id },
-      });
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No user with id: ${id}`,
-        });
-      }
       return await prisma.user.update({
         where: { id },
         data: { role },
@@ -100,18 +91,15 @@ export const userRouter = router({
           message: "Only super admins can control user state",
         });
       }
-      const user = await prisma.user.findUnique({
-        where: { id },
-      });
-      if (!user) {
+      if (session.user.id === id) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No user with id: ${id}`,
+          code: "FORBIDDEN",
+          message: "You can set your own's state",
         });
       }
       return await prisma.user.update({
         where: { id },
-        data: { active },
+        data: { active: !active },
       });
     }),
 });

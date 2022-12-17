@@ -7,51 +7,62 @@ import dayjs from "dayjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Router from "next/router";
-import {
-  type Dispatch,
-  type SetStateAction,
-  Fragment,
-  useEffect,
-  useState,
-} from "react";
+import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 // components and images imports
 import Loader from "@/components/Loader";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import Button from "@/components/Button";
+import { useIsMutating } from "@tanstack/react-query";
 
 const User: NextPage = () => {
   // userId
   const id = Router.query.id as string;
 
   // trpc
+  const utils = trpc.useContext();
   const {
     data: user,
     status,
     error,
     refetch,
   } = trpc.user.findUserById.useQuery({ id });
+  // edit user's role
   const [selectedRole, setSelectedRole] = useState(user?.role as USER_ROLE);
   useEffect(() => {
     if (!user) return;
     setSelectedRole(user.role);
   }, [user]);
-  const { mutateAsync: editRole } = trpc.user.editRole.useMutation({
-    onSuccess: async (user) => {
-      setSelectedRole(user.role);
+  const { mutateAsync: editRole, status: editRoleStatus } =
+    trpc.user.editRole.useMutation({
+      onSuccess: async (user) => {
+        setSelectedRole(user.role);
+        refetch();
+        toast.success("User role updated.", { toastId: "editRoleSuccess" });
+      },
+      onError: async (e) => {
+        toast.error(e.message, { toastId: "editRoleError" });
+      },
+    });
+  // toggle user's active state
+  const { mutateAsync: toggleUser, status: toggleUserStatus } =
+    trpc.user.toggleUser.useMutation({
+      onMutate: async () => {
+        toast.success("User state updated", { toastId: "toggleUserSuccess" });
+      },
+      onError: async (e) => {
+        toast.error(e.message, { toastId: "toggleUserError" });
+      },
+    });
+  // refetch user
+  const number = useIsMutating();
+  useEffect(() => {
+    if (number === 0) {
+      utils.user.findUserById.invalidate();
       refetch();
-      toast.success("User role updated.", { toastId: "editRoleSuccess" });
-    },
-    onError: (e) => {
-      toast.error(e.message, { toastId: "editRoleError" });
-    },
-  });
-
-  const { mutateAsync: toggleUser } = trpc.user.toggleUser.useMutation({
-    onMutate: async ({ id, active }) => {
-      toast.success("User state updated");
-    },
-  });
+    }
+  }, [number, refetch, utils]);
 
   // conditional renders
   if (status === "loading") {
@@ -78,23 +89,84 @@ const User: NextPage = () => {
             <div className="items-center justify-center">
               <p className={styles.richTitle}>Edit user</p>
               <div className="mt-2 flex items-center gap-2.5">
-                <SelectBox
-                  id={id}
-                  selected={selectedRole}
-                  setSelected={setSelectedRole}
-                  options={Object.values(USER_ROLE)}
-                  editRole={editRole}
-                />
-                <input
-                  aria-label="toggle user active state"
-                  id="userState"
-                  type="checkbox"
-                  className="focus:ring-none cursor-pointer rounded-full border-2 bg-transparent"
-                  checked={user.active}
-                  onChange={(e) => {
-                    const checked = e.currentTarget.checked;
+                <Listbox
+                  as="div"
+                  className="w-48"
+                  value={selectedRole ?? ""}
+                  onChange={(role: USER_ROLE) => {
+                    setSelectedRole(role);
+                    editRole({ id, role });
                   }}
-                />
+                >
+                  <div className="relative mt-1">
+                    <Listbox.Button className={styles.selectButton}>
+                      <span className="block truncate">
+                        {selectedRole && formatRole(selectedRole)}
+                      </span>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                        <ChevronUpDownIcon
+                          className="h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </Listbox.Button>
+                    <Transition
+                      as={Fragment}
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <Listbox.Options className={styles.options}>
+                        {Object.values(USER_ROLE).map((role, i) => (
+                          <Listbox.Option
+                            key={i}
+                            className={({ active }) =>
+                              `${styles.option} ${
+                                active
+                                  ? "bg-amber-100 text-amber-900"
+                                  : "text-gray-900"
+                              }`
+                            }
+                            value={role}
+                          >
+                            {({ selected }) => (
+                              <>
+                                <span
+                                  className={`block truncate ${
+                                    selected ? "font-medium" : "font-normal"
+                                  }`}
+                                >
+                                  {formatRole(role)}
+                                </span>
+                                {selected ? (
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                    <CheckIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </Listbox>
+                <Button
+                  aria-label={`toggle user's active state`}
+                  intent="primary"
+                  onClick={() => {
+                    toggleUser({ id, active: user.active });
+                  }}
+                >
+                  {toggleUserStatus === "loading"
+                    ? "Loading..."
+                    : user.active
+                    ? "Inactive"
+                    : "Active"}
+                </Button>
               </div>
             </div>
           </div>
@@ -174,83 +246,5 @@ const UserDetails = ({
         </div>
       ))}
     </div>
-  );
-};
-
-// SelectBox
-type SelectBoxProps = {
-  id: string;
-  selected: USER_ROLE;
-  setSelected: Dispatch<SetStateAction<USER_ROLE>>;
-  options: string[];
-  editRole: ({ id, role }: { id: string; role: USER_ROLE }) => void;
-};
-
-const SelectBox = ({
-  id,
-  selected,
-  setSelected,
-  options,
-  editRole,
-}: SelectBoxProps) => {
-  return (
-    <Listbox
-      as="div"
-      className="w-48"
-      value={selected ?? ""}
-      onChange={(role: USER_ROLE) => {
-        setSelected(role);
-        editRole({ id, role });
-      }}
-    >
-      <div className="relative mt-1">
-        <Listbox.Button className={styles.selectButton}>
-          <span className="block truncate">{formatRole(selected)}</span>
-          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <ChevronUpDownIcon
-              className="h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
-          </span>
-        </Listbox.Button>
-        <Transition
-          as={Fragment}
-          leave="transition ease-in duration-100"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <Listbox.Options className={styles.options}>
-            {options.map((option, i) => (
-              <Listbox.Option
-                key={i}
-                className={({ active }) =>
-                  `${styles.option} ${
-                    active ? "bg-amber-100 text-amber-900" : "text-gray-900"
-                  }`
-                }
-                value={option}
-              >
-                {({ selected }) => (
-                  <>
-                    <span
-                      className={`block truncate ${
-                        selected ? "font-medium" : "font-normal"
-                      }`}
-                    >
-                      {formatRole(option)}
-                    </span>
-                    {selected ? (
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    ) : null}
-                  </>
-                )}
-              </Listbox.Option>
-            ))}
-          </Listbox.Options>
-        </Transition>
-      </div>
-    </Listbox>
   );
 };
