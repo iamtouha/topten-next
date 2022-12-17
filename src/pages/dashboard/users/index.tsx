@@ -91,7 +91,7 @@ const Users: NextPage = () => {
       <Head>
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-xl pt-5 pb-10 container-res">
+      <main className="container min-h-screen px-2 pt-5 pb-10">
         {status === "loading" ? (
           <Loader />
         ) : (
