@@ -6,19 +6,24 @@ import { USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useIsMutating } from "@tanstack/react-query";
 
 // components and images imports
 import Loader from "@/components/Loader";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import Button from "@/components/Button";
-import { useIsMutating } from "@tanstack/react-query";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 const User: NextPage = () => {
   // userId
-  const id = Router.query.id as string;
+  const router = useRouter();
+  const id = router.query.id as string;
+
+  // session
+  const session = useSession();
 
   // trpc
   const utils = trpc.useContext();
@@ -39,28 +44,33 @@ const User: NextPage = () => {
       onSuccess: async (user) => {
         setSelectedRole(user.role);
         refetch();
-        toast.success("User role updated.", { toastId: "editRoleSuccess" });
+        editRoleStatus === "loading" ||
+          toast.success("User role updated.", { toastId: "editRoleSuccess" });
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "editRoleError" });
       },
     });
-  // toggle user's active state
+  // toggle user's active status
   const { mutateAsync: toggleUser, status: toggleUserStatus } =
     trpc.user.toggleUser.useMutation({
-      onMutate: async () => {
+      onMutate: async ({ id }) => {
+        if (session.data?.user?.id === id) {
+          return toast.error(`You can't set your own's status`, {
+            toastId: "toggleUserSessionError",
+          });
+        }
         toast.success("User state updated", { toastId: "toggleUserSuccess" });
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "toggleUserError" });
       },
     });
-  // refetch user
+  // refetch user onMutate
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.user.findUserById.invalidate();
-      refetch();
     }
   }, [number, refetch, utils]);
 
@@ -101,7 +111,9 @@ const User: NextPage = () => {
                   <div className="relative mt-1">
                     <Listbox.Button className={styles.selectButton}>
                       <span className="block truncate">
-                        {selectedRole && formatRole(selectedRole)}
+                        {editRoleStatus === "loading"
+                          ? "Loading..."
+                          : selectedRole && formatRole(selectedRole)}
                       </span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                         <ChevronUpDownIcon
@@ -155,7 +167,7 @@ const User: NextPage = () => {
                   </div>
                 </Listbox>
                 <Button
-                  aria-label={`toggle user's active state`}
+                  aria-label={`toggle user's active status`}
                   intent="primary"
                   onClick={() => {
                     toggleUser({ id, active: user.active });

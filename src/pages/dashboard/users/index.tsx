@@ -13,7 +13,11 @@ import Loader from "@/components/Loader";
 
 const Users: NextPage = () => {
   // trpc
-  const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
+  const {
+    data: users,
+    status,
+    refetch,
+  } = trpc.user.getAllUsers.useQuery(undefined, {
     staleTime: 3000,
   });
 

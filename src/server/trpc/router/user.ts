@@ -88,14 +88,11 @@ export const userRouter = router({
       if (session.user.role !== USER_ROLE.SUPER_ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Only super admins can control user state",
+          message: "Only super admins can control user's status",
         });
       }
       if (session.user.id === id) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You can set your own's state",
-        });
+        return;
       }
       return await prisma.user.update({
         where: { id },
