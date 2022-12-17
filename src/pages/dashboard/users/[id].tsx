@@ -32,7 +32,7 @@ const User: NextPage = () => {
     status,
     error,
     refetch,
-  } = trpc.user.findUserById.useQuery({ id });
+  } = trpc.admin.users.getOne.useQuery(id);
   // update user's role
   const [selectedRole, setSelectedRole] = useState(user?.role as USER_ROLE);
   useEffect(() => {
@@ -40,12 +40,11 @@ const User: NextPage = () => {
     setSelectedRole(user.role);
   }, [user]);
   const { mutateAsync: updateRole, status: roleStatus } =
-    trpc.users.updateRole.useMutation({
+    trpc.admin.users.updateRole.useMutation({
       onSuccess: async (user) => {
         setSelectedRole(user.role);
         refetch();
-        roleStatus === "success" &&
-          toast.success("User role updated!", { toastId: "editRoleSuccess" });
+        roleStatus === "success" && toast.success("User role updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "editRoleError" });
@@ -53,23 +52,28 @@ const User: NextPage = () => {
     });
   // update user's status
   const { mutateAsync: updateStatus, status: activeStatus } =
-    trpc.users.updateStatus.useMutation({
+    trpc.admin.users.updateStatus.useMutation({
       onMutate: async ({ id }) => {
         if (session.data?.user?.id === id) {
-          return toast.error(`You can't activate yourself!`, {
-            toastId: "toggleUserSessionError",
-          });
+          return;
         }
-        toast.success("User status updated!", { toastId: "toggleUserSuccess" });
+        if (user?.role !== USER_ROLE.ADMIN) {
+          return;
+        }
+        toast.success("User status updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "toggleUserError" });
       },
     });
   // delete user
-  const { mutateAsync: deleteUser } = trpc.users.delete.useMutation({
-    onMutate: async () => {
+  const { mutateAsync: deleteUser } = trpc.admin.users.delete.useMutation({
+    onMutate: async (id) => {
+      if (session.data?.user?.id === id) {
+        return;
+      }
       toast.success("User deleted!", { toastId: "deleteUserSuccess" });
+      await router.push("/dashboard/users");
     },
     onError: async (e) => {
       toast.error(e.message, { toastId: "deleteUserError" });
@@ -116,6 +120,7 @@ const User: NextPage = () => {
                     setSelectedRole(role);
                     updateRole({ id, role });
                   }}
+                  disabled={session.data?.user?.id === id}
                 >
                   <div className="relative mt-1">
                     <Listbox.Button className={styles.selectButton}>
@@ -179,6 +184,7 @@ const User: NextPage = () => {
                   aria-label={`update user's active status`}
                   intent="primary"
                   onClick={() => updateStatus({ id, active: user.active })}
+                  disabled={session.data?.user?.id === id}
                 >
                   {activeStatus === "loading"
                     ? "Loading..."
@@ -188,8 +194,9 @@ const User: NextPage = () => {
                 </Button>
                 <Button
                   aria-label={`delete user`}
-                  intent="primary"
+                  intent="danger"
                   onClick={() => deleteUser(id)}
+                  disabled={session.data?.user?.id === id}
                 >
                   Delete
                 </Button>
@@ -212,7 +219,7 @@ export default User;
 const UserDetails = ({
   user,
 }: {
-  user: RouterOutputs["user"]["findUserById"];
+  user: RouterOutputs["admin"]["users"]["getOne"];
 }) => {
   const currentUser = [
     {

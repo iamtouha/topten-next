@@ -12,7 +12,7 @@ const Button = ({ intent, children, className, ...btnProps }: ButtonProps) => {
   return (
     <button
       aria-label={`${intent} button`}
-      className={`w-fit rounded-none px-3.5 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-80 focus:outline-none active:opacity-100 md:text-sm ${
+      className={`w-fit rounded-none px-3.5 py-2 text-xs font-semibold text-white transition-opacity focus:outline-none enabled:hover:opacity-80 enabled:active:opacity-100 disabled:cursor-not-allowed md:text-sm ${
         intent === "primary"
           ? "bg-primary-700"
           : intent === "secondary"
