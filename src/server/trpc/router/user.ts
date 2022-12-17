@@ -83,9 +83,35 @@ export const userRouter = router({
           message: `No user with id: ${id}`,
         });
       }
-      return prisma.user.update({
+      return await prisma.user.update({
         where: { id },
         data: { role },
+      });
+    }),
+
+  toggleUser: protectedProcedure
+    .input(z.object({ id: z.string(), active: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { id, active } = input;
+      if (session.user.role !== USER_ROLE.SUPER_ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only super admins can control user state",
+        });
+      }
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No user with id: ${id}`,
+        });
+      }
+      return await prisma.user.update({
+        where: { id },
+        data: { active },
       });
     }),
 });

@@ -1,5 +1,6 @@
-import { trpc, type RouterOutputs } from "@/utils/trpc";
 import styles from "@/styles/dashboard/user.module.css";
+import { trpc, type RouterOutputs } from "@/utils/trpc";
+import { formatRole } from "@/utils/formatStrings";
 import { Listbox, Transition } from "@headlessui/react";
 import { USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
@@ -46,6 +47,12 @@ const User: NextPage = () => {
     },
   });
 
+  const { mutateAsync: toggleUser } = trpc.user.toggleUser.useMutation({
+    onMutate: async ({ id, active }) => {
+      toast.success("User state updated");
+    },
+  });
+
   // conditional renders
   if (status === "loading") {
     return <Loader className="min-h-screen container-res" />;
@@ -64,22 +71,29 @@ const User: NextPage = () => {
       <Head>
         <title>User | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-sm container-res">
+      <main className={styles.wrapper}>
         {user ? (
           <div className="grid gap-10">
             <UserDetails user={user} />
             <div className="items-center justify-center">
-              <p className="text-center text-base font-medium text-success md:text-lg">
-                Edit details
-              </p>
-              <div className="mt-5 flex flex-col items-center justify-center gap-2.5">
+              <p className={styles.richTitle}>Edit user</p>
+              <div className="mt-2 flex items-center gap-2.5">
                 <SelectBox
-                  intent="editRole"
                   id={id}
                   selected={selectedRole}
                   setSelected={setSelectedRole}
                   options={Object.values(USER_ROLE)}
                   editRole={editRole}
+                />
+                <input
+                  aria-label="toggle user active state"
+                  id="userState"
+                  type="checkbox"
+                  className="focus:ring-none cursor-pointer rounded-full border-2 bg-transparent"
+                  checked={user.active}
+                  onChange={(e) => {
+                    const checked = e.currentTarget.checked;
+                  }}
                 />
               </div>
             </div>
@@ -110,11 +124,7 @@ const UserDetails = ({
         { key: "Email", value: user?.email },
         {
           key: "Role",
-          value: ((user?.role
-            .replace(/_/g, " ")
-            .charAt(0)
-            .toUpperCase() as string) +
-            user?.role.replace(/_/g, " ").slice(1).toLowerCase()) as string,
+          value: formatRole(user?.role),
         },
         {
           key: "Created at",
@@ -148,9 +158,7 @@ const UserDetails = ({
     <div className="flex flex-wrap justify-between gap-5 pt-5">
       {currentUser.map((userItem, i) => (
         <div key={i} className="flex flex-col gap-2.5">
-          <p className="text-base font-medium text-success md:text-lg">
-            {userItem.head}
-          </p>
+          <p className={styles.richTitle}>{userItem.head}</p>
           <>
             {userItem.body.map((userbody, j) => (
               <div key={j} className="flex gap-2">
@@ -171,18 +179,14 @@ const UserDetails = ({
 
 // SelectBox
 type SelectBoxProps = {
-  intent: "editRole" | "blockUser";
   id: string;
-  selected: USER_ROLE | string;
-  setSelected:
-    | Dispatch<SetStateAction<"SUPER_ADMIN" | "ADMIN" | "USER">>
-    | Dispatch<SetStateAction<string>>;
+  selected: USER_ROLE;
+  setSelected: Dispatch<SetStateAction<USER_ROLE>>;
   options: string[];
   editRole: ({ id, role }: { id: string; role: USER_ROLE }) => void;
 };
 
 const SelectBox = ({
-  intent,
   id,
   selected,
   setSelected,
@@ -192,20 +196,16 @@ const SelectBox = ({
   return (
     <Listbox
       as="div"
-      className="w-72"
+      className="w-48"
       value={selected ?? ""}
-      onChange={
-        intent === "editRole"
-          ? (role: USER_ROLE) => {
-              setSelected(role);
-              editRole({ id, role });
-            }
-          : (value) => console.log(value)
-      }
+      onChange={(role: USER_ROLE) => {
+        setSelected(role);
+        editRole({ id, role });
+      }}
     >
       <div className="relative mt-1">
-        <Listbox.Button className="relative mt-1 w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-          <span className="block truncate">{selected}</span>
+        <Listbox.Button className={styles.selectButton}>
+          <span className="block truncate">{formatRole(selected)}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronUpDownIcon
               className="h-5 w-5 text-gray-400"
@@ -219,12 +219,12 @@ const SelectBox = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Listbox.Options className={styles.options}>
             {options.map((option, i) => (
               <Listbox.Option
                 key={i}
                 className={({ active }) =>
-                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                  `${styles.option} ${
                     active ? "bg-amber-100 text-amber-900" : "text-gray-900"
                   }`
                 }
@@ -237,7 +237,7 @@ const SelectBox = ({
                         selected ? "font-medium" : "font-normal"
                       }`}
                     >
-                      {option}
+                      {formatRole(option)}
                     </span>
                     {selected ? (
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">

@@ -1,10 +1,15 @@
+.wrapper {
+  @apply min-h-screen max-w-screen-sm container-res;
+}
+.richTitle {
+  @apply text-base font-medium text-success md:text-lg;
+}
 .selectButton {
-  @apply relative w-full min-w-[7rem] cursor-default rounded-lg bg-[#E2E2EA] py-1.5 pl-3 pr-10 text-left text-xs shadow-sm ring-1 ring-gray-300 md:text-sm;
-  @apply focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-violet-300;
+  @apply relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md ring-1 ring-gray-300 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm;
 }
 .options {
   @apply absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm;
 }
 .option {
-  @apply relative cursor-default select-none py-2 px-4 text-xs md:text-sm;
+  @apply relative cursor-default select-none py-2 pl-10 pr-4;
 }

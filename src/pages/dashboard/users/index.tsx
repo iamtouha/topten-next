@@ -1,4 +1,5 @@
 import { trpc } from "@/utils/trpc";
+import { formatRole } from "@/utils/formatStrings";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo } from "react";
@@ -68,17 +69,7 @@ const Users: NextPage = () => {
           },
           {
             accessorKey: "role",
-            cell: (info) =>
-              ((info
-                .getValue()
-                .replace(/_/g, " ")
-                .charAt(0)
-                .toUpperCase() as string) +
-                info
-                  .getValue()
-                  .replace(/_/g, " ")
-                  .slice(1)
-                  .toLowerCase()) as string,
+            cell: (info) => formatRole(info.getValue()),
             header: () => <span>Role</span>,
             footer: (props) => props.column.id,
           },
