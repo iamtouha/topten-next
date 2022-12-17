@@ -4,20 +4,21 @@ import { formatRole } from "@/utils/formatStrings";
 import { Listbox, Transition } from "@headlessui/react";
 import { USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
-import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useIsMutating } from "@tanstack/react-query";
+import type { NextPageWithLayout } from "@/pages/_app";
 
 // components and images imports
 import Loader from "@/components/Loader";
 import Button from "@/components/Button";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 
-const User: NextPage = () => {
+const User: NextPageWithLayout = () => {
   // userId
   const router = useRouter();
   const id = router.query.id as string;
@@ -205,6 +206,8 @@ const User: NextPage = () => {
     </>
   );
 };
+
+User.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default User;
 

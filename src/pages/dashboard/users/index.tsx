@@ -1,17 +1,18 @@
 import { trpc } from "@/utils/trpc";
 import { formatRole } from "@/utils/formatStrings";
-import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { type User } from "@prisma/client";
+import type { NextPageWithLayout } from "@/pages/_app";
 
 // components imports
 import Table from "@/components/Table";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 
-const Users: NextPage = () => {
+const Users: NextPageWithLayout = () => {
   // trpc
   const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
     staleTime: 3000,
@@ -101,5 +102,7 @@ const Users: NextPage = () => {
     </>
   );
 };
+
+Users.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Users;
