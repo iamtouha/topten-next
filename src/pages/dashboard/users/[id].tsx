@@ -33,39 +33,48 @@ const User: NextPage = () => {
     error,
     refetch,
   } = trpc.user.findUserById.useQuery({ id });
-  // edit user's role
+  // update user's role
   const [selectedRole, setSelectedRole] = useState(user?.role as USER_ROLE);
   useEffect(() => {
     if (!user) return;
     setSelectedRole(user.role);
   }, [user]);
-  const { mutateAsync: editRole, status: editRoleStatus } =
-    trpc.user.editRole.useMutation({
+  const { mutateAsync: updateRole, status: roleStatus } =
+    trpc.users.updateRole.useMutation({
       onSuccess: async (user) => {
         setSelectedRole(user.role);
         refetch();
-        editRoleStatus === "loading" ||
-          toast.success("User role updated.", { toastId: "editRoleSuccess" });
+        roleStatus === "success" &&
+          toast.success("User role updated!", { toastId: "editRoleSuccess" });
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "editRoleError" });
       },
     });
-  // toggle user's active status
-  const { mutateAsync: toggleUser, status: toggleUserStatus } =
-    trpc.user.toggleUser.useMutation({
+  // update user's status
+  const { mutateAsync: updateStatus, status: activeStatus } =
+    trpc.users.updateStatus.useMutation({
       onMutate: async ({ id }) => {
         if (session.data?.user?.id === id) {
-          return toast.error(`You can't set your own's status`, {
+          return toast.error(`You can't activate yourself!`, {
             toastId: "toggleUserSessionError",
           });
         }
-        toast.success("User state updated", { toastId: "toggleUserSuccess" });
+        toast.success("User status updated!", { toastId: "toggleUserSuccess" });
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "toggleUserError" });
       },
     });
+  // delete user
+  const { mutateAsync: deleteUser } = trpc.users.delete.useMutation({
+    onMutate: async () => {
+      toast.success("User deleted!", { toastId: "deleteUserSuccess" });
+    },
+    onError: async (e) => {
+      toast.error(e.message, { toastId: "deleteUserError" });
+    },
+  });
   // refetch user onMutate
   const number = useIsMutating();
   useEffect(() => {
@@ -105,13 +114,13 @@ const User: NextPage = () => {
                   value={selectedRole ?? ""}
                   onChange={(role: USER_ROLE) => {
                     setSelectedRole(role);
-                    editRole({ id, role });
+                    updateRole({ id, role });
                   }}
                 >
                   <div className="relative mt-1">
                     <Listbox.Button className={styles.selectButton}>
                       <span className="block truncate">
-                        {editRoleStatus === "loading"
+                        {roleStatus === "loading"
                           ? "Loading..."
                           : selectedRole && formatRole(selectedRole)}
                       </span>
@@ -167,17 +176,22 @@ const User: NextPage = () => {
                   </div>
                 </Listbox>
                 <Button
-                  aria-label={`toggle user's active status`}
+                  aria-label={`update user's active status`}
                   intent="primary"
-                  onClick={() => {
-                    toggleUser({ id, active: user.active });
-                  }}
+                  onClick={() => updateStatus({ id, active: user.active })}
                 >
-                  {toggleUserStatus === "loading"
+                  {activeStatus === "loading"
                     ? "Loading..."
                     : user.active
                     ? "Inactive"
                     : "Active"}
+                </Button>
+                <Button
+                  aria-label={`delete user`}
+                  intent="primary"
+                  onClick={() => deleteUser(id)}
+                >
+                  Delete
                 </Button>
               </div>
             </div>

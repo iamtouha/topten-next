@@ -13,16 +13,12 @@ import Loader from "@/components/Loader";
 
 const Users: NextPage = () => {
   // trpc
-  const {
-    data: users,
-    status,
-    refetch,
-  } = trpc.user.getAllUsers.useQuery(undefined, {
+  const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
     staleTime: 3000,
   });
 
   // table column
-  const profileColumns = useMemo<ColumnDef<User, any>[]>(
+  const columns = useMemo<ColumnDef<User, any>[]>(
     () => [
       {
         header: "User profile",
@@ -99,11 +95,7 @@ const Users: NextPage = () => {
         {status === "loading" ? (
           <Loader />
         ) : (
-          <Table
-            intent="users"
-            tableData={users ?? []}
-            columns={profileColumns}
-          />
+          <Table intent="users" tableData={users ?? []} columns={columns} />
         )}
       </main>
     </>

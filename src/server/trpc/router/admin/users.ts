@@ -134,7 +134,7 @@ export const usersAdminRouter = router({
 
       const user = await ctx.prisma.user.update({
         where: { id: input.id },
-        data: { active: input.active },
+        data: { active: !input.active },
       });
       return user;
     }),
