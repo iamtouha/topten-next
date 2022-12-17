@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 import LoadingScreen from "../LoadingScreen";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession({ required: true });
@@ -23,6 +24,24 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
 
   if (status === "loading" || !session.user?.profileId) {
     return <LoadingScreen />;
+  }
+
+  if (!session.user.active) {
+    return (
+      <div className="grid h-screen place-items-center">
+        <div className="w-96 text-center">
+          <ExclamationTriangleIcon
+            width={64}
+            height={64}
+            className="mx-auto mb-2 text-danger"
+          />
+          <h1 className="text-lg font-bold">
+            Your account is not active. <br />
+            Please contact the administration.
+          </h1>
+        </div>
+      </div>
+    );
   }
 
   return (
