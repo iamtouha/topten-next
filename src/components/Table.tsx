@@ -18,10 +18,10 @@ import {
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
 import type { Product, User } from "@prisma/client";
-
-// images import
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Router from "next/router";
+
+// images imports
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item

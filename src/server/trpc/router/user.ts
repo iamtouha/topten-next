@@ -71,11 +71,8 @@ export const userRouter = router({
       if (session.user.role !== USER_ROLE.SUPER_ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Forbidden action",
+          message: "Only super admins can edit user role",
         });
-      }
-      if (session.user.id === id) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Bad action" });
       }
       const user = await prisma.user.findUnique({
         where: { id },
