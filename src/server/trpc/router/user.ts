@@ -29,6 +29,36 @@ export const userRouter = router({
       });
     }),
 
+  all: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { limit, cursor } = input;
+      const count = limit ?? 10;
+
+      const users = await prisma.user.findMany({
+        take: count + 1,
+        where: {},
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { createdAt: "desc" },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (users.length > count) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const nextItem = users.pop()!;
+        nextCursor = nextItem.id;
+      }
+      return {
+        users: users.reverse(),
+        nextCursor,
+      };
+    }),
+
   getAllUsers: protectedProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
     const users = await prisma.user.findMany({

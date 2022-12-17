@@ -1,22 +1,26 @@
 import { trpc } from "@/utils/trpc";
 import { formatRole } from "@/utils/formatStrings";
+import { type NextPage } from "next";
 import Head from "next/head";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { type User } from "@prisma/client";
-import type { NextPageWithLayout } from "@/pages/_app";
 
 // components imports
 import Table from "@/components/Table";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
-import DashboardLayout from "@/components/layout/DashboardLayout";
 
-const Users: NextPageWithLayout = () => {
+const Users: NextPage = () => {
   // trpc
-  const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
-    staleTime: 3000,
-  });
+  const { data: queryData, status } = trpc.user.all.useInfiniteQuery(
+    { limit: 10 },
+    {
+      getPreviousPageParam(lastPage) {
+        return lastPage.nextCursor;
+      },
+    }
+  );
 
   // table column
   const columns = useMemo<ColumnDef<User, any>[]>(
@@ -92,17 +96,26 @@ const Users: NextPageWithLayout = () => {
       <Head>
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container min-h-screen px-2 pt-5 pb-10">
+      <main className="mx-auto min-h-screen w-[95vw] max-w-screen-xl px-2 pt-5 pb-10">
         {status === "loading" ? (
           <Loader />
         ) : (
-          <Table intent="users" tableData={users ?? []} columns={columns} />
+          // <Table intent="users" tableData={users ?? []} columns={columns} />
+          <Fragment>
+            {queryData?.pages.map((page, i) => (
+              <div key={page.users[0]?.id || i}>
+                {page.users.map((user) => (
+                  <div key={user.id}>
+                    <p>{user.name}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </Fragment>
         )}
       </main>
     </>
   );
 };
-
-Users.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Users;
