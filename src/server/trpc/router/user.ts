@@ -32,23 +32,21 @@ export const userRouter = router({
   all: protectedProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
+        limit: z.number().min(1).max(40).nullish(),
         cursor: z.string().nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const { prisma } = ctx;
-      const { limit, cursor } = input;
-      const count = limit ?? 10;
+      const limit = input.limit ?? 10;
 
-      const users = await prisma.user.findMany({
-        take: count + 1,
+      const users = await ctx.prisma.user.findMany({
+        take: limit + 1,
         where: {},
-        cursor: cursor ? { id: cursor } : undefined,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
         orderBy: { createdAt: "desc" },
       });
-      let nextCursor: typeof cursor | undefined = undefined;
-      if (users.length > count) {
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (users.length > limit) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const nextItem = users.pop()!;
         nextCursor = nextItem.id;

@@ -13,14 +13,9 @@ import Loader from "@/components/Loader";
 
 const Users: NextPage = () => {
   // trpc
-  const { data: queryData, status } = trpc.user.all.useInfiniteQuery(
-    { limit: 10 },
-    {
-      getPreviousPageParam(lastPage) {
-        return lastPage.nextCursor;
-      },
-    }
-  );
+  const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
+    staleTime: 3000,
+  });
 
   // table column
   const columns = useMemo<ColumnDef<User, any>[]>(
@@ -96,22 +91,11 @@ const Users: NextPage = () => {
       <Head>
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="mx-auto min-h-screen w-[95vw] max-w-screen-xl px-2 pt-5 pb-10">
+      <main className="mx-auto min-h-screen w-[98vw] max-w-screen-2xl px-2 pt-5 pb-10">
         {status === "loading" ? (
           <Loader />
         ) : (
-          // <Table intent="users" tableData={users ?? []} columns={columns} />
-          <Fragment>
-            {queryData?.pages.map((page, i) => (
-              <div key={page.users[0]?.id || i}>
-                {page.users.map((user) => (
-                  <div key={user.id}>
-                    <p>{user.name}</p>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </Fragment>
+          <Table intent="users" tableData={users ?? []} columns={columns} />
         )}
       </main>
     </>
