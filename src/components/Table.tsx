@@ -21,6 +21,7 @@ import Router from "next/router";
 
 // images imports
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { trpc } from "@/utils/trpc";
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -35,17 +36,25 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-type TableProps<TData extends object> = {
+type TableProps<TData> = {
   intent: "users" | "products";
-  query: any;
+  data?: TData[];
   columns: ColumnDef<TData, any>[];
 };
 
 const Table = <TData extends object>({
   intent,
-  query,
   columns,
 }: TableProps<TData>) => {
+  // query
+  const query = trpc.user.all.useInfiniteQuery(
+    { limit: 1 },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+
+  // default data
   const defaultData = useMemo(() => [], []);
   // filters
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -53,7 +62,7 @@ const Table = <TData extends object>({
   // pagination
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 1,
   });
   const pagination = useMemo(
     () => ({
@@ -195,10 +204,7 @@ const Table = <TData extends object>({
               query.fetchNextPage();
               table.nextPage();
             }}
-            // disabled={
-            //   // !table.getCanNextPage() ||
-            //   !query.hasNextPage || query.isFetchingNextPage
-            // }
+            // disabled={!query.hasNextPage || query.isFetchingNextPage}
           >
             <ChevronRightIcon
               className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"

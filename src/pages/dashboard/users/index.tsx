@@ -4,7 +4,7 @@ import { type User } from "@prisma/client";
 import { type ColumnDef } from "@tanstack/react-table";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 
 // components imports
 import Loader from "@/components/Loader";
@@ -13,11 +13,9 @@ import dayjs from "dayjs";
 
 const Users: NextPage = () => {
   const usersQuery = trpc.user.all.useInfiniteQuery(
-    { limit: 1 },
+    { limit: 2 },
     {
-      getNextPageParam(nextPage) {
-        return nextPage.nextCursor;
-      },
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
 
@@ -95,11 +93,22 @@ const Users: NextPage = () => {
       <Head>
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="mx-auto min-h-screen w-[98vw] max-w-screen-2xl px-2 pt-5 pb-10">
+      <main className="container mx-auto min-h-screen max-w-screen-2xl px-2 pt-5 pb-10">
         {usersQuery.status === "loading" ? (
           <Loader />
         ) : (
-          <Table intent="users" query={usersQuery} columns={columns} />
+          <>
+            <Table<User> intent="users" columns={columns} />
+            <Fragment>
+              {usersQuery.data?.pages.map((page, i) => (
+                <Fragment key={page.users[0]?.id || i}>
+                  {page.users.map((user) => (
+                    <p key={user.id}>{user.name}</p>
+                  ))}
+                </Fragment>
+              ))}
+            </Fragment>
+          </>
         )}
       </main>
     </>

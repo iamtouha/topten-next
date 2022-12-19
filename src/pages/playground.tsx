@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 // components imports
 import Button from "@/components/Button";
 
-// data imports
 const Playground: NextPage = () => {
   // table columns
   const productColumns = useMemo<ColumnDef<Product, any>[]>(

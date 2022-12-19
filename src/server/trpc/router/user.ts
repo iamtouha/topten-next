@@ -29,17 +29,6 @@ export const userRouter = router({
       });
     }),
 
-  getAllUsers: protectedProcedure.query(async ({ ctx }) => {
-    const { prisma } = ctx;
-    const users = await prisma.user.findMany({
-      include: { profile: true },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return users;
-  }),
-
   all: protectedProcedure
     .input(
       z.object({
@@ -49,13 +38,18 @@ export const userRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 10;
-
       const users = await ctx.prisma.user.findMany({
         include: { profile: true },
         take: limit + 1,
         where: {},
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        orderBy: { createdAt: "desc" },
+        cursor: input.cursor
+          ? {
+              id: input.cursor,
+            }
+          : undefined,
+        orderBy: {
+          createdAt: "asc",
+        },
       });
       let nextCursor: typeof input.cursor | undefined = undefined;
       if (users.length > limit) {
