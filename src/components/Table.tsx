@@ -37,25 +37,23 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 type TableProps<TData extends object> = {
   intent: "users" | "products";
-  query?: any;
-  data?: TData[];
+  query: any;
   columns: ColumnDef<TData, any>[];
 };
 
 const Table = <TData extends object>({
   intent,
   query,
-  data,
   columns,
 }: TableProps<TData>) => {
+  const defaultData = useMemo(() => [], []);
   // filters
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-
   // pagination
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
   const pagination = useMemo(
     () => ({
@@ -66,9 +64,9 @@ const Table = <TData extends object>({
   );
 
   const table = useReactTable({
-    data: query ? query.data?.pages[pageIndex]?.users : data,
+    data: query.data?.pages[pageIndex]?.users ?? defaultData,
     columns,
-    pageCount: query ? query.data?.pages.length : -1,
+    pageCount: query.data?.pages.length ?? -1,
     filterFns: {
       fuzzy: fuzzyFilter,
     },
@@ -182,9 +180,8 @@ const Table = <TData extends object>({
             className="group grid aspect-square w-8 place-items-center border border-neutral-500"
             onClick={() => {
               table.previousPage();
-              query && query.fetchPreviousPage();
             }}
-            // disabled={!table.getCanPreviousPage()}
+            disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeftIcon
               className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
@@ -195,10 +192,13 @@ const Table = <TData extends object>({
             aria-label="paginate forward by 1 page"
             className="group grid aspect-square w-8 place-items-center border border-neutral-500"
             onClick={() => {
+              query.fetchNextPage();
               table.nextPage();
-              query && query.fetchNextPage();
             }}
-            // disabled={!table.getCanNextPage()}
+            // disabled={
+            //   // !table.getCanNextPage() ||
+            //   !query.hasNextPage || query.isFetchingNextPage
+            // }
           >
             <ChevronRightIcon
               className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
@@ -237,6 +237,7 @@ const Table = <TData extends object>({
               </option>
             ))}
           </select>
+          <p>{query.isFetching ? "Loading..." : null}</p>
         </div>
       </div>
     </section>

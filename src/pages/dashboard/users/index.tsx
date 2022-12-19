@@ -1,22 +1,22 @@
-import { trpc } from "@/utils/trpc";
 import { formatRole } from "@/utils/formatStrings";
+import { trpc } from "@/utils/trpc";
+import { type User } from "@prisma/client";
+import { type ColumnDef } from "@tanstack/react-table";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Fragment, useMemo } from "react";
-import { type ColumnDef } from "@tanstack/react-table";
-import { type User } from "@prisma/client";
+import { useMemo } from "react";
 
 // components imports
+import Loader from "@/components/Loader";
 import Table from "@/components/Table";
 import dayjs from "dayjs";
-import Loader from "@/components/Loader";
 
 const Users: NextPage = () => {
   const usersQuery = trpc.user.all.useInfiniteQuery(
     { limit: 1 },
     {
-      getPreviousPageParam(lastPage) {
-        return lastPage.nextCursor;
+      getNextPageParam(nextPage) {
+        return nextPage.nextCursor;
       },
     }
   );
