@@ -207,12 +207,3 @@ enum POST {
   MANAGER
   OFFICER
 }
-
-// playground
-model Post {
-  id        String   @id @default(uuid())
-  title     String
-  text      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-}

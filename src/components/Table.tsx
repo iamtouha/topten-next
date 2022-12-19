@@ -6,18 +6,17 @@ import {
   type ColumnFiltersState,
   type FilterFn,
   type ColumnDef,
+  type PaginationState,
   useReactTable,
   getCoreRowModel,
   getFilteredRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
-  getPaginationRowModel,
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
-import type { Product, User } from "@prisma/client";
 import Router from "next/router";
 
 // images imports
@@ -36,27 +35,47 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-type TableProps = {
+type TableProps<TData extends object> = {
   intent: "users" | "products";
-  tableData: User[] | Product[];
-  columns: ColumnDef<User, any>[] | ColumnDef<Product, any>[];
+  query?: any;
+  data?: TData[];
+  columns: ColumnDef<TData, any>[];
 };
 
-const Table = ({ intent, tableData, columns }: TableProps) => {
+const Table = <TData extends object>({
+  intent,
+  query,
+  data,
+  columns,
+}: TableProps<TData>) => {
+  // filters
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const [data, setData] = useState(() => tableData);
+  // pagination
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
 
   const table = useReactTable({
-    data,
+    data: query ? query.data?.pages[pageIndex]?.users : data,
     columns,
+    pageCount: query ? query.data?.pages.length : -1,
     filterFns: {
       fuzzy: fuzzyFilter,
     },
     state: {
       columnFilters,
       globalFilter,
+      pagination,
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -64,10 +83,11 @@ const Table = ({ intent, tableData, columns }: TableProps) => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    manualPagination: true,
     debugTable: true,
     debugHeaders: true,
     debugColumns: false,
@@ -77,7 +97,9 @@ const Table = ({ intent, tableData, columns }: TableProps) => {
     <section aria-label={`${intent} table`}>
       <div className={styles.wrapper}>
         <div className={styles.head}>
-          <h1 className={styles.title}>Total {`${intent} (${data.length})`}</h1>
+          <h1 className={styles.title}>
+            Total {`${intent} (${table.getRowModel().rows.length})`}
+          </h1>
           <input
             type="text"
             placeholder={`Search ${intent}...`}
@@ -158,8 +180,11 @@ const Table = ({ intent, tableData, columns }: TableProps) => {
           <button
             aria-label="paginate back by 1 page"
             className="group grid aspect-square w-8 place-items-center border border-neutral-500"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => {
+              table.previousPage();
+              query && query.fetchPreviousPage();
+            }}
+            // disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeftIcon
               className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
@@ -169,8 +194,11 @@ const Table = ({ intent, tableData, columns }: TableProps) => {
           <button
             aria-label="paginate forward by 1 page"
             className="group grid aspect-square w-8 place-items-center border border-neutral-500"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => {
+              table.nextPage();
+              query && query.fetchNextPage();
+            }}
+            // disabled={!table.getCanNextPage()}
           >
             <ChevronRightIcon
               className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"

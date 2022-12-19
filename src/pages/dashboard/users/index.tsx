@@ -12,10 +12,14 @@ import dayjs from "dayjs";
 import Loader from "@/components/Loader";
 
 const Users: NextPage = () => {
-  // trpc
-  const { data: users, status } = trpc.user.getAllUsers.useQuery(undefined, {
-    staleTime: 3000,
-  });
+  const usersQuery = trpc.user.all.useInfiniteQuery(
+    { limit: 1 },
+    {
+      getPreviousPageParam(lastPage) {
+        return lastPage.nextCursor;
+      },
+    }
+  );
 
   // table column
   const columns = useMemo<ColumnDef<User, any>[]>(
@@ -92,10 +96,10 @@ const Users: NextPage = () => {
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
       <main className="mx-auto min-h-screen w-[98vw] max-w-screen-2xl px-2 pt-5 pb-10">
-        {status === "loading" ? (
+        {usersQuery.status === "loading" ? (
           <Loader />
         ) : (
-          <Table intent="users" tableData={users ?? []} columns={columns} />
+          <Table intent="users" query={usersQuery} columns={columns} />
         )}
       </main>
     </>
