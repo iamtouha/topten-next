@@ -29,7 +29,11 @@ const Account: NextPage = () => {
               <p className="text-sm font-semibold md:text-base">Email:</p>
               <p className="text-sm md:text-base">{session.user?.email}</p>
             </div>
-            <Button intent="primary" onClick={() => signOut()}>
+            <Button
+              aria-label="sign out"
+              className="bg-red-500"
+              onClick={() => signOut()}
+            >
               Sign out
             </Button>
           </div>

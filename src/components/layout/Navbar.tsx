@@ -106,12 +106,15 @@ const Navbar = () => {
               </p>
             ) : (
               <Link href={"/api/auth/signin"}>
-                <Button intent="primary">Sign in</Button>
+                <Button aria-label="sign in" className="bg-primary-700">
+                  Sign in
+                </Button>
               </Link>
             )}
           </div>
           <button
             aria-label="toggle mobile-menu"
+            aria-pressed={isMobile}
             onClick={() => setIsMobile(!isMobile)}
           >
             {isMobile ? (

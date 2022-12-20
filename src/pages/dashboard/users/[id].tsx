@@ -183,7 +183,7 @@ const User: NextPageWithLayout = () => {
                 </Listbox>
                 <Button
                   aria-label={`update user's active status`}
-                  intent="primary"
+                  className="bg-primary-700"
                   onClick={() => updateStatus({ id, active: user.active })}
                   disabled={session.data?.user?.id === id}
                 >
@@ -195,7 +195,7 @@ const User: NextPageWithLayout = () => {
                 </Button>
                 <Button
                   aria-label={`delete user`}
-                  intent="danger"
+                  className="bg-red-500"
                   onClick={() => deleteUser(id)}
                   disabled={session.data?.user?.id === id}
                 >

@@ -49,7 +49,8 @@ const Playground: NextPage = () => {
       </Head>
       <main className="flex min-h-screen max-w-screen-xl flex-col gap-8 py-10 container-res">
         <Button
-          intent="primary"
+          aria-label="show toast"
+          className="bg-primary-700"
           onClick={() =>
             toast.success("Do a kickflip.", { toastId: "kickflip" })
           }

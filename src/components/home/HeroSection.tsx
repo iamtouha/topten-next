@@ -15,7 +15,9 @@ const HeroSection = () => {
           <p className="mb-2 text-sm text-description md:text-base">
             A convenient service for your agro needs
           </p>
-          <Button intent="primary">Explore</Button>
+          <Button aria-label="explore" className="bg-primary-700">
+            Explore
+          </Button>
         </div>
         <Image
           src={"/img/hero-section.webp"}

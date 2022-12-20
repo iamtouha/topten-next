@@ -26,7 +26,7 @@
   @apply cursor-pointer font-medium text-neutral-800 transition hover:text-opacity-75 active:text-opacity-100;
 }
 .activeLink {
-  @apply text-green-700;
+  @apply text-green-500;
 }
 .endColumn {
   @apply grid place-items-center;
