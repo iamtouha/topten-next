@@ -47,12 +47,14 @@ const Table = <TData extends object>({
   columns,
 }: TableProps<TData>) => {
   // query
+  const [limit, setLimit] = useState(2);
   const query = trpc.user.all.useInfiniteQuery(
-    { limit: 1 },
+    { limit: limit },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
+
   // default data
   const defaultData = useMemo(() => [], []);
   // filters
@@ -61,7 +63,7 @@ const Table = <TData extends object>({
   // pagination
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 1,
+    pageSize: limit,
   });
   const pagination = useMemo(
     () => ({
@@ -74,7 +76,7 @@ const Table = <TData extends object>({
   const table = useReactTable({
     data: query.data?.pages[pageIndex]?.users ?? defaultData,
     columns,
-    pageCount: query.data?.pages.length ?? -1,
+    pageCount: Number(query.data?.pages.length) + 1 ?? -1,
     filterFns: {
       fuzzy: fuzzyFilter,
     },
@@ -203,7 +205,11 @@ const Table = <TData extends object>({
               query.fetchNextPage();
               table.nextPage();
             }}
-            // disabled={!query.hasNextPage || query.isFetchingNextPage}
+            disabled={
+              !query.hasNextPage &&
+              table.getState().pagination.pageIndex + 1 ===
+                table.getPageCount() - 1
+            }
           >
             <ChevronRightIcon
               className="aspect-square w-5 text-black transition group-enabled:hover:w-6 group-enabled:active:w-5 group-disabled:cursor-not-allowed"
@@ -214,7 +220,8 @@ const Table = <TData extends object>({
             <div>Page</div>
             <strong>
               {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+              {/* previously added +1 should be subtracted  */}
+              {table.getPageCount() - 1}
             </strong>
           </span>
           <span className="hidden items-center gap-1 md:flex">
@@ -231,12 +238,12 @@ const Table = <TData extends object>({
           </span>
           <select
             className="py-1"
-            value={table.getState().pagination.pageSize}
+            value={limit}
             onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
+              setLimit(Number(e.target.value));
             }}
           >
-            {[10, 20, 30, 40].map((pageSize) => (
+            {[1, 2, 3, 4].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 Show {pageSize}
               </option>

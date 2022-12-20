@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 const Users: NextPage = () => {
   // trpc
   const usersQuery = trpc.user.all.useInfiniteQuery(
-    { limit: 2 },
+    { limit: 1 },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }

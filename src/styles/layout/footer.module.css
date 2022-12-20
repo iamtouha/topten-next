@@ -2,7 +2,7 @@
   @apply w-full bg-layout;
 }
 .wrapper {
-  @apply py-10 container-res;
+  @apply max-w-screen-xl py-10 container-res;
 }
 .column {
   @apply mx-auto grid place-items-center gap-2.5;
