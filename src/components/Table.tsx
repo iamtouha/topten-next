@@ -49,12 +49,11 @@ const Table = <TData extends object>({
   // query
   const [limit, setLimit] = useState(2);
   const query = trpc.user.all.useInfiniteQuery(
-    { limit: limit },
+    { limit },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-
   // default data
   const defaultData = useMemo(() => [], []);
   // filters

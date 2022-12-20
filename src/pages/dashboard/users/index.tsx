@@ -2,14 +2,14 @@ import { formatRole } from "@/utils/formatStrings";
 import { trpc } from "@/utils/trpc";
 import { type User } from "@prisma/client";
 import { type ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
 // components imports
 import Loader from "@/components/Loader";
 import Table from "@/components/Table";
-import dayjs from "dayjs";
 
 const Users: NextPage = () => {
   // trpc
@@ -89,6 +89,8 @@ const Users: NextPage = () => {
     []
   );
 
+  console.log(usersQuery);
+
   return (
     <>
       <Head>
@@ -98,18 +100,7 @@ const Users: NextPage = () => {
         {usersQuery.status === "loading" ? (
           <Loader />
         ) : (
-          <>
-            <Table<User> intent="users" columns={columns} />
-            <Fragment>
-              {usersQuery.data?.pages.map((page, i) => (
-                <Fragment key={page.users[0]?.id || i}>
-                  {page.users.map((user) => (
-                    <p key={user.id}>{user.name}</p>
-                  ))}
-                </Fragment>
-              ))}
-            </Fragment>
-          </>
+          <Table<User> intent="users" columns={columns} />
         )}
       </main>
     </>
