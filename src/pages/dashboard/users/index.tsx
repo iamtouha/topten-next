@@ -89,8 +89,6 @@ const Users: NextPage = () => {
     []
   );
 
-  console.log(usersQuery);
-
   return (
     <>
       <Head>
