@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import styles from "@/styles/table.module.css";
+import { trpc } from "@/utils/trpc";
 import {
   type Column,
   type Table,
@@ -21,7 +22,6 @@ import Router from "next/router";
 
 // images imports
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
-import { trpc } from "@/utils/trpc";
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -53,7 +53,6 @@ const Table = <TData extends object>({
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-
   // default data
   const defaultData = useMemo(() => [], []);
   // filters

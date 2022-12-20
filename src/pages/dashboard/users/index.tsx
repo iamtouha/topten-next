@@ -12,6 +12,7 @@ import Table from "@/components/Table";
 import dayjs from "dayjs";
 
 const Users: NextPage = () => {
+  // trpc
   const usersQuery = trpc.user.all.useInfiniteQuery(
     { limit: 2 },
     {

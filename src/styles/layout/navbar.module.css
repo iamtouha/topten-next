@@ -14,7 +14,7 @@
   @apply fixed inset-0 h-full w-full flex-col items-center justify-between gap-7 whitespace-nowrap bg-transparent pt-10 text-sm transition-transform duration-500 md:text-base lg:relative lg:h-auto lg:w-auto lg:flex-row lg:pt-0 lg:pl-0;
 }
 .mobileLinks {
-  @apply inset-0 top-[4.9rem] flex translate-x-full items-center justify-center bg-gradient-to-r from-green-700 to-green-800 pb-28 lg:hidden;
+  @apply inset-0 top-[4.9rem] flex translate-x-full items-center justify-center bg-gradient-to-r from-violet-200 to-violet-300 pb-28 lg:hidden;
 }
 .mobileLinksActive {
   @apply translate-x-0;
@@ -23,10 +23,10 @@
   @apply hidden lg:flex;
 }
 .link {
-  @apply cursor-pointer font-medium text-neutral-200 transition hover:text-opacity-75 active:text-opacity-100 lg:text-neutral-700;
+  @apply cursor-pointer font-medium text-neutral-800 transition hover:text-opacity-75 active:text-opacity-100;
 }
 .activeLink {
-  @apply cursor-pointer font-bold text-neutral-50 transition hover:text-opacity-75 active:text-opacity-100 lg:text-neutral-800;
+  @apply text-green-700;
 }
 .endColumn {
   @apply grid place-items-center;
@@ -35,7 +35,7 @@
   @apply hidden lg:block;
 }
 .mobileButton {
-  @apply block aspect-square w-6 cursor-pointer text-black transition-transform hover:scale-110 active:scale-90 lg:hidden;
+  @apply block aspect-square w-7 cursor-pointer stroke-2 text-neutral-800 transition-opacity hover:opacity-80 active:opacity-100 lg:hidden;
 }
 .stopOverflowY {
   @apply overflow-y-hidden lg:overflow-y-auto;

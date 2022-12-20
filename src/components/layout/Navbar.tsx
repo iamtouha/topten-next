@@ -29,7 +29,7 @@ const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Change nav background onScroll
+  // change nav background onScroll
   useEffect(() => {
     const changeBg = () => {
       window.scrollY > 0 ? setIsScrolled(true) : setIsScrolled(false);
@@ -38,7 +38,7 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", changeBg);
   }, []);
 
-  // Stop overflowY when mobile-menu is opened
+  // stop overflowY when mobile-menu is opened
   useEffect(() => {
     const body = document.querySelector("body");
     const stopOverflowY = styles.stopOverflowY as string;
@@ -49,10 +49,10 @@ const Navbar = () => {
     return () => body?.classList.remove(stopOverflowY);
   }, [isMobile]);
 
-  // Add activeClass to activeLink
+  // add activeClass to activeLink
   const router = useRouter();
 
-  // Auth
+  // auth
   const { data: session, status } = useSession();
 
   return (
@@ -150,7 +150,7 @@ const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
               href={navLink.url}
               className={
                 router.pathname === navLink.url
-                  ? styles.activeLink
+                  ? `${styles.activeLink} ${styles.link}`
                   : styles.link
               }
             >
@@ -187,7 +187,7 @@ const DesktopLinks = ({ router }: { router: NextRouter }) => {
               href={navLink.url}
               className={
                 router.pathname === navLink.url
-                  ? styles.activeLink
+                  ? `${styles.activeLink} ${styles.link}`
                   : styles.link
               }
             >
