@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 // components imports
-import StaticLayout from "@/components/layout/StaticLayout";
+import StaticLayout from "@/components/layouts/StaticLayout";
 
 type InputFields = {
   fullName: string;

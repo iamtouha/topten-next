@@ -1,5 +1,5 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import { NextPageWithLayout } from "../_app";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { type NextPageWithLayout } from "../_app";
 
 const Dashboard: NextPageWithLayout = () => {
   return <div>Dashboard</div>;
