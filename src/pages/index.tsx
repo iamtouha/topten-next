@@ -3,7 +3,7 @@ import { type NextPageWithLayout } from "./_app";
 
 // components import
 import HeroSection from "@/components/home/HeroSection";
-import StaticLayout from "@/components/layout/StaticLayout";
+import StaticLayout from "@/components/layouts/StaticLayout";
 
 const Home: NextPageWithLayout = () => {
   return (

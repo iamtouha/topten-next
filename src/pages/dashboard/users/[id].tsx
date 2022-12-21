@@ -16,7 +16,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import Loader from "@/components/Loader";
 import Button from "@/components/Button";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const User: NextPageWithLayout = () => {
   // userId
@@ -28,12 +28,7 @@ const User: NextPageWithLayout = () => {
 
   // trpc
   const utils = trpc.useContext();
-  const {
-    data: user,
-    status,
-    error,
-    refetch,
-  } = trpc.admin.users.getOne.useQuery(id);
+  const { data: user, status, error } = trpc.admin.users.getOne.useQuery(id);
   // update user's role
   const [selectedRole, setSelectedRole] = useState(user?.role as USER_ROLE);
   useEffect(() => {
@@ -44,8 +39,7 @@ const User: NextPageWithLayout = () => {
     trpc.admin.users.updateRole.useMutation({
       onSuccess: async (user) => {
         setSelectedRole(user.role);
-        refetch();
-        roleStatus === "success" && toast.success("User role updated!");
+        toast.success("User role updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "editRoleError" });
@@ -58,10 +52,7 @@ const User: NextPageWithLayout = () => {
         if (session.data?.user?.id === id) {
           return;
         }
-        if (user?.role !== USER_ROLE.ADMIN) {
-          return;
-        }
-        toast.success("User status updated!");
+        activeStatus === "success" && toast.success("User status updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "toggleUserError" });
@@ -84,9 +75,9 @@ const User: NextPageWithLayout = () => {
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.user.findUserById.invalidate();
+      utils.admin.users.getOne.invalidate();
     }
-  }, [number, refetch, utils]);
+  }, [number, utils]);
 
   // conditional renders
   if (status === "loading") {
@@ -121,7 +112,7 @@ const User: NextPageWithLayout = () => {
                     setSelectedRole(role);
                     updateRole({ id, role });
                   }}
-                  disabled={session.data?.user?.id === id}
+                  disabled={session.data?.user?.id === id || !user.active}
                 >
                   <div className="relative mt-1">
                     <Listbox.Button className={styles.selectButton}>

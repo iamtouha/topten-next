@@ -7,7 +7,7 @@ import { trpc } from "../utils/trpc";
 import "@/styles/globals.css";
 
 // components imports
-import DefaultLayout from "@/components/layout/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ToastWrapper from "@/components/ToastWrapper";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
