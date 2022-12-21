@@ -7,7 +7,7 @@ import { Product, type User } from "@prisma/client";
 import type { NextPageWithLayout } from "@/pages/_app";
 
 import Loader from "@/components/Loader";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import CustomTable from "@/components/CustomTable";
 import Button from "@/components/Button";
 import Link from "next/link";
