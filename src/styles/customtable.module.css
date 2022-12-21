@@ -1,0 +1,20 @@
+.table,
+.table th,
+.table td {
+  @apply border-collapse border border-solid border-lowkey;
+}
+
+.table {
+  @apply w-full;
+}
+
+.tableHeader {
+  @apply px-4 pt-2 pb-3.5 text-left text-xs font-bold tracking-wide text-black md:text-sm;
+}
+.paginationbar {
+  @apply mt-5 flex w-full flex-wrap items-center gap-2 text-sm md:text-base;
+}
+
+.paginationBtn {
+  @apply grid aspect-square w-8 place-items-center border border-neutral-500;
+}

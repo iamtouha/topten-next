@@ -1,25 +1,23 @@
 import { trpc } from "@/utils/trpc";
-import { formatRole } from "@/utils/formatStrings";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import {
+import type {
   ColumnFiltersState,
   PaginationState,
   SortingState,
   VisibilityState,
-  type ColumnDef,
+  ColumnDef,
 } from "@tanstack/react-table";
-import { Product, type User } from "@prisma/client";
+import type { Product } from "@prisma/client";
 import type { NextPageWithLayout } from "@/pages/_app";
 
 // components imports
-import Table from "@/components/Table";
 import dayjs from "dayjs";
-import Loader from "@/components/Loader";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import CustomTable from "@/components/CustomTable";
 import Button from "@/components/Button";
 import Link from "next/link";
+import Router from "next/router";
 
 type fieldValue = string | undefined;
 const Products: NextPageWithLayout = () => {
@@ -44,7 +42,7 @@ const Products: NextPageWithLayout = () => {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,
         name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        size: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
+        size: columnFilters.find((f) => f.id === "size")?.value as fieldValue,
         sortBy: sorting[0]?.id as
           | "name"
           | "createdAt"
@@ -117,17 +115,24 @@ const Products: NextPageWithLayout = () => {
             columnVisibility,
             columnFilters,
           }}
-          itemsCount={data?.count}
-          isLoading={isLoading}
-          isRefetching={isRefetching}
-          isError={isError}
           setSorting={setSorting}
           setColumnFilters={setColumnFilters}
           setColumnVisibility={setColumnVisibility}
           setPagination={setPagination}
+          itemsCount={data?.count}
+          isLoading={isLoading}
+          isRefetching={isRefetching}
+          isError={isError}
           manualFiltering
           manualPagination
           manualSorting
+          rowHoverEffect
+          bodyRowProps={(row) => ({
+            onClick: () => {
+              const productId = row.getValue("id") as string;
+              Router.push("/dashboard/products/" + productId);
+            },
+          })}
         />
       </main>
     </>

@@ -25,9 +25,10 @@ import {
   getFacetedMinMaxValues,
   PaginationState,
   VisibilityState,
+  Row,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
-import styles from "@/styles/table.module.css";
+import style from "@/styles/customtable.module.css";
 
 interface Props<TData extends unknown, TValue = any> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,24 +53,17 @@ interface Props<TData extends unknown, TValue = any> {
   manualPagination?: boolean;
   itemsPerPageOptions?: number[];
   itemsCount?: number;
-  tableClassName?: string;
-  headerClassName?: string;
-  bodyClassName?: string;
-  footerClassName?: string;
   headerRowProps?: HTMLAttributes<HTMLTableRowElement>;
   headerCellProps?: HTMLAttributes<HTMLTableCellElement>;
-  bodyRowProps?: HTMLAttributes<HTMLTableRowElement>;
+  bodyRowProps?:
+    | ((row: Row<TData>) => HTMLAttributes<HTMLTableRowElement>)
+    | HTMLAttributes<HTMLTableRowElement>;
   bodyCellProps?: HTMLAttributes<HTMLTableCellElement>;
   footerRowProps?: HTMLAttributes<HTMLTableRowElement>;
   footerCellProps?: HTMLAttributes<HTMLTableCellElement>;
-  filterInputClassName?: string;
-  sortedColumnHeaderClassName?: string;
   ascendingSortIndecator?: ReactNode;
   descendingSortIndecator?: ReactNode;
-  hideBottomBar?: boolean;
-  bottomBarClassName?: string;
-  nextPageBtnClassName?: string;
-  previousPageBtnClassName?: string;
+  rowHoverEffect?: boolean;
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -137,16 +131,14 @@ const CustomTable = <TData extends unknown, TValue = any>(
 
   return (
     <>
-      <table className={props.tableClassName ?? "w-full"}>
-        <thead className={props.headerClassName}>
+      <table className={style.table}>
+        <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr {...(props.headerRowProps ?? {})} key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <th
-                  {...(props.headerCellProps ?? {
-                    className:
-                      "border-2 border-lowkey px-4 pt-2 pb-3.5 text-left text-xs font-bold tracking-wide text-black md:text-sm",
-                  })}
+                  className={style.tableHeader}
+                  {...(props.headerCellProps ?? {})}
                   key={header.id}
                   colSpan={header.colSpan}
                 >
@@ -155,8 +147,7 @@ const CustomTable = <TData extends unknown, TValue = any>(
                       <div
                         {...{
                           className: header.column.getCanSort()
-                            ? props.sortedColumnHeaderClassName ??
-                              "flex flex-wrap gap-1 cursor-pointer select-none"
+                            ? "flex flex-wrap gap-1 cursor-pointer select-none"
                             : "",
                           onClick: header.column.getToggleSortingHandler(),
                         }}
@@ -172,14 +163,7 @@ const CustomTable = <TData extends unknown, TValue = any>(
                       </div>
                       {header.column.getCanFilter() ? (
                         <div>
-                          <Filter
-                            column={header.column}
-                            table={table}
-                            inputClassName={
-                              props.filterInputClassName ??
-                              "mt-1.5 w-36 border text-xs shadow md:text-sm"
-                            }
-                          />
+                          <Filter column={header.column} table={table} />
                         </div>
                       ) : null}
                     </>
@@ -189,23 +173,21 @@ const CustomTable = <TData extends unknown, TValue = any>(
             </tr>
           ))}
         </thead>
-        <tbody className={props.bodyClassName}>
+        <tbody>
           {props.isLoading || props.isRefetching ? (
             <tr>
               <td
-                className="border-2 border-lowkey px-4"
-                {...(props.bodyCellProps ?? {})}
+                className="px-4"
                 colSpan={table.getVisibleLeafColumns().length}
               >
-                <div className="py-6 text-center text-lg">Loading...</div>
+                <div className="py-6 text-center text-lg">{"Loading..."}</div>
               </td>
             </tr>
           ) : null}
           {!(props.isLoading && props.isRefetching) && props.isError ? (
             <tr>
               <td
-                className="border-2 border-lowkey px-4"
-                {...(props.bodyCellProps ?? {})}
+                className="px-4"
                 colSpan={table.getVisibleLeafColumns().length}
               >
                 <div className="py-6 text-center text-lg">
@@ -217,11 +199,21 @@ const CustomTable = <TData extends unknown, TValue = any>(
           {!(props.isLoading || props.isRefetching || props.isError)
             ? table.getRowModel().rows.map((row) => {
                 return (
-                  <tr {...(props.bodyRowProps ?? {})} key={row.id}>
+                  <tr
+                    className={
+                      props.rowHoverEffect
+                        ? "cursor-pointer transition-colors hover:bg-lowkey hover:bg-opacity-25"
+                        : ""
+                    }
+                    {...(typeof props.bodyRowProps === "function"
+                      ? props.bodyRowProps(row)
+                      : props.bodyRowProps ?? {})}
+                    key={row.id}
+                  >
                     {row.getVisibleCells().map((cell) => {
                       return (
                         <td
-                          className="border-2 border-lowkey px-2 py-1"
+                          className="p-2"
                           {...(props.bodyCellProps ?? {})}
                           key={cell.id}
                         >
@@ -237,35 +229,11 @@ const CustomTable = <TData extends unknown, TValue = any>(
               })
             : null}
         </tbody>
-        <tfoot className={props.footerClassName}>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr {...props.footerRowProps} key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th {...props.footerCellProps} key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
       </table>
-      <div
-        className={
-          props.bottomBarClassName ??
-          "mt-5 flex w-full flex-wrap items-center gap-2 text-sm md:text-base"
-        }
-      >
+      <div className={style.paginationbar}>
         <button
           aria-label="paginate back by 1 page"
-          className={
-            props.previousPageBtnClassName ??
-            "group grid aspect-square w-8 place-items-center border border-neutral-500"
-          }
+          className={style.paginationBtn}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -273,10 +241,7 @@ const CustomTable = <TData extends unknown, TValue = any>(
         </button>
         <button
           aria-label="paginate forward by 1 page"
-          className={
-            props.nextPageBtnClassName ??
-            "group grid aspect-square w-8 place-items-center border border-neutral-500"
-          }
+          className={style.paginationBtn}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
@@ -324,11 +289,9 @@ export default CustomTable;
 const Filter = <TData extends unknown, TValue = any>({
   column,
   table,
-  inputClassName,
 }: {
   column: Column<TData, TValue>;
   table: Table<TData>;
-  inputClassName: string;
 }) => {
   const firstValue = table
     .getPreFilteredRowModel()
@@ -362,7 +325,7 @@ const Filter = <TData extends unknown, TValue = any>({
           ? `${column.getFacetedMinMaxValues()?.[1]}`
           : ""
       })`}
-      className={inputClassName}
+      className={"mt-1.5 w-36 border text-xs shadow md:text-sm"}
     />
   ) : (
     <>
@@ -376,7 +339,7 @@ const Filter = <TData extends unknown, TValue = any>({
         value={(columnFilterValue ?? "") as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-        className={inputClassName}
+        className={"mt-1.5 w-36 border text-xs shadow md:text-sm"}
         list={column.id + "list"}
       />
     </>
