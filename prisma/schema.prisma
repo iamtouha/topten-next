@@ -103,8 +103,9 @@ model Product {
   name         String
   size         String
   price        Float
-  addedAt      DateTime      @default(now())
-  addedBy      String?
+  published    Boolean
+  createdAt    DateTime      @default(now())
+  createdBy    String?
   updatedAt    DateTime      @updatedAt
   updatedBy    String?
   stocks       Stock[]
