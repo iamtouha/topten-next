@@ -16,6 +16,7 @@ import Router from "next/router";
 
 // components imports
 import CustomTable from "@/components/CustomTable";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 type fieldValue = string | undefined;
 const Users: NextPageWithLayout = () => {
@@ -57,7 +58,7 @@ const Users: NextPageWithLayout = () => {
   const columns = useMemo<ColumnDef<User, any>[]>(
     () => [
       {
-        header: "User profile",
+        header: "Profile",
         footer: (props) => props.column.id,
         columns: [
           {
@@ -81,7 +82,7 @@ const Users: NextPageWithLayout = () => {
         ],
       },
       {
-        header: "User information",
+        header: "User",
         footer: (props) => props.column.id,
         columns: [
           {
@@ -155,5 +156,7 @@ const Users: NextPageWithLayout = () => {
     </>
   );
 };
+
+Users.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Users;

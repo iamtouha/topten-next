@@ -28,38 +28,4 @@ export const userRouter = router({
         },
       });
     }),
-
-  all: protectedProcedure
-    .input(
-      z.object({
-        limit: z.number().min(1).max(40).nullish(),
-        cursor: z.string().nullish(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 10;
-      const users = await ctx.prisma.user.findMany({
-        include: { profile: true },
-        take: limit + 1,
-        where: {},
-        cursor: input.cursor
-          ? {
-              id: input.cursor,
-            }
-          : undefined,
-        orderBy: {
-          createdAt: "asc",
-        },
-      });
-      let nextCursor: typeof input.cursor | undefined = undefined;
-      if (users.length > limit) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const nextItem = users.pop()!;
-        nextCursor = nextItem.id;
-      }
-      return {
-        users: users.reverse(),
-        nextCursor,
-      };
-    }),
 });

@@ -19,11 +19,8 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const User: NextPageWithLayout = () => {
-  // userId
   const router = useRouter();
   const id = router.query.id as string;
-
-  // session
   const session = useSession();
 
   // trpc
@@ -37,9 +34,9 @@ const User: NextPageWithLayout = () => {
   }, [user]);
   const { mutateAsync: updateRole, status: roleStatus } =
     trpc.admin.users.updateRole.useMutation({
-      onSuccess: async (user) => {
+      onMutate: async (user) => {
         setSelectedRole(user.role);
-        toast.success("User role updated!");
+        activeStatus === "success" && toast.success("User role updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "editRoleError" });
@@ -59,19 +56,21 @@ const User: NextPageWithLayout = () => {
       },
     });
   // delete user
-  const { mutateAsync: deleteUser } = trpc.admin.users.delete.useMutation({
-    onMutate: async (id) => {
-      if (session.data?.user?.id === id) {
-        return;
-      }
-      toast.success("User deleted!", { toastId: "deleteUserSuccess" });
-      await router.push("/dashboard/users");
-    },
-    onError: async (e) => {
-      toast.error(e.message, { toastId: "deleteUserError" });
-    },
-  });
-  // refetch user onMutate
+  const { mutateAsync: deleteUser, status: deleteStatus } =
+    trpc.admin.users.delete.useMutation({
+      onMutate: async (id) => {
+        if (session.data?.user?.id === id) {
+          return;
+        }
+        deleteStatus === "success" &&
+          toast.success("User deleted!", { toastId: "deleteUserSuccess" });
+        await router.push("/dashboard/users");
+      },
+      onError: async (e) => {
+        toast.error(e.message, { toastId: "deleteUserError" });
+      },
+    });
+  // refetch user
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
@@ -102,7 +101,7 @@ const User: NextPageWithLayout = () => {
           <div className="grid gap-10">
             <UserDetails user={user} />
             <div className="items-center justify-center">
-              <p className={styles.richTitle}>Edit user</p>
+              <p className={styles.richTitle}>Update</p>
               <div className="mt-2 flex items-center gap-2.5">
                 <Listbox
                   as="div"
@@ -217,7 +216,7 @@ const UserDetails = ({
 }) => {
   const currentUser = [
     {
-      head: "User information",
+      head: "User",
       body: [
         { key: "Name", value: user?.name },
         { key: "Email", value: user?.email },
@@ -233,7 +232,7 @@ const UserDetails = ({
       ],
     },
     {
-      head: "User profile",
+      head: "Profile",
       body: [
         { key: "Full name", value: user?.profile?.fullName },
         { key: "Phone number", value: user?.profile?.phone },

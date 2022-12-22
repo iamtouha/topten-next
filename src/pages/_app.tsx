@@ -9,6 +9,7 @@ import "@/styles/globals.css";
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ToastWrapper from "@/components/ToastWrapper";
+import Head from "next/head";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,
@@ -27,6 +28,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <SessionProvider session={pageProps.session}>
+      <Head>
+        <title>Top Ten Agro Chemicals</title>
+      </Head>
       {getLayout(<Component {...pageProps} />)}
       <ToastWrapper />
     </SessionProvider>

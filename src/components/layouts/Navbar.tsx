@@ -1,4 +1,4 @@
-import styles from "@/styles/layout/navbar.module.css";
+import styles from "@/styles/layouts/navbar.module.css";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";

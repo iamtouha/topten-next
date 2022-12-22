@@ -1,7 +1,6 @@
-import React from "react";
-import styles from "@/styles/layout/footer.module.css";
-import Image from "next/image";
+import styles from "@/styles/layouts/footer.module.css";
 import dayjs from "dayjs";
+import Image from "next/image";
 
 const Footer = () => {
   return (
