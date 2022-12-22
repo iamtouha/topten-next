@@ -25,7 +25,7 @@ module.exports = {
         danger: "hsla(0, 84%, 60%, 1)",
         layout: "hsla(0, 0%, 90%, 1)",
         description: "hsla(0, 0%, 25%, 1)",
-        lowkey: "hsl(0, 0%, 45%)",
+        lowkey: "hsla(0, 0%, 45%, 1)",
       },
       boxShadow: {
         square:

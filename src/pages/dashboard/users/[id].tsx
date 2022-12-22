@@ -1,3 +1,4 @@
+import type { NextPageWithLayout } from "@/pages/_app";
 import styles from "@/styles/dashboard/users/user.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { formatRole } from "@/utils/formatStrings";
@@ -10,7 +11,6 @@ import { useSession } from "next-auth/react";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useIsMutating } from "@tanstack/react-query";
-import type { NextPageWithLayout } from "@/pages/_app";
 
 // components and images imports
 import Loader from "@/components/Loader";
@@ -24,6 +24,7 @@ const User: NextPageWithLayout = () => {
 
   // trpc
   const utils = trpc.useContext();
+  // find user
   const { data: user, status, error } = trpc.admin.users.getOne.useQuery(id);
   // update user's role
   const [selectedRole, setSelectedRole] = useState(user?.role as USER_ROLE);
@@ -73,9 +74,9 @@ const User: NextPageWithLayout = () => {
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.admin.users.getOne.invalidate();
+      utils.admin.users.getOne.invalidate(id);
     }
-  }, [number, utils]);
+  }, [id, number, utils]);
 
   // conditional renders
   if (status === "loading") {
@@ -98,10 +99,9 @@ const User: NextPageWithLayout = () => {
       <main className={styles.wrapper}>
         {user ? (
           <div className="grid gap-8">
-            <UserDetails user={user} />
-            <div className="items-center justify-center">
+            <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
-              <div className="mt-2 flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5">
                 <Listbox
                   as="div"
                   className="w-48"
@@ -172,8 +172,8 @@ const User: NextPageWithLayout = () => {
                 </Listbox>
                 <Button
                   aria-label={`update user's active status`}
-                  className="bg-primary-700"
-                  onClick={() => updateStatus({ id, active: user.active })}
+                  className={user.active ? "bg-red-500" : "bg-primary-700"}
+                  onClick={() => updateStatus({ id, active: !user.active })}
                   disabled={session.data?.user?.id === id}
                 >
                   {activeStatus === "loading"
@@ -192,6 +192,7 @@ const User: NextPageWithLayout = () => {
                 </Button>
               </div>
             </div>
+            <UserDetails user={user} />
           </div>
         ) : (
           <p className="text-sm font-medium text-neutral-700 md:text-base">

@@ -4,3 +4,15 @@
 .richTitle {
   @apply text-base font-medium text-success md:text-lg;
 }
+.form {
+  @apply grid gap-2 whitespace-nowrap text-xs md:text-sm;
+}
+.inputWrapper {
+  @apply grid w-full gap-2;
+}
+.inputLabel {
+  @apply text-sm font-medium text-black md:text-base;
+}
+.input {
+  @apply w-full px-4 py-2.5 text-black transition-colors placeholder:text-lowkey;
+}

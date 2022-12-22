@@ -1,17 +1,18 @@
-import Head from "next/head";
-import Router from "next/router";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "../utils/trpc";
-import { useForm } from "react-hook-form";
-import type { NextPageWithLayout } from "./_app";
 import styles from "@/styles/completeregistration.module.css";
-import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
+import Link from "next/link";
+import Router from "next/router";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import { trpc } from "../utils/trpc";
+import type { NextPageWithLayout } from "./_app";
 
 // components imports
+import Button from "@/components/Button";
 import StaticLayout from "@/components/layouts/StaticLayout";
 
 type InputFields = {
@@ -21,14 +22,35 @@ type InputFields = {
 };
 
 const schema = z.object({
-  fullName: z.string().min(5).max(32),
-  phone: z.string().min(11).max(15),
-  designation: z.string().min(4),
+  fullName: z
+    .string({
+      required_error: "Full name is required",
+      invalid_type_error: "Please input 5-32 letters",
+    })
+    .min(5)
+    .max(32),
+  phone: z
+    .string({
+      required_error: "Phone number is required",
+      invalid_type_error: "Please input 11-15 digits",
+    })
+    .min(11)
+    .max(15),
+  designation: z
+    .string({
+      required_error: "Designation is required",
+      invalid_type_error: "Please input at least 4 letters",
+    })
+    .min(4),
 });
 
 const CompleteRegistration: NextPageWithLayout = () => {
-  const { data: session, status } = useSession({ required: true });
-  const { register, handleSubmit, formState } = useForm<InputFields>({
+  const { data: session } = useSession({ required: true });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<InputFields>({
     defaultValues: {
       fullName: "",
       phone: "",
@@ -54,8 +76,8 @@ const CompleteRegistration: NextPageWithLayout = () => {
     }
   }, [session?.user?.profileId]);
 
-  const onSubmit = (data: InputFields) => {
-    createProfileMutation.mutate({ ...data });
+  const onSubmit = async (data: InputFields) => {
+    await createProfileMutation.mutateAsync({ ...data });
   };
 
   return (
@@ -88,9 +110,9 @@ const CompleteRegistration: NextPageWithLayout = () => {
               placeholder="Full name"
               {...register("fullName", { required: true })}
             />
-            {formState.errors.fullName ? (
-              <p className="text-sm text-danger">
-                {formState.errors.fullName.message}
+            {errors.fullName ? (
+              <p className="text-sm font-medium text-danger">
+                {errors.fullName.message}
               </p>
             ) : null}
           </div>
@@ -105,9 +127,9 @@ const CompleteRegistration: NextPageWithLayout = () => {
               placeholder="Phone number"
               {...register("phone", { required: true })}
             />
-            {formState.errors.phone ? (
-              <p className="text-sm text-danger">
-                {formState.errors.phone.message}
+            {errors.phone ? (
+              <p className="text-sm font-medium text-danger">
+                {errors.phone.message}
               </p>
             ) : null}
           </div>
@@ -125,18 +147,18 @@ const CompleteRegistration: NextPageWithLayout = () => {
               placeholder="Designation"
               {...register("designation", { required: true })}
             />
-            {formState.errors.designation ? (
-              <p className="text-sm text-danger">
-                {formState.errors.designation.message}
+            {errors.designation ? (
+              <p className="text-sm font-medium text-danger">
+                {errors.designation.message}
               </p>
             ) : null}
           </div>
-          <button
-            className={styles.button}
+          <Button
+            className="mt-2.5 w-full bg-primary-700 py-3"
             disabled={createProfileMutation.isLoading}
           >
-            {createProfileMutation.isLoading ? "loading" : "Register"}
-          </button>
+            {createProfileMutation.isLoading ? "Loading..." : "Register"}
+          </Button>
         </form>
         <p className={styles.baseText}>
           {`Don't have an account? `}
