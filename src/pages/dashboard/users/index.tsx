@@ -147,8 +147,8 @@ const Users: NextPageWithLayout = () => {
           rowHoverEffect
           bodyRowProps={(row) => ({
             onClick: () => {
-              const userId = row.original.id as string;
-              Router.push(`/dashboard/users/${userId}`);
+              const id = row.original.id as string;
+              Router.push(`/dashboard/users/${id}`);
             },
           })}
         />

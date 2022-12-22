@@ -11,7 +11,7 @@ const Dashboard: NextPageWithLayout = () => {
         <title>Dashboard | Top Ten Agro Chemicals</title>
       </Head>
       <main className="min-h-screen max-w-screen-xl pt-5 pb-10 container-res">
-        <div className="flex items-center justify-center gap-2.5">
+        <div className="flex items-center gap-2.5">
           <Button
             aria-label="navigate to users page"
             className="bg-primary-700"
