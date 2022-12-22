@@ -26,6 +26,7 @@ const Users: NextPageWithLayout = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
+    name: false,
     createdBy: false,
     updatedBy: false,
     updatedAt: false,
@@ -63,19 +64,16 @@ const Users: NextPageWithLayout = () => {
         columns: [
           {
             accessorKey: "profile.fullName",
-            cell: (info) => info.getValue(),
             header: () => <span>Full name</span>,
             footer: (props) => props.column.id,
           },
           {
             accessorKey: "profile.phone",
-            cell: (info) => info.getValue(),
             header: () => <span>Phone number</span>,
             footer: (props) => props.column.id,
           },
           {
             accessorKey: "profile.designation",
-            cell: (info) => info.getValue(),
             header: () => <span>Designation</span>,
             footer: (props) => props.column.id,
           },
@@ -87,18 +85,15 @@ const Users: NextPageWithLayout = () => {
         columns: [
           {
             accessorKey: "name",
-            cell: (info) => info.getValue(),
             header: () => <span>Name</span>,
           },
           {
             accessorKey: "email",
-            cell: (info) => info.getValue(),
             header: () => <span>Email</span>,
           },
           {
             accessorFn: (d) => dayjs(d.createdAt).format("DD/MM/YYYY, hh:mmA"),
             id: "createdAt",
-            cell: (info) => info.getValue(),
             header: () => <span>Created at</span>,
           },
           {
@@ -109,7 +104,6 @@ const Users: NextPageWithLayout = () => {
           {
             accessorFn: (d) => (d.active ? "Active" : "Inactive"),
             id: "active",
-            cell: (info) => info.getValue(),
             header: () => <span>Status</span>,
           },
         ],
@@ -123,8 +117,9 @@ const Users: NextPageWithLayout = () => {
       <Head>
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container mx-auto min-h-screen max-w-screen-2xl px-2 pt-5 pb-10">
+      <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
         <CustomTable<User>
+          tableTitle={`Users (${data?.count ?? 0} entries)`}
           columns={columns}
           data={data?.users ?? []}
           state={{
@@ -141,6 +136,7 @@ const Users: NextPageWithLayout = () => {
           isLoading={isLoading}
           isRefetching={isRefetching}
           isError={isError}
+          disableGlobalFilter
           manualFiltering
           manualPagination
           manualSorting
