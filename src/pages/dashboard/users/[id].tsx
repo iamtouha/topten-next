@@ -1,11 +1,11 @@
-import styles from "@/styles/dashboard/user.module.css";
+import styles from "@/styles/dashboard/users/user.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { formatRole } from "@/utils/formatStrings";
 import { Listbox, Transition } from "@headlessui/react";
 import { USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import { useSession } from "next-auth/react";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -19,8 +19,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const User: NextPageWithLayout = () => {
-  const router = useRouter();
-  const id = router.query.id as string;
+  const id = Router.query.id as string;
   const session = useSession();
 
   // trpc
@@ -64,7 +63,7 @@ const User: NextPageWithLayout = () => {
         }
         deleteStatus === "success" &&
           toast.success("User deleted!", { toastId: "deleteUserSuccess" });
-        await router.push("/dashboard/users");
+        await Router.push("/dashboard/users");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "deleteUserError" });
@@ -94,11 +93,11 @@ const User: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>User | Top Ten Agro Chemicals</title>
+        <title>Update User | Top Ten Agro Chemicals</title>
       </Head>
       <main className={styles.wrapper}>
         {user ? (
-          <div className="grid gap-10">
+          <div className="grid gap-8">
             <UserDetails user={user} />
             <div className="items-center justify-center">
               <p className={styles.richTitle}>Update</p>
@@ -208,7 +207,7 @@ User.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default User;
 
-// UserDetials
+// UserDetails
 const UserDetails = ({
   user,
 }: {
@@ -253,7 +252,7 @@ const UserDetails = ({
   ];
 
   return (
-    <div className="flex flex-wrap justify-between gap-5 pt-5">
+    <div className="flex flex-wrap justify-between gap-5">
       {currentUser.map((userItem, i) => (
         <div key={i} className="flex flex-col gap-2.5">
           <p className={styles.richTitle}>{userItem.head}</p>
@@ -264,7 +263,7 @@ const UserDetails = ({
                   {userbody.key}:
                 </p>
                 <p className="text-sm text-neutral-900 md:text-base">
-                  {userbody.value}
+                  {userbody.value ?? "-"}
                 </p>
               </div>
             ))}

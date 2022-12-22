@@ -70,7 +70,8 @@ const Products: NextPageWithLayout = () => {
       {
         accessorKey: "createdAt",
         header: "Created At",
-        cell: ({ cell }) => dayjs(cell.getValue()).format("DD/MM/YYYY hh:mm a"),
+        cell: ({ cell }) =>
+          dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a"),
         enableColumnFilter: false,
       },
       {
@@ -84,7 +85,7 @@ const Products: NextPageWithLayout = () => {
         header: "Updated At",
         cell: ({ cell, row }) =>
           row.getValue("updatedBy")
-            ? dayjs(cell.getValue()).format("DD/MM/YYYY hh:mm a")
+            ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
             : "-",
         enableSorting: false,
         enableColumnFilter: false,

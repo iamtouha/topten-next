@@ -1,0 +1,6 @@
+.wrapper {
+  @apply min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res;
+}
+.richTitle {
+  @apply text-base font-medium text-success md:text-lg;
+}
