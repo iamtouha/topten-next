@@ -105,7 +105,7 @@ const Products: NextPageWithLayout = () => {
       <Head>
         <title>Products | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container mx-auto min-h-screen px-2 pt-5 pb-10">
+      <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
         <div className="p-2">
           <Link href={"/dashboard/products/add"}>
             <Button className="bg-primary-700">Add Product</Button>
@@ -113,6 +113,7 @@ const Products: NextPageWithLayout = () => {
         </div>
 
         <CustomTable<Product>
+          tableTitle={`Products (${data?.count ?? 0} entries)`}
           columns={columns}
           data={data?.products ?? []}
           state={{
@@ -133,6 +134,7 @@ const Products: NextPageWithLayout = () => {
           manualPagination
           manualSorting
           rowHoverEffect
+          disableGlobalFilter
           bodyRowProps={(row) => ({
             onClick: () => {
               const productId = row.getValue("id") as string;
