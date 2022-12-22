@@ -76,10 +76,20 @@ model Store {
   id        String     @id @default(cuid())
   name      String
   address   String
+  type      STORE_TYPE
   roles     Role[]
   stocks    Stock[]
   restocks  Restock[]
   customers Customer[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt 
+  createdBy   String?
+  updatedBy   String?
+}
+
+enum STORE_TYPE {
+  INVENTORY
+  DISTRIBUTION
 }
 
 model Role {
