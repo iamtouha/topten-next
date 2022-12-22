@@ -28,9 +28,12 @@ import {
   getFacetedMinMaxValues,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
+import { Popover } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import styles from "@/styles/customtable.module.css";
 
 interface Props<TData, TValue = any> {
+  tableTitle?: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
@@ -51,6 +54,8 @@ interface Props<TData, TValue = any> {
   manualSorting?: boolean;
   manualFiltering?: boolean;
   manualPagination?: boolean;
+  disableGlobalFilter?: boolean;
+  disableColumnVisibility?: boolean;
   itemsPerPageOptions?: number[];
   itemsCount?: number;
   headerRowProps?: HTMLAttributes<HTMLTableRowElement>;
@@ -136,6 +141,82 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
 
   return (
     <>
+      <div className="flex py-4">
+        <h2 className="text-2xl">{props.tableTitle}</h2>
+        <div className="mr-0 ml-auto flex gap-4">
+          {props.disableGlobalFilter ? null : (
+            <div>
+              <label htmlFor="global-filter-iinput" className="sr-only">
+                Search any field
+              </label>
+              <input
+                id="global-filter-input"
+                placeholder="Search"
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                className="w-42 border border-lowkey px-4 py-1.5"
+              />
+            </div>
+          )}
+          {props.disableColumnVisibility ? null : (
+            <div>
+              <Popover className="relative inline-block text-left">
+                {({ open }) => (
+                  <>
+                    <Popover.Button className="inline-flex w-full justify-center border border-lowkey px-4 py-2 text-sm font-medium hover:bg-lowkey hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                      Show Columns
+                      <ChevronDownIcon
+                        className="ml-2 -mr-1 h-5 w-5"
+                        aria-hidden="true"
+                      />
+                    </Popover.Button>
+
+                    {open && (
+                      <Popover.Panel
+                        className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        static
+                      >
+                        <div className="px-3 py-1.5">
+                          <label>
+                            <input
+                              {...{
+                                type: "checkbox",
+                                checked: table.getIsAllColumnsVisible(),
+                                onChange:
+                                  table.getToggleAllColumnsVisibilityHandler(),
+                              }}
+                            />
+                            {"  "}
+                            Toggle All
+                          </label>
+                        </div>
+                        {table.getAllLeafColumns().map((column) => {
+                          return (
+                            <div key={column.id} className="px-3 py-1.5">
+                              <label>
+                                <input
+                                  {...{
+                                    type: "checkbox",
+                                    checked: column.getIsVisible(),
+                                    onChange:
+                                      column.getToggleVisibilityHandler(),
+                                  }}
+                                />
+                                {"  "}
+                                {column.id}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </Popover.Panel>
+                    )}
+                  </>
+                )}
+              </Popover>
+            </div>
+          )}
+        </div>
+      </div>
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
