@@ -13,24 +13,24 @@ import {
   type ColumnFiltersState,
   type FilterFn,
   type ColumnDef,
+  type SortingState,
+  type PaginationState,
+  type VisibilityState,
+  type Row,
   useReactTable,
   getCoreRowModel,
   flexRender,
   getSortedRowModel,
-  SortingState,
   getFilteredRowModel,
   getPaginationRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
-  PaginationState,
-  VisibilityState,
-  Row,
 } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
-import style from "@/styles/customtable.module.css";
+import styles from "@/styles/customtable.module.css";
 
-interface Props<TData extends unknown, TValue = any> {
+interface Props<TData, TValue = any> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
@@ -79,19 +79,24 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-const CustomTable = <TData extends unknown, TValue = any>(
-  props: Props<TData, TValue>
-) => {
+const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
   const { manualFiltering, manualSorting, manualPagination } = props;
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageSize: 10,
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
+    pageSize: 10,
   });
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
   const table = useReactTable<TData>({
     columns: props.columns,
     data: props.data,
@@ -131,109 +136,111 @@ const CustomTable = <TData extends unknown, TValue = any>(
 
   return (
     <>
-      <table className={style.table}>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr {...(props.headerRowProps ?? {})} key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  className={style.tableHeader}
-                  {...(props.headerCellProps ?? {})}
-                  key={header.id}
-                  colSpan={header.colSpan}
-                >
-                  {header.isPlaceholder ? null : (
-                    <>
-                      <div
-                        {...{
-                          className: header.column.getCanSort()
-                            ? "flex flex-wrap gap-1 cursor-pointer select-none"
-                            : "",
-                          onClick: header.column.getToggleSortingHandler(),
-                        }}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: props.ascendingSortIndecator ?? " 🔼",
-                          desc: props.descendingSortIndecator ?? " 🔽",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                      {header.column.getCanFilter() ? (
-                        <div>
-                          <Filter column={header.column} table={table} />
-                        </div>
-                      ) : null}
-                    </>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {props.isLoading || props.isRefetching ? (
-            <tr>
-              <td
-                className="px-4"
-                colSpan={table.getVisibleLeafColumns().length}
-              >
-                <div className="py-6 text-center text-lg">{"Loading..."}</div>
-              </td>
-            </tr>
-          ) : null}
-          {!(props.isLoading && props.isRefetching) && props.isError ? (
-            <tr>
-              <td
-                className="px-4"
-                colSpan={table.getVisibleLeafColumns().length}
-              >
-                <div className="py-6 text-center text-lg">
-                  An error occured!
-                </div>
-              </td>
-            </tr>
-          ) : null}
-          {!(props.isLoading || props.isRefetching || props.isError)
-            ? table.getRowModel().rows.map((row) => {
-                return (
-                  <tr
-                    className={
-                      props.rowHoverEffect
-                        ? "cursor-pointer transition-colors hover:bg-lowkey hover:bg-opacity-25"
-                        : ""
-                    }
-                    {...(typeof props.bodyRowProps === "function"
-                      ? props.bodyRowProps(row)
-                      : props.bodyRowProps ?? {})}
-                    key={row.id}
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr {...(props.headerRowProps ?? {})} key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    className={styles.tableHeader}
+                    {...(props.headerCellProps ?? {})}
+                    key={header.id}
+                    colSpan={header.colSpan}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td
-                          className="p-2"
-                          {...(props.bodyCellProps ?? {})}
-                          key={cell.id}
+                    {header.isPlaceholder ? null : (
+                      <>
+                        <div
+                          {...{
+                            className: header.column.getCanSort()
+                              ? "flex flex-wrap gap-1 cursor-pointer select-none"
+                              : "",
+                            onClick: header.column.getToggleSortingHandler(),
+                          }}
                         >
                           {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
+                            header.column.columnDef.header,
+                            header.getContext()
                           )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })
-            : null}
-        </tbody>
-      </table>
-      <div className={style.paginationbar}>
+                          {{
+                            asc: props.ascendingSortIndecator ?? " 🔼",
+                            desc: props.descendingSortIndecator ?? " 🔽",
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                        {header.column.getCanFilter() ? (
+                          <div>
+                            <Filter column={header.column} table={table} />
+                          </div>
+                        ) : null}
+                      </>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {props.isLoading || props.isRefetching ? (
+              <tr>
+                <td
+                  className="px-4"
+                  colSpan={table.getVisibleLeafColumns().length}
+                >
+                  <div className="py-6 text-center text-lg">{"Loading..."}</div>
+                </td>
+              </tr>
+            ) : null}
+            {!(props.isLoading && props.isRefetching) && props.isError ? (
+              <tr>
+                <td
+                  className="px-4"
+                  colSpan={table.getVisibleLeafColumns().length}
+                >
+                  <div className="py-6 text-center text-lg">
+                    An error occured!
+                  </div>
+                </td>
+              </tr>
+            ) : null}
+            {!(props.isLoading || props.isRefetching || props.isError)
+              ? table.getRowModel().rows.map((row) => {
+                  return (
+                    <tr
+                      className={
+                        props.rowHoverEffect
+                          ? "cursor-pointer transition-colors hover:bg-lowkey hover:bg-opacity-25"
+                          : ""
+                      }
+                      {...(typeof props.bodyRowProps === "function"
+                        ? props.bodyRowProps(row)
+                        : props.bodyRowProps ?? {})}
+                      key={row.id}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        return (
+                          <td
+                            className="p-2"
+                            {...(props.bodyCellProps ?? {})}
+                            key={cell.id}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })
+              : null}
+          </tbody>
+        </table>
+      </div>
+      <div className={styles.paginationbar}>
         <button
           aria-label="paginate back by 1 page"
-          className={style.paginationBtn}
+          className={styles.paginationBtn}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -241,7 +248,7 @@ const CustomTable = <TData extends unknown, TValue = any>(
         </button>
         <button
           aria-label="paginate forward by 1 page"
-          className={style.paginationBtn}
+          className={styles.paginationBtn}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
@@ -286,7 +293,7 @@ const CustomTable = <TData extends unknown, TValue = any>(
 
 export default CustomTable;
 
-const Filter = <TData extends unknown, TValue = any>({
+const Filter = <TData, TValue = any>({
   column,
   table,
 }: {

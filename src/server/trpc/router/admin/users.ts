@@ -7,8 +7,8 @@ export const usersAdminRouter = router({
   get: adminProcedure
     .input(
       z.object({
-        page: z.number().int().default(1),
-        size: z.number().int().default(10),
+        page: z.number().int().default(0),
+        perPage: z.number().int().default(10),
         email: z.string().optional(),
         name: z.string().optional(),
         active: z.boolean().optional(),
@@ -42,8 +42,8 @@ export const usersAdminRouter = router({
         ctx.prisma.user.findMany({
           ...params,
           include: { profile: true },
-          skip: input.page * input.size,
-          take: input.size,
+          skip: input.page * input.perPage,
+          take: input.perPage,
         }),
       ]);
       return { count, users };

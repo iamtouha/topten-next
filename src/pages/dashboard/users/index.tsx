@@ -1,24 +1,57 @@
+import { type NextPageWithLayout } from "@/pages/_app";
 import { formatRole } from "@/utils/formatStrings";
 import { trpc } from "@/utils/trpc";
 import { type User } from "@prisma/client";
-import { type ColumnDef } from "@tanstack/react-table";
+import {
+  type ColumnFiltersState,
+  type PaginationState,
+  type SortingState,
+  type VisibilityState,
+  type ColumnDef,
+} from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { type NextPage } from "next";
 import Head from "next/head";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Router from "next/router";
 
 // components imports
-import Loader from "@/components/Loader";
-import Table from "@/components/Table";
+import CustomTable from "@/components/CustomTable";
 
-const Users: NextPage = () => {
+type fieldValue = string | undefined;
+const Users: NextPageWithLayout = () => {
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "createdAt", desc: true },
+  ]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    id: false,
+    createdBy: false,
+    updatedBy: false,
+    updatedAt: false,
+  });
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   // trpc
-  const usersQuery = trpc.user.all.useInfiniteQuery(
-    { limit: 1 },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
+  const { data, isLoading, isError, isRefetching } =
+    trpc.admin.users.get.useQuery(
+      {
+        page: pagination.pageIndex,
+        perPage: pagination.pageSize,
+        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
+        sortBy: sorting[0]?.id as
+          | "email"
+          | "name"
+          | "role"
+          | "active"
+          | "createdAt"
+          | undefined,
+        sortDesc: sorting[0]?.desc,
+      },
+      { refetchOnWindowFocus: false }
+    );
 
   // table column
   const columns = useMemo<ColumnDef<User, any>[]>(
@@ -55,33 +88,28 @@ const Users: NextPage = () => {
             accessorKey: "name",
             cell: (info) => info.getValue(),
             header: () => <span>Name</span>,
-            footer: (props) => props.column.id,
           },
           {
             accessorKey: "email",
             cell: (info) => info.getValue(),
             header: () => <span>Email</span>,
-            footer: (props) => props.column.id,
           },
           {
             accessorFn: (d) => dayjs(d.createdAt).format("DD/MM/YYYY, hh:mmA"),
             id: "createdAt",
             cell: (info) => info.getValue(),
             header: () => <span>Created at</span>,
-            footer: (props) => props.column.id,
           },
           {
             accessorKey: "role",
             cell: (info) => formatRole(info.getValue()),
             header: () => <span>Role</span>,
-            footer: (props) => props.column.id,
           },
           {
             accessorFn: (d) => (d.active ? "Active" : "Inactive"),
             id: "active",
             cell: (info) => info.getValue(),
             header: () => <span>Status</span>,
-            footer: (props) => props.column.id,
           },
         ],
       },
@@ -95,11 +123,34 @@ const Users: NextPage = () => {
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
       <main className="container mx-auto min-h-screen max-w-screen-2xl px-2 pt-5 pb-10">
-        {usersQuery.status === "loading" ? (
-          <Loader />
-        ) : (
-          <Table<User> intent="users" columns={columns} />
-        )}
+        <CustomTable<User>
+          columns={columns}
+          data={data?.users ?? []}
+          state={{
+            sorting,
+            pagination,
+            columnVisibility,
+            columnFilters,
+          }}
+          setSorting={setSorting}
+          setColumnFilters={setColumnFilters}
+          setColumnVisibility={setColumnVisibility}
+          setPagination={setPagination}
+          itemsCount={data?.count}
+          isLoading={isLoading}
+          isRefetching={isRefetching}
+          isError={isError}
+          manualFiltering
+          manualPagination
+          manualSorting
+          rowHoverEffect
+          bodyRowProps={(row) => ({
+            onClick: () => {
+              const userId = row.original.id as string;
+              Router.push(`/dashboard/users/${userId}`);
+            },
+          })}
+        />
       </main>
     </>
   );

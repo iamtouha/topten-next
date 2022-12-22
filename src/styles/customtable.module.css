@@ -1,3 +1,7 @@
+.tableWrapper {
+  @apply overflow-x-auto overflow-y-hidden pb-1;
+}
+
 .table,
 .table th,
 .table td {
@@ -5,7 +9,7 @@
 }
 
 .table {
-  @apply w-full;
+  @apply w-full min-w-[640px];
 }
 
 .tableHeader {
@@ -16,5 +20,5 @@
 }
 
 .paginationBtn {
-  @apply grid aspect-square w-8 place-items-center border border-neutral-500;
+  @apply grid aspect-square w-8 place-items-center border border-neutral-500 enabled:transition-opacity enabled:hover:opacity-90 enabled:active:opacity-100 disabled:cursor-not-allowed;
 }

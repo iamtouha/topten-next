@@ -59,9 +59,14 @@ const Products: NextPageWithLayout = () => {
   const columns = useMemo<ColumnDef<Product, any>[]>(
     () => [
       { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
-      { accessorKey: "name" },
-      { accessorKey: "size" },
-      { accessorKey: "price", enableColumnFilter: false },
+      { accessorKey: "name", header: "Name" },
+      { accessorKey: "size", header: "Size" },
+      {
+        accessorKey: "price",
+        header: "Price",
+
+        enableColumnFilter: false,
+      },
       {
         accessorKey: "createdAt",
         header: "Created At",
@@ -106,7 +111,7 @@ const Products: NextPageWithLayout = () => {
           </Link>
         </div>
 
-        <CustomTable
+        <CustomTable<Product>
           columns={columns}
           data={data?.products ?? []}
           state={{
