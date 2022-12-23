@@ -14,5 +14,5 @@
   @apply text-xs font-medium text-title md:text-sm;
 }
 .input {
-  @apply w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm;
+  @apply w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm;
 }

@@ -1,18 +1,18 @@
 import { type NextPageWithLayout } from "@/pages/_app";
-import { formatRole } from "@/utils/formatStrings";
+import { formatRole } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { type User } from "@prisma/client";
 import {
+  type ColumnDef,
   type ColumnFiltersState,
   type PaginationState,
   type SortingState,
   type VisibilityState,
-  type ColumnDef,
 } from "@tanstack/react-table";
-import dayjs from "dayjs";
 import Head from "next/head";
-import { useMemo, useState } from "react";
 import Router from "next/router";
+import { useMemo, useState } from "react";
+import dayjs from "dayjs";
 
 // components imports
 import CustomTable from "@/components/CustomTable";
@@ -60,51 +60,50 @@ const Users: NextPageWithLayout = () => {
     () => [
       {
         header: "Profile",
-        footer: (props) => props.column.id,
         columns: [
           {
             accessorKey: "profile.fullName",
-            header: () => <span>Full name</span>,
-            footer: (props) => props.column.id,
+            header: "Full name",
           },
           {
             accessorKey: "profile.phone",
-            header: () => <span>Phone number</span>,
-            footer: (props) => props.column.id,
+            header: "Phone number",
           },
           {
             accessorKey: "profile.designation",
-            header: () => <span>Designation</span>,
-            footer: (props) => props.column.id,
+            header: "Designation",
           },
         ],
       },
       {
         header: "User",
-        footer: (props) => props.column.id,
         columns: [
           {
             accessorKey: "name",
-            header: () => <span>Name</span>,
+            header: "Name",
           },
           {
             accessorKey: "email",
-            header: () => <span>Email</span>,
+            header: "Email",
           },
           {
-            accessorFn: (d) => dayjs(d.createdAt).format("DD/MM/YYYY, hh:mmA"),
-            id: "createdAt",
-            header: () => <span>Created at</span>,
+            accessorKey: "createdAt",
+            header: "Created at",
+            cell: ({ cell }) =>
+              cell.getValue()
+                ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
+                : "-",
           },
           {
             accessorKey: "role",
-            cell: (info) => formatRole(info.getValue()),
-            header: () => <span>Role</span>,
+            header: "Role",
+            cell: ({ cell }) =>
+              cell.getValue() ? formatRole(cell.getValue()) : "-",
           },
           {
-            accessorFn: (d) => (d.active ? "Active" : "Inactive"),
-            id: "active",
-            header: () => <span>Status</span>,
+            accessorKey: "active",
+            header: "Status",
+            cell: ({ cell }) => (cell.getValue() ? "Active" : "Inactive"),
           },
         ],
       },

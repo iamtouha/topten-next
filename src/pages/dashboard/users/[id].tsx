@@ -1,7 +1,7 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import styles from "@/styles/dashboard/users/user.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
-import { formatRole } from "@/utils/formatStrings";
+import { formatRole } from "@/utils/format";
 import { Listbox, Transition } from "@headlessui/react";
 import { USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
@@ -187,7 +187,7 @@ const User: NextPageWithLayout = () => {
             <UserDetails user={user} />
           </div>
         ) : (
-          <p className="text-sm font-medium text-neutral-700 md:text-base">
+          <p className="text-sm font-medium text-title md:text-base">
             No user with this id
           </p>
         )}
@@ -234,11 +234,11 @@ const UserDetails = ({
         },
         {
           key: "Created at",
-          value: dayjs(user?.profile?.createdAt).format("DD/MM/YYYY, hh:mmA"),
+          value: dayjs(user?.profile?.createdAt).format("DD/MM/YYYY, hh:mm a"),
         },
         {
           key: "Updated at",
-          value: dayjs(user?.profile?.updatedAt).format("DD/MM/YYYY, hh:mmA"),
+          value: dayjs(user?.profile?.updatedAt).format("DD/MM/YYYY, hh:mm a"),
         },
       ],
     },

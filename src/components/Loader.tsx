@@ -9,10 +9,10 @@ const Loader = ({ className, children, ...props }: LoaderProps) => {
     <div
       aria-label="spinner progressbar"
       role="progressbar"
-      className={`text-sm font-medium text-neutral-700 md:text-base ${className}`}
+      className={`text-sm font-medium text-title md:text-base ${className}`}
       {...props}
     >
-      {children || "Loading..."}
+      {children ?? "Loading..."}
     </div>
   );
 };

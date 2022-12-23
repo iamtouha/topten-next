@@ -61,7 +61,7 @@ const AddProduct: NextPageWithLayout = () => {
       <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
         <form
           aria-label="add-product form"
-          className="grid w-full gap-2 whitespace-nowrap text-xs md:text-sm"
+          className="grid w-full gap-2.5 whitespace-nowrap"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="grid w-full gap-2">
@@ -74,7 +74,7 @@ const AddProduct: NextPageWithLayout = () => {
             <input
               type="text"
               id="add_product_name"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product name"
               {...register("name", { required: true })}
             />
@@ -94,7 +94,7 @@ const AddProduct: NextPageWithLayout = () => {
             <input
               type="text"
               id="add_prduct_size"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product size"
               {...register("size", { required: true })}
             />
@@ -114,7 +114,7 @@ const AddProduct: NextPageWithLayout = () => {
             <input
               type="text"
               id="add_prouct_price"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product price"
               {...register("price", { required: true, valueAsNumber: true })}
             />

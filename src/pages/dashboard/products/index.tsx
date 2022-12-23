@@ -13,6 +13,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import Link from "next/link";
 import Router from "next/router";
 import dayjs from "dayjs";
+import { formatPrice } from "@/utils/format";
 
 // components imports
 import DashboardLayout from "@/components/layouts/DashboardLayout";
@@ -64,7 +65,8 @@ const Products: NextPageWithLayout = () => {
       {
         accessorKey: "price",
         header: "Price",
-
+        cell: ({ cell }) =>
+          cell.getValue() ? formatPrice(cell.getValue()) : "-",
         enableColumnFilter: false,
       },
       {

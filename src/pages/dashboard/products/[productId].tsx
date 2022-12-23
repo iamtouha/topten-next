@@ -7,6 +7,7 @@ import Router from "next/router";
 import { toast } from "react-toastify";
 import { useIsMutating } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { formatPrice } from "@/utils/format";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -236,7 +237,7 @@ const UpdateProduct: NextPageWithLayout = () => {
             <ProductDetails product={product} />
           </div>
         ) : (
-          <p className="text-sm font-medium text-neutral-700 md:text-base">
+          <p className="text-sm font-medium text-title md:text-base">
             No product with this id
           </p>
         )}
@@ -260,7 +261,7 @@ const ProductDetails = ({
     { key: "Size", value: product?.size },
     {
       key: "Price",
-      value: `${product?.price} Tk`,
+      value: formatPrice(product?.price),
     },
     {
       key: "Created at",
