@@ -65,6 +65,7 @@ const UpdateProduct: NextPageWithLayout = () => {
         toast.success("Product deleted!", {
           toastId: "deleteProductSuccess",
         });
+        await Router.push("/dashboard/products");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "deleteProductError" });
@@ -115,7 +116,7 @@ const UpdateProduct: NextPageWithLayout = () => {
       </Head>
       <main className={styles.wrapper}>
         {product ? (
-          <div className="grid gap-8">
+          <div className="grid gap-10">
             <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
               <div className="grid gap-5">

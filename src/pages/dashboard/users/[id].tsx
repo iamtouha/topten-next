@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import Head from "next/head";
 import Router from "next/router";
 import { useSession } from "next-auth/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useIsMutating } from "@tanstack/react-query";
 
@@ -27,11 +27,12 @@ const User: NextPageWithLayout = () => {
   // find user
   const { data: user, status, error } = trpc.admin.users.getOne.useQuery(id);
   // update user's role
-  const [selectedRole, setSelectedRole] = useState(user?.role as USER_ROLE);
-  useEffect(() => {
-    if (!user) return;
-    setSelectedRole(user.role);
-  }, [user]);
+  const [selectedRole, setSelectedRole] = useState<USER_ROLE>(
+    user?.role as USER_ROLE
+  );
+  useMemo(() => {
+    setSelectedRole(user?.role as USER_ROLE);
+  }, [user?.role]);
   const { mutateAsync: updateRole, status: roleStatus } =
     trpc.admin.users.updateRole.useMutation({
       onSuccess: async (user) => {
@@ -90,7 +91,7 @@ const User: NextPageWithLayout = () => {
       </Head>
       <main className={styles.wrapper}>
         {user ? (
-          <div className="grid gap-8">
+          <div className="grid gap-10">
             <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
               <div className="flex flex-wrap items-center gap-2.5">
@@ -109,7 +110,9 @@ const User: NextPageWithLayout = () => {
                       <span className="block truncate">
                         {roleStatus === "loading"
                           ? "Loading..."
-                          : selectedRole && formatRole(selectedRole)}
+                          : selectedRole
+                          ? formatRole(selectedRole)
+                          : "-"}
                       </span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                         <ChevronUpDownIcon

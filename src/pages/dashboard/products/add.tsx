@@ -32,7 +32,7 @@ const schema = z.object({
 
 const AddProduct: NextPageWithLayout = () => {
   // trpc
-  const { mutateAsync: addItem, status: addStatus } =
+  const { mutateAsync: addProduct, status: addStatus } =
     trpc.admin.products.create.useMutation({
       onSuccess: async (product) => {
         toast.success(`${product.name}-${product.size} added successfully!`);
@@ -41,6 +41,7 @@ const AddProduct: NextPageWithLayout = () => {
         toast.error(e.message, { toastId: "addProductError" });
       },
     });
+
   // react-hook-form
   const {
     register,
@@ -49,7 +50,7 @@ const AddProduct: NextPageWithLayout = () => {
     reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await addItem({ ...data });
+    await addProduct({ ...data });
     reset();
   };
 
