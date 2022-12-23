@@ -8,7 +8,7 @@
   @apply mx-auto grid place-items-center gap-2.5;
 }
 .title {
-  @apply text-center text-lg font-medium text-black md:text-xl;
+  @apply text-center text-lg font-medium text-title md:text-xl;
 }
 .copyright {
   @apply text-center text-xs font-semibold text-lowkey md:text-sm;

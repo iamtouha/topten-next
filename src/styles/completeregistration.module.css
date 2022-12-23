@@ -1,5 +1,5 @@
 .formTitle {
-  @apply text-center text-xl font-bold text-neutral-700 md:text-2xl;
+  @apply text-center text-xl font-bold text-title md:text-2xl;
 }
 .form {
   @apply my-4 grid gap-5 whitespace-nowrap text-xs md:gap-4 md:text-sm;
@@ -8,13 +8,13 @@
   @apply grid w-full gap-2;
 }
 .inputLabel {
-  @apply text-sm font-medium text-black md:text-base;
+  @apply text-sm font-medium text-title md:text-base;
 }
 .input {
-  @apply w-full px-4 py-2.5 text-black transition-colors placeholder:text-lowkey;
+  @apply w-full px-4 py-2.5 text-title transition-colors placeholder:text-lowkey;
 }
 .baseText {
-  @apply mb-8 text-center text-sm font-medium text-black md:text-base;
+  @apply mb-8 text-center text-sm font-medium text-title md:text-base;
 }
 .richText {
   @apply text-primary-700;

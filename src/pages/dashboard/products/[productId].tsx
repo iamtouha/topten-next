@@ -47,26 +47,26 @@ const UpdateProduct: NextPageWithLayout = () => {
   // update product
   const { mutateAsync: updateProduct, status: updateStatus } =
     trpc.admin.products.update.useMutation({
-      onMutate: async () => {
-        updateStatus === "success" && toast.success("Product updated!");
+      onSuccess: async () => {
+        toast.success("Product updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "updateProductError" });
       },
     });
   // delete product
-  const { mutateAsync: deleteProduct, status: deleteStatus } =
-    trpc.admin.products.delete.useMutation({
-      onMutate: async () => {
-        deleteStatus === "success" &&
-          toast.success("Product deleted!", {
-            toastId: "deleteProductSuccess",
-          });
+  const { mutateAsync: deleteProduct } = trpc.admin.products.delete.useMutation(
+    {
+      onSuccess: async () => {
+        toast.success("Product deleted!", {
+          toastId: "deleteProductSuccess",
+        });
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "deleteProductError" });
       },
-    });
+    }
+  );
   // react-hook-form
   const {
     register,
@@ -82,7 +82,6 @@ const UpdateProduct: NextPageWithLayout = () => {
       price: data.price,
     });
     reset();
-    toast.success("Product updated!", { toastId: "updateProductSuccess" });
   };
   // refetch product
   const number = useIsMutating();
@@ -271,8 +270,10 @@ const ProductDetails = ({
       <div className="grid gap-y-2.5 sm:grid-cols-2">
         {currentProduct.map((item, i) => (
           <div key={i} className="flex gap-2">
-            <p className="text-sm font-medium md:text-base">{item.key}:</p>
-            <p className="text-sm text-neutral-900 md:text-base">
+            <p className="text-sm font-medium text-title md:text-base">
+              {item.key}:
+            </p>
+            <p className="text-sm text-title md:text-base">
               {item.value ?? "-"}
             </p>
           </div>

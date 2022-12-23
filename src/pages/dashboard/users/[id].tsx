@@ -34,9 +34,9 @@ const User: NextPageWithLayout = () => {
   }, [user]);
   const { mutateAsync: updateRole, status: roleStatus } =
     trpc.admin.users.updateRole.useMutation({
-      onMutate: async (user) => {
+      onSuccess: async (user) => {
         setSelectedRole(user.role);
-        activeStatus === "success" && toast.success("User role updated!");
+        toast.success("User role updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "editRoleError" });
@@ -45,31 +45,23 @@ const User: NextPageWithLayout = () => {
   // update user's status
   const { mutateAsync: updateStatus, status: activeStatus } =
     trpc.admin.users.updateStatus.useMutation({
-      onMutate: async ({ id }) => {
-        if (session.data?.user?.id === id) {
-          return;
-        }
-        activeStatus === "success" && toast.success("User status updated!");
+      onSuccess: async () => {
+        toast.success("User status updated!");
       },
       onError: async (e) => {
         toast.error(e.message, { toastId: "toggleUserError" });
       },
     });
   // delete user
-  const { mutateAsync: deleteUser, status: deleteStatus } =
-    trpc.admin.users.delete.useMutation({
-      onMutate: async (id) => {
-        if (session.data?.user?.id === id) {
-          return;
-        }
-        deleteStatus === "success" &&
-          toast.success("User deleted!", { toastId: "deleteUserSuccess" });
-        await Router.push("/dashboard/users");
-      },
-      onError: async (e) => {
-        toast.error(e.message, { toastId: "deleteUserError" });
-      },
-    });
+  const { mutateAsync: deleteUser } = trpc.admin.users.delete.useMutation({
+    onSuccess: async () => {
+      toast.success("User deleted!", { toastId: "deleteUserSuccess" });
+      await Router.push("/dashboard/users");
+    },
+    onError: async (e) => {
+      toast.error(e.message, { toastId: "deleteUserError" });
+    },
+  });
   // refetch user
   const number = useIsMutating();
   useEffect(() => {
@@ -260,10 +252,10 @@ const UserDetails = ({
           <>
             {userItem.body.map((userbody, j) => (
               <div key={j} className="flex gap-2">
-                <p className="text-sm font-medium md:text-base">
+                <p className="text-sm font-medium text-title md:text-base">
                   {userbody.key}:
                 </p>
-                <p className="text-sm text-neutral-900 md:text-base">
+                <p className="text-sm text-title md:text-base">
                   {userbody.value ?? "-"}
                 </p>
               </div>

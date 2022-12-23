@@ -23,7 +23,7 @@
   @apply hidden lg:flex;
 }
 .link {
-  @apply cursor-pointer font-medium text-neutral-800 transition hover:text-opacity-75 active:text-opacity-100;
+  @apply cursor-pointer font-medium text-title transition hover:text-opacity-75 active:text-opacity-100;
 }
 .activeLink {
   @apply text-green-500;
@@ -35,7 +35,7 @@
   @apply hidden lg:block;
 }
 .mobileButton {
-  @apply block aspect-square w-7 cursor-pointer stroke-2 text-neutral-800 transition-opacity hover:opacity-80 active:opacity-100 lg:hidden;
+  @apply block aspect-square w-7 cursor-pointer stroke-2 text-title transition-opacity hover:opacity-80 active:opacity-100 lg:hidden;
 }
 .stopOverflowY {
   @apply overflow-y-hidden lg:overflow-y-auto;
