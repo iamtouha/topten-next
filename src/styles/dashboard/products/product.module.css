@@ -5,14 +5,14 @@
   @apply text-base font-medium text-success md:text-lg;
 }
 .form {
-  @apply grid gap-2 whitespace-nowrap text-xs md:text-sm;
+  @apply grid gap-2.5 whitespace-nowrap;
 }
 .inputWrapper {
-  @apply grid w-full gap-2;
+  @apply grid gap-2;
 }
 .inputLabel {
-  @apply text-sm font-medium text-title md:text-base;
+  @apply text-xs font-medium text-title md:text-sm;
 }
 .input {
-  @apply w-full px-4 py-2.5 text-title transition-colors placeholder:text-lowkey;
+  @apply w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm;
 }

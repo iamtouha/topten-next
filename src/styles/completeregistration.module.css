@@ -2,16 +2,16 @@
   @apply text-center text-xl font-bold text-title md:text-2xl;
 }
 .form {
-  @apply my-4 grid gap-5 whitespace-nowrap text-xs md:gap-4 md:text-sm;
+  @apply my-4 grid gap-5 whitespace-nowrap md:gap-4;
 }
 .inputWrapper {
-  @apply grid w-full gap-2;
+  @apply grid  gap-2;
 }
 .inputLabel {
-  @apply text-sm font-medium text-title md:text-base;
+  @apply text-xs font-medium text-title md:text-sm;
 }
 .input {
-  @apply w-full px-4 py-2.5 text-title transition-colors placeholder:text-lowkey;
+  @apply w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm;
 }
 .baseText {
   @apply mb-8 text-center text-sm font-medium text-title md:text-base;

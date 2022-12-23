@@ -23,25 +23,16 @@ type InputFields = {
 
 const schema = z.object({
   fullName: z
-    .string({
-      required_error: "Full name is required",
-      invalid_type_error: "Please input 5-32 letters",
-    })
-    .min(5)
-    .max(32),
+    .string()
+    .min(5, { message: "Full name must be at least 5 characters" })
+    .max(32, { message: "Full name must be at most 32 characters" }),
   phone: z
-    .string({
-      required_error: "Phone number is required",
-      invalid_type_error: "Please input 11-15 digits",
-    })
-    .min(11)
-    .max(15),
+    .string()
+    .min(11, { message: "Phone number must be at least 11 characters" })
+    .max(15, { message: "Phone number must be at most 15 characters" }),
   designation: z
-    .string({
-      required_error: "Designation is required",
-      invalid_type_error: "Please input at least 4 letters",
-    })
-    .min(4),
+    .string()
+    .min(4, { message: "Designation must be at least 4 characters" }),
 });
 
 const CompleteRegistration: NextPageWithLayout = () => {
@@ -105,8 +96,8 @@ const CompleteRegistration: NextPageWithLayout = () => {
             </label>
             <input
               type="text"
-              className={styles.input}
               id="create_profile_fullName"
+              className={styles.input}
               placeholder="Full name"
               {...register("fullName", { required: true })}
             />

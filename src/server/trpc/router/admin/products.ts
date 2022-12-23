@@ -81,8 +81,8 @@ export const productsAdminRouter = router({
     .input(
       z.object({
         id: z.string(),
-        name: z.string(),
-        size: z.string(),
+        name: z.string().min(1),
+        size: z.string().min(1),
         price: z.number().min(0),
         published: z.boolean().default(true),
       })

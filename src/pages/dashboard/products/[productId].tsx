@@ -18,14 +18,17 @@ type Inputs = {
 };
 
 const schema = z.object({
-  name: z.string({ required_error: "Name is required" }),
-  size: z.string({ required_error: "Size is required" }),
+  name: z
+    .string()
+    .min(1, { message: "Product name must be at least 1 character" }),
+  size: z
+    .string()
+    .min(1, { message: "Product size must be at least 1 character" }),
   price: z
     .number({
-      required_error: "Price is required",
       invalid_type_error: "Please input only numbers",
     })
-    .min(0),
+    .min(0, { message: "Product price must be greater than or equal 0" }),
 });
 
 // components imports
@@ -115,7 +118,7 @@ const UpdateProduct: NextPageWithLayout = () => {
             <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
               <div className="grid gap-5">
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <Button
                     aria-label="update product status"
                     className={
@@ -152,14 +155,17 @@ const UpdateProduct: NextPageWithLayout = () => {
                       htmlFor="update_product_name"
                       className={styles.inputLabel}
                     >
-                      Name
+                      Product name
                     </label>
                     <input
                       type="text"
-                      className={styles.input}
                       id="update_product_name"
-                      placeholder="Name"
+                      className={styles.input}
+                      placeholder="Product name"
                       {...register("name", { required: true })}
+                      defaultValue={
+                        updateStatus === "loading" ? "" : product?.name
+                      }
                     />
                     {errors.name ? (
                       <p className="text-sm font-medium text-danger">
@@ -172,14 +178,17 @@ const UpdateProduct: NextPageWithLayout = () => {
                       htmlFor="update_product_size"
                       className={styles.inputLabel}
                     >
-                      Size
+                      Product size
                     </label>
                     <input
                       type="text"
                       id="update_product_size"
                       className={styles.input}
-                      placeholder="Size"
+                      placeholder="Product size"
                       {...register("size", { required: true })}
+                      defaultValue={
+                        updateStatus === "loading" ? "" : product?.size
+                      }
                     />
                     {errors.size ? (
                       <p className="text-sm font-medium text-danger">
@@ -192,17 +201,20 @@ const UpdateProduct: NextPageWithLayout = () => {
                       htmlFor="update_product_price"
                       className={styles.inputLabel}
                     >
-                      Price
+                      Product price
                     </label>
                     <input
                       type="number"
                       id="update_product_price"
                       className={styles.input}
-                      placeholder="Price"
+                      placeholder="Product price"
                       {...register("price", {
                         required: true,
                         valueAsNumber: true,
                       })}
+                      defaultValue={
+                        updateStatus === "loading" ? "" : product?.price
+                      }
                     />
                     {errors.price ? (
                       <p className="text-sm font-medium text-danger">
@@ -214,7 +226,9 @@ const UpdateProduct: NextPageWithLayout = () => {
                     className="mt-2.5 w-full bg-primary-700 py-3"
                     disabled={updateStatus === "loading"}
                   >
-                    {updateStatus === "loading" ? "Loading..." : "Update"}
+                    {updateStatus === "loading"
+                      ? "Loading..."
+                      : "Update product"}
                   </Button>
                 </form>
               </div>
@@ -269,11 +283,11 @@ const ProductDetails = ({
       <p className={styles.richTitle}>Product</p>
       <div className="grid gap-y-2.5 sm:grid-cols-2">
         {currentProduct.map((item, i) => (
-          <div key={i} className="flex gap-2">
+          <div key={i} className="flex flex-wrap gap-2">
             <p className="text-sm font-medium text-title md:text-base">
               {item.key}:
             </p>
-            <p className="text-sm text-title md:text-base">
+            <p className="text-sm text-title line-clamp-1 md:text-base">
               {item.value ?? "-"}
             </p>
           </div>

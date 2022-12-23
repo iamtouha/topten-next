@@ -93,10 +93,10 @@ const User: NextPageWithLayout = () => {
           <div className="grid gap-8">
             <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
-              <div className="flex items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <Listbox
                   as="div"
-                  className="w-48"
+                  className="w-40"
                   value={selectedRole ?? ""}
                   onChange={(role: USER_ROLE) => {
                     setSelectedRole(role);
@@ -125,9 +125,9 @@ const User: NextPageWithLayout = () => {
                       leaveTo="opacity-0"
                     >
                       <Listbox.Options className={styles.options}>
-                        {Object.values(USER_ROLE).map((role, i) => (
+                        {Object.values(USER_ROLE).map((role) => (
                           <Listbox.Option
-                            key={i}
+                            key={role}
                             className={({ active }) =>
                               `${styles.option} ${
                                 active

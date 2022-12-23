@@ -17,14 +17,17 @@ type Inputs = {
 };
 
 const schema = z.object({
-  name: z.string({ required_error: "Name is required" }),
-  size: z.string({ required_error: "Size is required" }),
+  name: z
+    .string()
+    .min(1, { message: "Product name must be at least 1 character" }),
+  size: z
+    .string()
+    .min(1, { message: "Product size must be at least 1 character" }),
   price: z
     .number({
-      required_error: "Price is required",
       invalid_type_error: "Please input only numbers",
     })
-    .min(0),
+    .min(0, { message: "Product price must be greater than or equal 0" }),
 });
 
 const AddProduct: NextPageWithLayout = () => {
@@ -58,21 +61,21 @@ const AddProduct: NextPageWithLayout = () => {
       <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
         <form
           aria-label="add-product form"
-          className="md:text-sm; grid gap-2 whitespace-nowrap text-xs"
+          className="grid w-full gap-2 whitespace-nowrap text-xs md:text-sm"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="grid w-full gap-2">
             <label
               htmlFor="add_product_name"
-              className="text-sm font-medium text-title md:text-base"
+              className="text-xs font-medium text-title md:text-sm"
             >
-              Name
+              Product name
             </label>
             <input
               type="text"
-              className="w-full px-4 py-2.5 text-title transition-colors placeholder:text-lowkey"
               id="add_product_name"
-              placeholder="Name"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm"
+              placeholder="Product name"
               {...register("name", { required: true })}
             />
             {errors.name ? (
@@ -84,15 +87,15 @@ const AddProduct: NextPageWithLayout = () => {
           <div className="grid w-full gap-2">
             <label
               htmlFor="add_prduct_size"
-              className="text-sm font-medium text-title md:text-base"
+              className="text-xs font-medium text-title md:text-sm"
             >
-              Size
+              Product size
             </label>
             <input
               type="text"
-              className="w-full px-4 py-2.5 text-title transition-colors placeholder:text-lowkey"
               id="add_prduct_size"
-              placeholder="Size"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm"
+              placeholder="Product size"
               {...register("size", { required: true })}
             />
             {errors.size ? (
@@ -104,15 +107,15 @@ const AddProduct: NextPageWithLayout = () => {
           <div className="grid w-full gap-2">
             <label
               htmlFor="add_prouct_price"
-              className="text-sm font-medium text-title md:text-base"
+              className="text-xs font-medium text-title md:text-sm"
             >
-              Price
+              Product price
             </label>
             <input
               type="text"
-              className="w-full px-4 py-2.5 text-title transition-colors placeholder:text-lowkey"
               id="add_prouct_price"
-              placeholder="Price"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey md:text-sm"
+              placeholder="Product price"
               {...register("price", { required: true, valueAsNumber: true })}
             />
             {errors.price ? (
@@ -125,7 +128,7 @@ const AddProduct: NextPageWithLayout = () => {
             className="mt-2.5 w-full bg-primary-700 py-3"
             disabled={addStatus === "loading"}
           >
-            {addStatus === "loading" ? "Loading..." : "Add"}
+            {addStatus === "loading" ? "Loading..." : "Add product"}
           </Button>
         </form>
       </main>

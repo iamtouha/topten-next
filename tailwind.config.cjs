@@ -39,6 +39,7 @@ module.exports = {
       addUtilities(customClasses);
     }),
     require("@tailwindcss/forms"),
+    require("@tailwindcss/line-clamp"),
   ],
 };
 

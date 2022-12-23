@@ -146,7 +146,7 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
         <div className="mr-0 ml-auto flex gap-4">
           {props.disableGlobalFilter ? null : (
             <div>
-              <label htmlFor="global-filter-iinput" className="sr-only">
+              <label htmlFor="global-filter-input" className="sr-only">
                 Search any field
               </label>
               <input
