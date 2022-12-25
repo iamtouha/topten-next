@@ -115,7 +115,7 @@ const Stores: NextPageWithLayout = () => {
         </div>
 
         <CustomTable<Product>
-          tableTitle={`Products (${data?.count ?? 0} entries)`}
+          tableTitle={`Stores (${data?.count ?? 0} entries)`}
           columns={columns}
           data={data?.products ?? []}
           state={{

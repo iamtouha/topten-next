@@ -97,13 +97,13 @@ const Searchbar = <TData extends User | Product | Store>({
                     <div className={styles.inputWrapper}>
                       <Combobox.Button className={styles.iconWrapper}>
                         <MagnifyingGlassIcon
-                          className={`${styles.icon} text-gray-500`}
+                          className={`${styles.icon} text-neutral-500`}
                           aria-hidden="true"
                         />
                       </Combobox.Button>
                       <Combobox.Input
                         className={styles.input}
-                        placeholder="Search..."
+                        placeholder={`Search ${route}...`}
                         onChange={(e) => setQuery(e.target.value)}
                       />
                     </div>
@@ -147,7 +147,7 @@ const Searchbar = <TData extends User | Product | Store>({
                                   </span>
                                   <span
                                     className={`${styles.iconWrapper} ${
-                                      active ? "text-title/90" : "text-title"
+                                      active ? "text-white" : "text-title"
                                     }`}
                                   >
                                     <Bars3BottomLeftIcon
