@@ -20,7 +20,7 @@
   @apply translate-x-0;
 }
 .desktopLinks {
-  @apply hidden lg:flex;
+  @apply hidden w-full justify-start pl-10 lg:flex;
 }
 .link {
   @apply cursor-pointer font-medium text-title transition hover:text-opacity-75 active:text-opacity-100;

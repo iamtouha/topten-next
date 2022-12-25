@@ -10,6 +10,7 @@ import Button from "../Button";
 
 // images imports
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { USER_ROLE } from "@prisma/client";
 
 const desktopLinks = [
   { label: "Home", url: "/" },
@@ -81,6 +82,17 @@ const Navbar = () => {
           setIsMobile={setIsMobile}
         />
         <DesktopLinks router={router} />
+        {session?.user?.role === USER_ROLE.ADMIN ||
+        session?.user?.role === USER_ROLE.SUPER_ADMIN ? (
+          <Link
+            href={"/dashboard"}
+            className={`${
+              router.pathname.startsWith("/dashboard") ? styles.activeLink : ""
+            } ${styles.link} mr-6 ml-auto`}
+          >
+            {"Dashboard"}
+          </Link>
+        ) : null}
         <div className={styles.endColumn}>
           <div className={styles.authButtonWrapper}>
             {session ? (
