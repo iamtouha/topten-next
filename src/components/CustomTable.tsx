@@ -315,6 +315,19 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
                   );
                 })
               : null}
+            {!(props.isLoading || props.isRefetching || props.isError) &&
+            props.data.length === 0 ? (
+              <tr>
+                <td
+                  className="px-4"
+                  colSpan={table.getVisibleLeafColumns().length}
+                >
+                  <div className="py-6 text-center text-lg">
+                    No data available.
+                  </div>
+                </td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </div>
