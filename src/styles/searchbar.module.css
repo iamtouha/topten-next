@@ -1,0 +1,44 @@
+.button {
+  @apply flex items-center gap-1.5 rounded-md bg-title/40 px-2.5 py-2 text-sm font-semibold text-title transition-opacity hover:bg-title/30;
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75;
+}
+.buttonIcon {
+  @apply aspect-square w-5 text-title transition-transform hover:scale-[105%] active:scale-[95%];
+}
+.shortcut {
+  @apply ml-2 rounded-md border-2 border-title px-1.5 text-sm text-title;
+}
+.dialog {
+  @apply relative z-50;
+}
+.dialogOverlay {
+  @apply fixed inset-0 bg-gray-900/75;
+}
+.dialogPanelWrapper {
+  @apply mx-auto min-h-full w-[89vw] max-w-screen-sm pt-[25vh];
+}
+.inputWrapper {
+  @apply relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md ring-1 ring-gray-500/75;
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300;
+}
+.iconWrapper {
+  @apply absolute inset-y-0 left-0 flex items-center pl-3;
+}
+.icon {
+  @apply aspect-square w-5;
+}
+.input {
+  @apply w-full border-none py-3 pl-10 pr-4 text-sm font-medium leading-5 text-title outline-none placeholder:text-lowkey/80;
+}
+.options {
+  @apply absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-gray-500/75 focus:outline-none;
+}
+.optionNull {
+  @apply relative cursor-default select-none bg-red-500/90 py-2 pl-10 pr-4 font-medium text-white;
+}
+.option {
+  @apply relative cursor-default select-none py-2 pl-10 pr-4 font-medium;
+}
+.optionText {
+  @apply block truncate;
+}

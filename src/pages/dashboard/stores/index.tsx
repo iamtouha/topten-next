@@ -21,7 +21,7 @@ import CustomTable from "@/components/CustomTable";
 import Button from "@/components/Button";
 
 type fieldValue = string | undefined;
-const Products: NextPageWithLayout = () => {
+const Stores: NextPageWithLayout = () => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
   ]);
@@ -105,12 +105,12 @@ const Products: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Products | Top Ten Agro Chemicals</title>
+        <title>Stores | Top Ten Agro Chemicals</title>
       </Head>
       <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
         <div className="p-2">
           <Link href={"/dashboard/products/add"}>
-            <Button className="bg-primary-700">Add product</Button>
+            <Button className="bg-primary-700">Add store</Button>
           </Link>
         </div>
 
@@ -149,6 +149,6 @@ const Products: NextPageWithLayout = () => {
   );
 };
 
-Products.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Stores.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default Products;
+export default Stores;

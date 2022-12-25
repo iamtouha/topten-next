@@ -1,9 +1,10 @@
-import Button from "@/components/Button";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
 import { type NextPageWithLayout } from "../_app";
+
+// components imports
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const dashboardRoutes = [
   { name: "Users & Employees", path: "/dashboard/users" },

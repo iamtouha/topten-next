@@ -1,15 +1,16 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import styles from "@/styles/dashboard/products/product.module.css";
+import { formatPrice } from "@/utils/format";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type Product } from "@prisma/client";
+import { useIsMutating } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Router from "next/router";
-import { toast } from "react-toastify";
-import { useIsMutating } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { formatPrice } from "@/utils/format";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import * as z from "zod";
 
 type Inputs = {
@@ -36,6 +37,7 @@ const schema = z.object({
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Loader from "@/components/Loader";
+import Searchbar from "@/components/Searchbar";
 
 const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
@@ -77,7 +79,6 @@ const UpdateProduct: NextPageWithLayout = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await updateProduct({
@@ -86,13 +87,18 @@ const UpdateProduct: NextPageWithLayout = () => {
       size: data.size,
       price: data.price,
     });
-    reset();
   };
-  // refetch product
+  // get all products
+  const { data } = trpc.admin.products.get.useQuery({
+    sortBy: "createdAt",
+    sortDesc: true,
+  });
+  // refetch
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.admin.products.getOne.invalidate(productId);
+      utils.admin.products.get.invalidate();
     }
   }, [number, productId, utils]);
 
@@ -117,6 +123,9 @@ const UpdateProduct: NextPageWithLayout = () => {
       <main className={styles.wrapper}>
         {product ? (
           <div className="grid gap-10">
+            {data?.products && (
+              <Searchbar<Product> data={data.products} route="products" />
+            )}
             <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
               <div className="grid gap-5">

@@ -3,7 +3,7 @@ import styles from "@/styles/dashboard/users/user.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { formatRole } from "@/utils/format";
 import { Listbox, Transition } from "@headlessui/react";
-import { USER_ROLE } from "@prisma/client";
+import { User, USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Router from "next/router";
@@ -12,11 +12,14 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useIsMutating } from "@tanstack/react-query";
 
-// components and images imports
+// icons imports
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+
+// components imports
 import Loader from "@/components/Loader";
 import Button from "@/components/Button";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import Searchbar from "@/components/Searchbar";
 
 const User: NextPageWithLayout = () => {
   const id = Router.query.id as string;
@@ -63,11 +66,17 @@ const User: NextPageWithLayout = () => {
       toast.error(e.message, { toastId: "deleteUserError" });
     },
   });
-  // refetch user
+  // get all users
+  const { data } = trpc.admin.users.get.useQuery({
+    sortBy: "createdAt",
+    sortDesc: true,
+  });
+  // refetch
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.admin.users.getOne.invalidate(id);
+      utils.admin.users.get.invalidate();
     }
   }, [id, number, utils]);
 
@@ -92,6 +101,7 @@ const User: NextPageWithLayout = () => {
       <main className={styles.wrapper}>
         {user ? (
           <div className="grid gap-10">
+            {data?.users && <Searchbar<User> data={data.users} route="users" />}
             <div className="grid gap-4">
               <p className={styles.richTitle}>Update</p>
               <div className="flex flex-wrap items-center gap-2.5">
