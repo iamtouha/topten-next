@@ -1,8 +1,16 @@
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Head from "next/head";
+import Link from "next/link";
 import Router from "next/router";
 import { type NextPageWithLayout } from "../_app";
+
+const dashboardRoutes = [
+  { name: "Users & Employees", path: "/dashboard/users" },
+  { name: "Products", path: "/dashboard/products" },
+  { name: "Stores", path: "/dashboard/stores" },
+  { name: "Invoices", path: "/dashboard/invoices" },
+];
 
 const Dashboard: NextPageWithLayout = () => {
   return (
@@ -11,22 +19,18 @@ const Dashboard: NextPageWithLayout = () => {
         <title>Dashboard | Top Ten Agro Chemicals</title>
       </Head>
       <main className="min-h-screen max-w-screen-xl pt-5 pb-10 container-res">
-        <div className="flex items-center gap-2.5">
-          <Button
-            aria-label="navigate to users page"
-            className="bg-primary-700"
-            onClick={() => Router.push("/dashboard/users")}
-          >
-            Users
-          </Button>
-          <Button
-            aria-label="navigate to products page"
-            className="bg-primary-700"
-            onClick={() => Router.push("/dashboard/products")}
-          >
-            Products
-          </Button>
-        </div>
+        <ul className="mx-auto block w-64 text-center text-lg text-white">
+          {dashboardRoutes.map((route) => (
+            <li key={route.name} className="w-full">
+              <Link
+                href={route.path}
+                className="my-4 block bg-primary-700 px-4 py-2 transition-colors hover:bg-primary-600"
+              >
+                {route.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </main>
     </>
   );
