@@ -7,6 +7,9 @@ export const usersAdminRouter = router({
   list: adminProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.user.findMany({ include: { profile: true } });
   }),
+  profileList: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.profile.findMany();
+  }),
   get: adminProcedure
     .input(
       z.object({
@@ -54,7 +57,7 @@ export const usersAdminRouter = router({
   getOne: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const user = await ctx.prisma.user.findUnique({
       where: { id: input },
-      include: { profile: true },
+      include: { profile: { include: { roles: true } } },
     });
     if (!user) {
       throw new TRPCError({ code: "NOT_FOUND", message: "User not found!" });
