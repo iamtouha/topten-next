@@ -1,7 +1,7 @@
 import { type NextPageWithLayout } from "@/pages/_app";
 import { formatRole } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
-import { type User } from "@prisma/client";
+import { type Profile, type User } from "@prisma/client";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -14,16 +14,15 @@ import Router from "next/router";
 import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 
+type UserWithProfile = User & {
+  profile: Profile | null;
+};
+
 // components imports
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
-type fieldValue = string | undefined;
 const Users: NextPageWithLayout = () => {
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: "createdAt", desc: true },
-  ]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
     name: false,
@@ -31,33 +30,53 @@ const Users: NextPageWithLayout = () => {
     updatedBy: false,
     updatedAt: false,
   });
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
 
   // trpc
-  const { data, isLoading, isError, isRefetching } =
-    trpc.admin.users.get.useQuery(
-      {
-        page: pagination.pageIndex,
-        perPage: pagination.pageSize,
-        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        sortBy: sorting[0]?.id as
-          | "email"
-          | "name"
-          | "role"
-          | "active"
-          | "createdAt"
-          | undefined,
-        sortDesc: sorting[0]?.desc,
-      },
-      { refetchOnWindowFocus: false }
-    );
+  const {
+    data: users,
+    isLoading,
+    isError,
+  } = trpc.admin.users.list.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   // table column
-  const columns = useMemo<ColumnDef<User, any>[]>(
+  const columns = useMemo<ColumnDef<UserWithProfile, any>[]>(
     () => [
+      {
+        header: "User",
+        columns: [
+          {
+            accessorKey: "name",
+            header: "Name",
+          },
+          {
+            accessorKey: "email",
+            header: "Email",
+          },
+          {
+            accessorKey: "role",
+            header: "Role",
+            cell: ({ cell }) =>
+              cell.getValue() ? formatRole(cell.getValue()) : "-",
+          },
+          {
+            accessorKey: "active",
+            header: "Status",
+            cell: ({ cell }) => (cell.getValue() ? "Active" : "Inactive"),
+          },
+          {
+            accessorKey: "createdAt",
+            header: "Created at",
+            enableColumnFilter: false,
+            enableGlobalFilter: false,
+            cell: ({ cell }) =>
+              cell.getValue()
+                ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
+                : "-",
+          },
+        ],
+      },
       {
         header: "Profile",
         columns: [
@@ -75,38 +94,6 @@ const Users: NextPageWithLayout = () => {
           },
         ],
       },
-      {
-        header: "User",
-        columns: [
-          {
-            accessorKey: "name",
-            header: "Name",
-          },
-          {
-            accessorKey: "email",
-            header: "Email",
-          },
-          {
-            accessorKey: "createdAt",
-            header: "Created at",
-            cell: ({ cell }) =>
-              cell.getValue()
-                ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
-                : "-",
-          },
-          {
-            accessorKey: "role",
-            header: "Role",
-            cell: ({ cell }) =>
-              cell.getValue() ? formatRole(cell.getValue()) : "-",
-          },
-          {
-            accessorKey: "active",
-            header: "Status",
-            cell: ({ cell }) => (cell.getValue() ? "Active" : "Inactive"),
-          },
-        ],
-      },
     ],
     []
   );
@@ -117,28 +104,14 @@ const Users: NextPageWithLayout = () => {
         <title>Users | Top Ten Agro Chemicals</title>
       </Head>
       <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
-        <CustomTable<User>
-          tableTitle={`Users (${data?.count ?? 0} entries)`}
+        <CustomTable<UserWithProfile>
+          tableTitle={`Users (${users?.length ?? 0} entries)`}
           columns={columns}
-          data={data?.users ?? []}
-          state={{
-            sorting,
-            pagination,
-            columnVisibility,
-            columnFilters,
-          }}
-          setSorting={setSorting}
-          setColumnFilters={setColumnFilters}
+          data={users ?? []}
+          state={{ columnVisibility }}
           setColumnVisibility={setColumnVisibility}
-          setPagination={setPagination}
-          itemsCount={data?.count}
           isLoading={isLoading}
-          isRefetching={isRefetching}
           isError={isError}
-          disableGlobalFilter
-          manualFiltering
-          manualPagination
-          manualSorting
           rowHoverEffect
           bodyRowProps={(row) => ({
             onClick: () => {
