@@ -12,7 +12,13 @@ const Loader = ({ className, children, ...props }: LoaderProps) => {
       className={`text-sm font-medium text-title md:text-base ${className}`}
       {...props}
     >
-      {children ?? "Loading..."}
+      {children ?? (
+        <div aria-label="text progressbar" role="progressbar" className="pt-12">
+          <div className="mx-auto w-max">
+            <div className="h-16 w-16 animate-spin rounded-full border-t-[3px] border-b-[3px] border-black"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
