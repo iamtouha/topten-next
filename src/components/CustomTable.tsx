@@ -33,7 +33,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import styles from "@/styles/customtable.module.css";
 
 interface Props<TData, TValue = any> {
-  tableTitle?: string;
+  tableTitle?: ReactNode;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
