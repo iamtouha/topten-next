@@ -7,6 +7,7 @@ export const formatRole = (role: string) => {
 
 export const formatPrice = (price: number) => {
   return new Intl.NumberFormat("en-US", {
+    notation: "compact",
     style: "currency",
     currency: "BDT",
   }).format(price);

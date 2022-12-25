@@ -108,14 +108,15 @@ const Stores: NextPageWithLayout = () => {
         <title>Stores | Top Ten Agro Chemicals</title>
       </Head>
       <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
-        <div className="p-2">
-          <Link href={"/dashboard/products/add"}>
-            <Button className="bg-primary-700">Add store</Button>
-          </Link>
-        </div>
-
         <CustomTable<Product>
-          tableTitle={`Stores (${data?.count ?? 0} entries)`}
+          tableTitle={
+            <>
+              {`Stores (${data?.count ?? 0} entries)`}
+              <Link href={"/dashboard/products/add"} className="ml-4">
+                <Button className="bg-primary-700">Add store</Button>
+              </Link>
+            </>
+          }
           columns={columns}
           data={data?.products ?? []}
           state={{

@@ -111,7 +111,10 @@ const Navbar = () => {
               </Link>
             ) : (
               <Link href={"/api/auth/signin"}>
-                <Button aria-label="sign in" className="bg-primary-700">
+                <Button
+                  aria-label="sign in"
+                  className="whitespace-nowrap bg-primary-700"
+                >
                   {status === "loading" ? "Loading..." : "Sign in"}
                 </Button>
               </Link>

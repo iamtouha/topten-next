@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Link from "next/link";
-import Router from "next/router";
 import { type NextPageWithLayout } from "../_app";
 
 // components imports
@@ -22,10 +21,14 @@ const Dashboard: NextPageWithLayout = () => {
       <main className="min-h-screen max-w-screen-xl pt-5 pb-10 container-res">
         <ul className="mx-auto block w-64 text-center text-lg text-white">
           {dashboardRoutes.map((route) => (
-            <li key={route.name} className="w-full">
+            <li
+              aria-label={`navigate to ${route.path} page`}
+              key={route.name}
+              className="w-full"
+            >
               <Link
                 href={route.path}
-                className="my-4 block bg-primary-700 px-4 py-2 transition-colors hover:bg-primary-600"
+                className="my-4 block bg-primary-700 px-4 py-2 transition-colors hover:bg-primary-600 active:bg-primary-700"
               >
                 {route.name}
               </Link>
