@@ -97,17 +97,10 @@ const Navbar = () => {
                   loading="lazy"
                 />
               </Link>
-            ) : status === "loading" ? (
-              <p
-                role="progressbar"
-                className="text-sm font-medium text-neutral-700 md:text-base"
-              >
-                Loading...
-              </p>
             ) : (
               <Link href={"/api/auth/signin"}>
                 <Button aria-label="sign in" className="bg-primary-700">
-                  Sign in
+                  {status === "loading" ? "Loading..." : "Sign in"}
                 </Button>
               </Link>
             )}
