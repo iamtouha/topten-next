@@ -7,6 +7,7 @@ import { useIsMutating } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Router from "next/router";
+import { titleCase } from "@/utils/format";
 import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -208,7 +209,7 @@ const UpdateStore: NextPageWithLayout = () => {
                       Store type
                     </label>
                     <select
-                      id="upadte-store-type"
+                      id="update-store-type"
                       className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
                       {...register("type", { required: true })}
                       defaultValue={
@@ -220,7 +221,7 @@ const UpdateStore: NextPageWithLayout = () => {
                       </option>
                       {Object.values(STORE_TYPE).map((type) => (
                         <option key={type} value={type}>
-                          {type}
+                          {titleCase(type)}
                         </option>
                       ))}
                     </select>

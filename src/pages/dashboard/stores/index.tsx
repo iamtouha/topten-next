@@ -144,7 +144,7 @@ const Stores: NextPageWithLayout = () => {
           bodyRowProps={(row) => ({
             onClick: () => {
               const storeId = row.getValue("id") as string;
-              Router.push("/dashboard/products/" + storeId);
+              Router.push("/dashboard/stores/" + storeId);
             },
           })}
         />
