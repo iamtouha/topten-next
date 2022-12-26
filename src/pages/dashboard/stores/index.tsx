@@ -1,5 +1,4 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import { formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import type { Store } from "@prisma/client";
 import type {
@@ -19,6 +18,7 @@ import { useMemo, useState } from "react";
 import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { titleCase } from "@/utils/format";
 
 type fieldValue = string | undefined;
 const Stores: NextPageWithLayout = () => {
@@ -61,12 +61,17 @@ const Stores: NextPageWithLayout = () => {
       { accessorKey: "name", header: "Name" },
       { accessorKey: "address", header: "Address" },
       {
+        accessorKey: "type",
+        header: "Type",
+        cell: ({ cell }) =>
+          cell.getValue() ? titleCase(cell.getValue()) : "-",
+      },
+      {
         accessorKey: "published",
         header: "Status",
         cell: ({ cell }) => (cell.getValue() ? "Published" : "Unpublished"),
         enableColumnFilter: false,
       },
-      { accessorKey: "type", header: "Store type" },
       {
         accessorKey: "createdAt",
         header: "Created At",
@@ -110,7 +115,7 @@ const Stores: NextPageWithLayout = () => {
           tableTitle={
             <>
               {`Stores (${data?.count ?? 0} entries)`}
-              <Link href={"/dashboard/products/add"} className="ml-4">
+              <Link href={"/dashboard/stores/add"} className="ml-4">
                 <Button className="bg-primary-700">Add store</Button>
               </Link>
             </>

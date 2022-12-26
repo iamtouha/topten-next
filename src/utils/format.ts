@@ -1,7 +1,7 @@
-export const formatRole = (role: string) => {
+export const titleCase = (string: string) => {
   return (
-    role.replace(/_/g, " ").charAt(0).toUpperCase() +
-    role.replace(/_/g, " ").slice(1).toLowerCase()
+    string.replace(/_/g, " ").charAt(0).toUpperCase() +
+    string.replace(/_/g, " ").slice(1).toLowerCase()
   );
 };
 

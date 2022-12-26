@@ -2,6 +2,8 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
+import { titleCase } from "@/utils/format";
+import { STORE_TYPE } from "@prisma/client";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
@@ -9,7 +11,6 @@ import * as z from "zod";
 // components imports
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { STORE_TYPE } from "@prisma/client";
 
 type Inputs = {
   name: string;
@@ -20,10 +21,10 @@ type Inputs = {
 const schema = z.object({
   name: z
     .string()
-    .min(1, { message: "Product name must be at least 1 character" }),
+    .min(1, { message: "Store name must be at least 1 character" }),
   address: z
     .string()
-    .min(1, { message: "Product name must be at least 1 character" }),
+    .min(1, { message: "Store name must be at least 1 character" }),
   type: z.nativeEnum(STORE_TYPE),
 });
 
@@ -111,12 +112,15 @@ const AddStore: NextPageWithLayout = () => {
             </label>
             <select
               id="add-store-type"
-              placeholder="Store type"
+              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
               {...register("type", { required: true })}
             >
+              <option value="" hidden>
+                Select store type
+              </option>
               {Object.values(STORE_TYPE).map((type) => (
                 <option key={type} value={type}>
-                  {type}
+                  {titleCase(type)}
                 </option>
               ))}
             </select>

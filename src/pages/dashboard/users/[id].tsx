@@ -1,7 +1,7 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import styles from "@/styles/dashboard/users/user.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
-import { formatRole } from "@/utils/format";
+import { titleCase } from "@/utils/format";
 import { Listbox, Transition } from "@headlessui/react";
 import { User, USER_ROLE } from "@prisma/client";
 import dayjs from "dayjs";
@@ -121,7 +121,7 @@ const User: NextPageWithLayout = () => {
                         {roleStatus === "loading"
                           ? "Loading..."
                           : selectedRole
-                          ? formatRole(selectedRole)
+                          ? titleCase(selectedRole)
                           : "-"}
                       </span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -157,7 +157,7 @@ const User: NextPageWithLayout = () => {
                                     selected ? "font-medium" : "font-normal"
                                   }`}
                                 >
-                                  {formatRole(role)}
+                                  {titleCase(role)}
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
@@ -227,7 +227,7 @@ const UserDetails = ({
         { key: "Email", value: user?.email },
         {
           key: "Role",
-          value: formatRole(user?.role),
+          value: titleCase(user?.role),
         },
         {
           key: "Created at",

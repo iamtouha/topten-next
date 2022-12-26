@@ -21,10 +21,10 @@ type Inputs = {
 const schema = z.object({
   name: z
     .string()
-    .min(1, { message: "Product name must be at least 1 character" }),
+    .min(1, { message: "Store name must be at least 1 character" }),
   address: z
     .string()
-    .min(1, { message: "Product name must be at least 1 character" }),
+    .min(1, { message: "Store name must be at least 1 character" }),
   type: z.nativeEnum(STORE_TYPE),
 });
 
@@ -45,7 +45,7 @@ const UpdateStore: NextPageWithLayout = () => {
     status,
     error,
   } = trpc.admin.stores.getOne.useQuery(storeId);
-  // update product
+  // update store
   const { mutateAsync: updateStore, status: updateStatus } =
     trpc.admin.stores.update.useMutation({
       onSuccess: async () => {
@@ -90,8 +90,8 @@ const UpdateStore: NextPageWithLayout = () => {
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.admin.products.getOne.invalidate(storeId);
-      utils.admin.products.get.invalidate();
+      utils.admin.stores.getOne.invalidate(storeId);
+      utils.admin.stores.get.invalidate();
     }
   }, [number, storeId, utils]);
 
@@ -209,12 +209,15 @@ const UpdateStore: NextPageWithLayout = () => {
                     </label>
                     <select
                       id="upadte-store-type"
-                      placeholder="Store type"
+                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
                       {...register("type", { required: true })}
                       defaultValue={
                         updateStatus === "loading" ? "" : store?.type
                       }
                     >
+                      <option value="" hidden>
+                        Select store type
+                      </option>
                       {Object.values(STORE_TYPE).map((type) => (
                         <option key={type} value={type}>
                           {type}

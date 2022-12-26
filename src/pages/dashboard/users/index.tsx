@@ -1,5 +1,5 @@
 import { type NextPageWithLayout } from "@/pages/_app";
-import { formatRole } from "@/utils/format";
+import { titleCase } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { type Profile, type User } from "@prisma/client";
 import {
@@ -58,7 +58,7 @@ const Users: NextPageWithLayout = () => {
             accessorKey: "role",
             header: "Role",
             cell: ({ cell }) =>
-              cell.getValue() ? formatRole(cell.getValue()) : "-",
+              cell.getValue() ? titleCase(cell.getValue()) : "-",
           },
           {
             accessorKey: "active",
