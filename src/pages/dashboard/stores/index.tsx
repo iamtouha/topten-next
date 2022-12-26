@@ -1,24 +1,24 @@
+import type { NextPageWithLayout } from "@/pages/_app";
+import { formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
-import Head from "next/head";
-import { useMemo, useState } from "react";
+import type { Store } from "@prisma/client";
 import type {
+  ColumnDef,
   ColumnFiltersState,
   PaginationState,
   SortingState,
   VisibilityState,
-  ColumnDef,
 } from "@tanstack/react-table";
-import type { Product } from "@prisma/client";
-import type { NextPageWithLayout } from "@/pages/_app";
+import dayjs from "dayjs";
+import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
-import dayjs from "dayjs";
-import { formatPrice } from "@/utils/format";
+import { useMemo, useState } from "react";
 
 // components imports
-import DashboardLayout from "@/components/layouts/DashboardLayout";
-import CustomTable from "@/components/CustomTable";
 import Button from "@/components/Button";
+import CustomTable from "@/components/CustomTable";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 type fieldValue = string | undefined;
 const Stores: NextPageWithLayout = () => {
@@ -38,18 +38,16 @@ const Stores: NextPageWithLayout = () => {
   });
 
   const { data, isLoading, isError, isRefetching } =
-    trpc.admin.products.get.useQuery(
+    trpc.admin.stores.get.useQuery(
       {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,
         name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        size: columnFilters.find((f) => f.id === "size")?.value as fieldValue,
         sortBy: sorting[0]?.id as
           | "name"
-          | "createdAt"
-          | "size"
-          | "price"
           | "published"
+          | "type"
+          | "createdAt"
           | undefined,
         sortDesc: sorting[0]?.desc,
       },
@@ -57,18 +55,18 @@ const Stores: NextPageWithLayout = () => {
     );
 
   // table column
-  const columns = useMemo<ColumnDef<Product, any>[]>(
+  const columns = useMemo<ColumnDef<Store, any>[]>(
     () => [
       { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
       { accessorKey: "name", header: "Name" },
-      { accessorKey: "size", header: "Size" },
+      { accessorKey: "address", header: "Address" },
       {
-        accessorKey: "price",
-        header: "Price",
-        cell: ({ cell }) =>
-          cell.getValue() ? formatPrice(cell.getValue()) : "-",
+        accessorKey: "published",
+        header: "Status",
+        cell: ({ cell }) => (cell.getValue() ? "Published" : "Unpublished"),
         enableColumnFilter: false,
       },
+      { accessorKey: "type", header: "Store type" },
       {
         accessorKey: "createdAt",
         header: "Created At",
@@ -108,7 +106,7 @@ const Stores: NextPageWithLayout = () => {
         <title>Stores | Top Ten Agro Chemicals</title>
       </Head>
       <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
-        <CustomTable<Product>
+        <CustomTable<Store>
           tableTitle={
             <>
               {`Stores (${data?.count ?? 0} entries)`}
@@ -118,7 +116,7 @@ const Stores: NextPageWithLayout = () => {
             </>
           }
           columns={columns}
-          data={data?.products ?? []}
+          data={data?.stores ?? []}
           state={{
             sorting,
             pagination,
@@ -140,8 +138,8 @@ const Stores: NextPageWithLayout = () => {
           disableGlobalFilter
           bodyRowProps={(row) => ({
             onClick: () => {
-              const productId = row.getValue("id") as string;
-              Router.push("/dashboard/products/" + productId);
+              const storeId = row.getValue("id") as string;
+              Router.push("/dashboard/products/" + storeId);
             },
           })}
         />

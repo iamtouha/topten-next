@@ -9,33 +9,30 @@ import * as z from "zod";
 // components imports
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { STORE_TYPE } from "@prisma/client";
 
 type Inputs = {
   name: string;
-  size: string;
-  price: number;
+  address: string;
+  type: STORE_TYPE;
 };
 
 const schema = z.object({
   name: z
     .string()
     .min(1, { message: "Product name must be at least 1 character" }),
-  size: z
+  address: z
     .string()
-    .min(1, { message: "Product size must be at least 1 character" }),
-  price: z
-    .number({
-      invalid_type_error: "Please input only numbers",
-    })
-    .min(0, { message: "Product price must be greater than or equal 0" }),
+    .min(1, { message: "Product name must be at least 1 character" }),
+  type: z.nativeEnum(STORE_TYPE),
 });
 
-const AddProduct: NextPageWithLayout = () => {
+const AddStore: NextPageWithLayout = () => {
   // trpc
-  const { mutateAsync: addProduct, status: addStatus } =
-    trpc.admin.products.create.useMutation({
-      onSuccess: async (product) => {
-        toast.success(`${product.name}-${product.size} added successfully!`);
+  const { mutateAsync: addStore, status: addStatus } =
+    trpc.admin.stores.create.useMutation({
+      onSuccess: async (store) => {
+        toast.success(`${store.name}-${store.address} added successfully!`);
       },
       onError: (e) => {
         toast.error(e.message, { toastId: "addProductError" });
@@ -50,7 +47,7 @@ const AddProduct: NextPageWithLayout = () => {
     reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await addProduct({ ...data });
+    await addStore({ ...data });
     reset();
   };
 
@@ -61,22 +58,22 @@ const AddProduct: NextPageWithLayout = () => {
       </Head>
       <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
         <form
-          aria-label="add-product form"
+          aria-label="add-store form"
           className="grid w-full gap-2.5 whitespace-nowrap"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="grid w-full gap-2">
             <label
-              htmlFor="add_product_name"
+              htmlFor="add-store-name"
               className="text-xs font-medium text-title md:text-sm"
             >
-              Product name
+              Store name
             </label>
             <input
               type="text"
-              id="add_product_name"
+              id="add-store-name"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product name"
+              placeholder="Store name"
               {...register("name", { required: true })}
             />
             {errors.name ? (
@@ -87,50 +84,54 @@ const AddProduct: NextPageWithLayout = () => {
           </div>
           <div className="grid w-full gap-2">
             <label
-              htmlFor="add_prduct_size"
+              htmlFor="add-store-address"
               className="text-xs font-medium text-title md:text-sm"
             >
-              Product size
+              Store address
             </label>
             <input
               type="text"
-              id="add_prduct_size"
+              id="add-store-address"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product size"
-              {...register("size", { required: true })}
+              placeholder="Store address"
+              {...register("address", { required: true })}
             />
-            {errors.size ? (
+            {errors.address ? (
               <p className="text-sm font-medium text-danger">
-                {errors.size.message}
+                {errors.address.message}
               </p>
             ) : null}
           </div>
           <div className="grid w-full gap-2">
             <label
-              htmlFor="add_prouct_price"
+              htmlFor="add-store-type"
               className="text-xs font-medium text-title md:text-sm"
             >
-              Product price
+              Store type
             </label>
-            <input
-              type="text"
-              id="add_prouct_price"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product price"
-              {...register("price", { required: true, valueAsNumber: true })}
-            />
-            {errors.price ? (
+            <select
+              id="add-store-type"
+              placeholder="Store type"
+              {...register("type", { required: true })}
+            >
+              {Object.values(STORE_TYPE).map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            {errors.type ? (
               <p className="text-sm font-medium text-danger">
-                {errors.price.message}
+                {errors.type.message}
               </p>
             ) : null}
           </div>
           <Button
-            aria-label="add product"
+            aria-label="add store"
             className="mt-2.5 w-full bg-primary-700 py-3"
             disabled={addStatus === "loading"}
           >
-            {addStatus === "loading" ? "Loading..." : "Add product"}
+            {addStatus === "loading" ? "Loading..." : "Add store"}
           </Button>
         </form>
       </main>
@@ -138,6 +139,6 @@ const AddProduct: NextPageWithLayout = () => {
   );
 };
 
-AddProduct.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddStore.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default AddProduct;
+export default AddStore;

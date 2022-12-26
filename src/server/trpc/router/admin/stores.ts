@@ -76,8 +76,8 @@ export const storesAdminRouter = router({
     .input(
       z.object({
         id: z.string(),
-        name: z.string(),
-        address: z.string(),
+        name: z.string().min(1),
+        address: z.string().min(1),
         type: z.nativeEnum(STORE_TYPE),
         published: z.boolean().default(true),
       })
