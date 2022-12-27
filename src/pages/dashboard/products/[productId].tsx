@@ -1,5 +1,4 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import styles from "@/styles/dashboard/products/product.module.css";
 import { formatPrice } from "@/utils/format";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -120,14 +119,16 @@ const UpdateProduct: NextPageWithLayout = () => {
       <Head>
         <title>Update Product | Top Ten Agro Chemicals</title>
       </Head>
-      <main className={styles.wrapper}>
+      <main className="min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res">
         {product ? (
           <div className="grid gap-10">
             {data?.products && (
               <Searchbar<Product> data={data.products} route="products" />
             )}
             <div className="grid gap-4">
-              <p className={styles.richTitle}>Update</p>
+              <p className="text-base font-medium text-success md:text-lg">
+                Update
+              </p>
               <div className="grid gap-5">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <Button
@@ -157,21 +158,21 @@ const UpdateProduct: NextPageWithLayout = () => {
                   </Button>
                 </div>
                 <form
-                  aria-label="update-product form"
-                  className={styles.form}
+                  aria-label="update product form"
+                  className="grid gap-2.5 whitespace-nowrap"
                   onSubmit={handleSubmit(onSubmit)}
                 >
-                  <div className={styles.inputWrapper}>
+                  <div className="grid gap-2">
                     <label
-                      htmlFor="update_product_name"
-                      className={styles.inputLabel}
+                      htmlFor="update-product-name"
+                      className="text-xs font-medium text-title md:text-sm"
                     >
                       Product name
                     </label>
                     <input
                       type="text"
-                      id="update_product_name"
-                      className={styles.input}
+                      id="update-product-name"
+                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                       placeholder="Product name"
                       {...register("name", { required: true })}
                       defaultValue={
@@ -184,17 +185,17 @@ const UpdateProduct: NextPageWithLayout = () => {
                       </p>
                     ) : null}
                   </div>
-                  <div className={styles.inputWrapper}>
+                  <div className="grid gap-2">
                     <label
-                      htmlFor="update_product_size"
-                      className={styles.inputLabel}
+                      htmlFor="update-product-size"
+                      className="text-xs font-medium text-title md:text-sm"
                     >
                       Product size
                     </label>
                     <input
                       type="text"
-                      id="update_product_size"
-                      className={styles.input}
+                      id="update-product-size"
+                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                       placeholder="Product size"
                       {...register("size", { required: true })}
                       defaultValue={
@@ -207,17 +208,17 @@ const UpdateProduct: NextPageWithLayout = () => {
                       </p>
                     ) : null}
                   </div>
-                  <div className={styles.inputWrapper}>
+                  <div className="grid gap-2">
                     <label
-                      htmlFor="update_product_price"
-                      className={styles.inputLabel}
+                      htmlFor="update-product-price"
+                      className="text-xs font-medium text-title md:text-sm"
                     >
                       Product price
                     </label>
                     <input
                       type="number"
-                      id="update_product_price"
-                      className={styles.input}
+                      id="update-product-price"
+                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                       placeholder="Product price"
                       {...register("price", {
                         required: true,
@@ -234,6 +235,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                     ) : null}
                   </div>
                   <Button
+                    aria-label="update product"
                     className="mt-2.5 w-full bg-primary-700 py-3"
                     disabled={updateStatus === "loading"}
                   >
@@ -291,7 +293,7 @@ const ProductDetails = ({
 
   return (
     <div className="grid gap-2.5">
-      <p className={styles.richTitle}>Product</p>
+      <p className="text-base font-medium text-success md:text-lg">Product</p>
       <div className="grid gap-y-2.5 sm:grid-cols-2">
         {currentProduct.map((item, i) => (
           <div key={i} className="flex flex-wrap gap-2">
@@ -307,7 +309,9 @@ const ProductDetails = ({
       {product.stocks.length > 0
         ? product.stocks.map((stock, i) => (
             <div key={i} className="grid gap-2.5">
-              <p className={styles.richTitle}>Stock</p>
+              <p className="text-base font-medium text-success md:text-lg">
+                Stock
+              </p>
               <div className="grid gap-y-2.5 pt-2.5 sm:grid-cols-2">
                 <div className="flex gap-2">
                   <p className="text-sm font-medium md:text-base">Quantity:</p>

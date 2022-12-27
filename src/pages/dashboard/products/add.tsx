@@ -61,20 +61,20 @@ const AddProduct: NextPageWithLayout = () => {
       </Head>
       <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
         <form
-          aria-label="add-product form"
+          aria-label="add product form"
           className="grid w-full gap-2.5 whitespace-nowrap"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="grid w-full gap-2">
             <label
-              htmlFor="add_product_name"
+              htmlFor="add-product-name"
               className="text-xs font-medium text-title md:text-sm"
             >
               Product name
             </label>
             <input
               type="text"
-              id="add_product_name"
+              id="add-product-name"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product name"
               {...register("name", { required: true })}
@@ -87,14 +87,14 @@ const AddProduct: NextPageWithLayout = () => {
           </div>
           <div className="grid w-full gap-2">
             <label
-              htmlFor="add_prduct_size"
+              htmlFor="add-product-size"
               className="text-xs font-medium text-title md:text-sm"
             >
               Product size
             </label>
             <input
               type="text"
-              id="add_prduct_size"
+              id="add-product-size"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product size"
               {...register("size", { required: true })}
@@ -107,14 +107,14 @@ const AddProduct: NextPageWithLayout = () => {
           </div>
           <div className="grid w-full gap-2">
             <label
-              htmlFor="add_prouct_price"
+              htmlFor="add-product-price"
               className="text-xs font-medium text-title md:text-sm"
             >
               Product price
             </label>
             <input
               type="text"
-              id="add_prouct_price"
+              id="add-product-price"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product price"
               {...register("price", { required: true, valueAsNumber: true })}

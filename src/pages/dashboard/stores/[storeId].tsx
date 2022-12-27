@@ -1,5 +1,4 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import styles from "@/styles/dashboard/products/product.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { STORE_TYPE, type Store } from "@prisma/client";
@@ -114,14 +113,16 @@ const UpdateStore: NextPageWithLayout = () => {
       <Head>
         <title>Update Store | Top Ten Agro Chemicals</title>
       </Head>
-      <main className={styles.wrapper}>
+      <main className="min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res">
         {store ? (
           <div className="grid gap-10">
             {data?.stores && (
               <Searchbar<Store> data={data.stores} route="stores" />
             )}
             <div className="grid gap-4">
-              <p className={styles.richTitle}>Update</p>
+              <p className="text-base font-medium text-success md:text-lg">
+                Update
+              </p>
               <div className="grid gap-5">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <Button
@@ -151,21 +152,21 @@ const UpdateStore: NextPageWithLayout = () => {
                   </Button>
                 </div>
                 <form
-                  aria-label="update-store form"
-                  className={styles.form}
+                  aria-label="update store form"
+                  className="grid gap-2.5 whitespace-nowrap"
                   onSubmit={handleSubmit(onSubmit)}
                 >
-                  <div className={styles.inputWrapper}>
+                  <div className="grid gap-2">
                     <label
                       htmlFor="update-store-name"
-                      className={styles.inputLabel}
+                      className="text-xs font-medium text-title md:text-sm"
                     >
                       Store name
                     </label>
                     <input
                       type="text"
                       id="update-store-name"
-                      className={styles.input}
+                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                       placeholder="Store name"
                       {...register("name", { required: true })}
                       defaultValue={
@@ -178,17 +179,17 @@ const UpdateStore: NextPageWithLayout = () => {
                       </p>
                     ) : null}
                   </div>
-                  <div className={styles.inputWrapper}>
+                  <div className="grid gap-2">
                     <label
                       htmlFor="update-store-address"
-                      className={styles.inputLabel}
+                      className="text-xs font-medium text-title md:text-sm"
                     >
                       Store address
                     </label>
                     <input
                       type="text"
                       id="update-store-address"
-                      className={styles.input}
+                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                       placeholder="Store address"
                       {...register("address", { required: true })}
                       defaultValue={
@@ -201,10 +202,10 @@ const UpdateStore: NextPageWithLayout = () => {
                       </p>
                     ) : null}
                   </div>
-                  <div className={styles.inputWrapper}>
+                  <div className="grid gap-2">
                     <label
                       htmlFor="update-store-type"
-                      className={styles.inputLabel}
+                      className="text-xs font-medium text-title md:text-sm"
                     >
                       Store type
                     </label>
@@ -232,6 +233,7 @@ const UpdateStore: NextPageWithLayout = () => {
                     ) : null}
                   </div>
                   <Button
+                    aria-label="update store"
                     className="mt-2.5 w-full bg-primary-700 py-3"
                     disabled={updateStatus === "loading"}
                   >
@@ -289,7 +291,7 @@ const StoreDetails = ({
 
   return (
     <div className="grid gap-2.5">
-      <p className={styles.richTitle}>Store</p>
+      <p className="text-base font-medium text-success md:text-lg">Store</p>
       <div className="grid gap-y-2.5 sm:grid-cols-2">
         {currentStore.map((item, i) => (
           <div key={i} className="flex flex-wrap gap-2">
@@ -305,7 +307,7 @@ const StoreDetails = ({
       {/* {store.stocks.length > 0
         ? store.stocks.map((stock, i) => (
             <div key={i} className="grid gap-2.5">
-              <p className={styles.richTitle}>Stock</p>
+              <p className="text-base font-medium text-success md:text-lg">Stock</p>
               <div className="grid gap-y-2.5 pt-2.5 sm:grid-cols-2">
                 <div className="flex gap-2">
                   <p className="text-sm font-medium md:text-base">Quantity:</p>

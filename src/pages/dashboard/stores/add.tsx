@@ -59,7 +59,7 @@ const AddStore: NextPageWithLayout = () => {
       </Head>
       <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
         <form
-          aria-label="add-store form"
+          aria-label="add store form"
           className="grid w-full gap-2.5 whitespace-nowrap"
           onSubmit={handleSubmit(onSubmit)}
         >

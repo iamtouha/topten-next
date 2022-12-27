@@ -1,5 +1,4 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import styles from "@/styles/dashboard/users/user.module.css";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { titleCase } from "@/utils/format";
 import { Listbox, Transition } from "@headlessui/react";
@@ -98,14 +97,17 @@ const User: NextPageWithLayout = () => {
       <Head>
         <title>Update User | Top Ten Agro Chemicals</title>
       </Head>
-      <main className={styles.wrapper}>
+      <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
         {user ? (
           <div className="grid gap-10">
             {data?.users && <Searchbar<User> data={data.users} route="users" />}
             <div className="grid gap-4">
-              <p className={styles.richTitle}>Update</p>
+              <p className="text-base font-medium text-success md:text-lg">
+                Update
+              </p>
               <div className="flex flex-wrap items-center gap-2.5">
                 <Listbox
+                  aria-label="update user role"
                   as="div"
                   className="w-40"
                   value={selectedRole ?? ""}
@@ -116,7 +118,12 @@ const User: NextPageWithLayout = () => {
                   disabled={session.data?.user?.id === id || !user.active}
                 >
                   <div className="relative mt-1">
-                    <Listbox.Button className={styles.selectButton}>
+                    <Listbox.Button
+                      className="relative w-full cursor-pointer bg-white py-2 pl-3 pr-10 text-left text-xs font-medium ring-1 ring-lowkey transition
+                      focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300
+                      enabled:hover:bg-layout disabled:cursor-not-allowed md:text-sm
+                    "
+                    >
                       <span className="block truncate">
                         {roleStatus === "loading"
                           ? "Loading..."
@@ -137,12 +144,12 @@ const User: NextPageWithLayout = () => {
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
                     >
-                      <Listbox.Options className={styles.options}>
+                      <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto bg-white py-1 text-xs shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none md:text-sm">
                         {Object.values(USER_ROLE).map((role) => (
                           <Listbox.Option
                             key={role}
                             className={({ active }) =>
-                              `${styles.option} ${
+                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                 active
                                   ? "bg-amber-100 text-amber-900"
                                   : "text-title"
@@ -176,7 +183,7 @@ const User: NextPageWithLayout = () => {
                   </div>
                 </Listbox>
                 <Button
-                  aria-label={`update user's active status`}
+                  aria-label="update user status"
                   className={user.active ? "bg-red-500" : "bg-primary-700"}
                   onClick={() => updateStatus({ id, active: !user.active })}
                   disabled={session.data?.user?.id === id}
@@ -188,7 +195,7 @@ const User: NextPageWithLayout = () => {
                     : "Active"}
                 </Button>
                 <Button
-                  aria-label={`delete user`}
+                  aria-label="delete user"
                   className="bg-red-500"
                   onClick={() => deleteUser(id)}
                   disabled={session.data?.user?.id === id}
@@ -261,7 +268,9 @@ const UserDetails = ({
     <div className="flex flex-wrap justify-between gap-5">
       {currentUser.map((userItem, i) => (
         <div key={i} className="flex flex-col gap-2.5">
-          <p className={styles.richTitle}>{userItem.head}</p>
+          <p className="text-base font-medium text-success md:text-lg">
+            {userItem.head}
+          </p>
           <>
             {userItem.body.map((userbody, j) => (
               <div key={j} className="flex gap-2">
