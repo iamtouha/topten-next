@@ -83,13 +83,14 @@ export const storesAdminRouter = router({
       })
     )
     .mutation(({ ctx, input }) => {
-      const { id, name, address, published } = input;
+      const { id, name, address, type, published } = input;
       return ctx.prisma.store.update({
         where: { id },
         data: {
           name,
           address,
           published,
+          type,
           updatedBy: ctx.session.user.email,
         },
       });

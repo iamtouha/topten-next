@@ -72,6 +72,7 @@ const UpdateStore: NextPageWithLayout = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await updateStore({
@@ -81,23 +82,31 @@ const UpdateStore: NextPageWithLayout = () => {
       type: data.type,
     });
   };
+  // reset form on store change
+  useEffect(() => {
+    if (!store) return;
+    reset({
+      name: store.name,
+      address: store.address,
+      type: store.type,
+    });
+  }, [store, reset]);
   // get all stores
-  const { data } = trpc.admin.stores.get.useQuery({
-    sortBy: "createdAt",
-    sortDesc: true,
+  const { data: stores } = trpc.admin.stores.list.useQuery(undefined, {
+    staleTime: 30000,
   });
   // refetch
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.admin.stores.getOne.invalidate(storeId);
-      utils.admin.stores.get.invalidate();
+      utils.admin.stores.list.invalidate();
     }
   }, [number, storeId, utils]);
 
   // conditional renders
   if (status === "loading") {
-    return <Loader className="min-h-screen container-res" />;
+    return <Loader className="grid min-h-screen container-res" />;
   }
 
   if (status === "error") {
@@ -116,9 +125,7 @@ const UpdateStore: NextPageWithLayout = () => {
       <main className="min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res">
         {store ? (
           <div className="grid gap-10">
-            {data?.stores && (
-              <Searchbar<Store> data={data.stores} route="stores" />
-            )}
+            {stores && <Searchbar<Store> data={stores} route="stores" />}
             <div className="grid gap-4">
               <p className="text-base font-medium text-success md:text-lg">
                 Update
@@ -237,9 +244,7 @@ const UpdateStore: NextPageWithLayout = () => {
                     className="mt-2.5 w-full bg-primary-700 py-3"
                     disabled={updateStatus === "loading"}
                   >
-                    {updateStatus === "loading"
-                      ? "Loading..."
-                      : "Update product"}
+                    {updateStatus === "loading" ? "Loading..." : "Update store"}
                   </Button>
                 </form>
               </div>

@@ -78,7 +78,10 @@ const UpdateProduct: NextPageWithLayout = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(schema) });
+    reset,
+  } = useForm<Inputs>({
+    resolver: zodResolver(schema),
+  });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await updateProduct({
       id: productId,
@@ -87,17 +90,25 @@ const UpdateProduct: NextPageWithLayout = () => {
       price: data.price,
     });
   };
+  // reset form on product change
+  useEffect(() => {
+    if (!product) return;
+    reset({
+      name: product.name,
+      size: product.size,
+      price: product.price,
+    });
+  }, [product, reset]);
   // get all products
-  const { data } = trpc.admin.products.get.useQuery({
-    sortBy: "createdAt",
-    sortDesc: true,
+  const { data: products } = trpc.admin.products.list.useQuery(undefined, {
+    staleTime: 30000,
   });
   // refetch
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.admin.products.getOne.invalidate(productId);
-      utils.admin.products.get.invalidate();
+      utils.admin.products.list.invalidate();
     }
   }, [number, productId, utils]);
 
@@ -122,8 +133,8 @@ const UpdateProduct: NextPageWithLayout = () => {
       <main className="min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res">
         {product ? (
           <div className="grid gap-10">
-            {data?.products && (
-              <Searchbar<Product> data={data.products} route="products" />
+            {products && (
+              <Searchbar<Product> data={products} route="products" />
             )}
             <div className="grid gap-4">
               <p className="text-base font-medium text-success md:text-lg">
@@ -225,7 +236,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                         valueAsNumber: true,
                       })}
                       defaultValue={
-                        updateStatus === "loading" ? "" : product?.price
+                        updateStatus === "loading" ? 0 : product?.price
                       }
                     />
                     {errors.price ? (

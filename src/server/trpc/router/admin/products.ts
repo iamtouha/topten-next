@@ -4,6 +4,9 @@ import { z } from "zod";
 import { router, adminProcedure } from "../../trpc";
 
 export const productsAdminRouter = router({
+  list: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.product.findMany();
+  }),
   get: adminProcedure
     .input(
       z.object({
