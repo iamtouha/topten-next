@@ -12,12 +12,6 @@ import * as z from "zod";
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
-type Inputs = {
-  name: string;
-  address: string;
-  type: STORE_TYPE;
-};
-
 const schema = z.object({
   name: z
     .string()
@@ -27,6 +21,7 @@ const schema = z.object({
     .min(1, { message: "Store name must be at least 1 character" }),
   type: z.nativeEnum(STORE_TYPE),
 });
+type Inputs = z.infer<typeof schema>;
 
 const AddStore: NextPageWithLayout = () => {
   // trpc

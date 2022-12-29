@@ -21,6 +21,7 @@ import CustomTable from "@/components/CustomTable";
 import Button from "@/components/Button";
 
 type fieldValue = string | undefined;
+
 const Products: NextPageWithLayout = () => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
@@ -32,31 +33,17 @@ const Products: NextPageWithLayout = () => {
     updatedBy: false,
     updatedAt: false,
   });
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-
-  const { data, isLoading, isError, isRefetching } =
-    trpc.admin.products.get.useQuery(
-      {
-        page: pagination.pageIndex,
-        perPage: pagination.pageSize,
-        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        size: columnFilters.find((f) => f.id === "size")?.value as fieldValue,
-        sortBy: sorting[0]?.id as
-          | "name"
-          | "createdAt"
-          | "size"
-          | "price"
-          | "published"
-          | undefined,
-        sortDesc: sorting[0]?.desc,
-      },
-      { refetchOnWindowFocus: false }
-    );
-
-  // table column
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
   const columns = useMemo<ColumnDef<Product, any>[]>(
     () => [
       { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
@@ -101,6 +88,26 @@ const Products: NextPageWithLayout = () => {
     ],
     []
   );
+
+  // trpc
+  const { data, isLoading, isError, isRefetching } =
+    trpc.admin.products.get.useQuery(
+      {
+        page: pagination.pageIndex,
+        perPage: pagination.pageSize,
+        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
+        size: columnFilters.find((f) => f.id === "size")?.value as fieldValue,
+        sortBy: sorting[0]?.id as
+          | "name"
+          | "createdAt"
+          | "size"
+          | "price"
+          | "published"
+          | undefined,
+        sortDesc: sorting[0]?.desc,
+      },
+      { refetchOnWindowFocus: false }
+    );
 
   return (
     <>

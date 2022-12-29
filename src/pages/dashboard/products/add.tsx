@@ -10,12 +10,6 @@ import * as z from "zod";
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
-type Inputs = {
-  name: string;
-  size: string;
-  price: number;
-};
-
 const schema = z.object({
   name: z
     .string()
@@ -29,6 +23,7 @@ const schema = z.object({
     })
     .min(0, { message: "Product price must be greater than or equal 0" }),
 });
+type Inputs = z.infer<typeof schema>;
 
 const AddProduct: NextPageWithLayout = () => {
   // trpc

@@ -52,11 +52,11 @@ const Searchbar = <TData extends User | Product | Store>({
     <section aria-label="search modal">
       <button
         aria-label="search"
+        aria-keyshortcuts="Ctrl K"
         onClick={() => setIsOpen(true)}
         className={styles.button}
       >
         <MagnifyingGlassIcon className={styles.buttonIcon} aria-hidden="true" />
-        Search <span className={styles.shortcut}>Ctrl K</span>
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>

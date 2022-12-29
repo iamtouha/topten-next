@@ -1,18 +1,15 @@
 .button {
-  @apply flex items-center gap-1.5 rounded-md bg-title/40 px-2.5 py-2 text-sm font-semibold text-title transition-opacity hover:bg-title/30;
+  @apply mx-auto flex items-center gap-1.5 rounded-md bg-layout px-2.5 py-2 text-sm font-semibold text-title transition-opacity hover:bg-opacity-80 active:bg-opacity-90;
   @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75;
 }
 .buttonIcon {
-  @apply aspect-square w-5 text-title transition-transform hover:scale-[105%] active:scale-[95%];
-}
-.shortcut {
-  @apply ml-2 rounded-md border-2 border-title px-1.5 text-sm text-title;
+  @apply aspect-square w-5 text-title;
 }
 .dialog {
   @apply relative z-50;
 }
 .dialogOverlay {
-  @apply fixed inset-0 bg-gray-900/75;
+  @apply fixed inset-0 bg-gray-900/80;
 }
 .dialogPanelWrapper {
   @apply mx-auto min-h-full w-[89vw] max-w-screen-sm pt-[25vh];

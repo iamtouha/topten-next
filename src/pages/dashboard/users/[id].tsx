@@ -11,14 +11,13 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useIsMutating } from "@tanstack/react-query";
 
-// icons imports
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-
 // components imports
-import Loader from "@/components/Loader";
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Searchbar from "@/components/Searchbar";
+
+// icons imports
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 const User: NextPageWithLayout = () => {
   const id = Router.query.id as string;
@@ -26,9 +25,8 @@ const User: NextPageWithLayout = () => {
 
   // trpc
   const utils = trpc.useContext();
-  // find user
   const { data: user, status, error } = trpc.admin.users.getOne.useQuery(id);
-  // update user's role
+  // update user role
   const [selectedRole, setSelectedRole] = useState<USER_ROLE>(
     user?.role as USER_ROLE
   );
@@ -45,7 +43,7 @@ const User: NextPageWithLayout = () => {
         toast.error(e.message, { toastId: "editRoleError" });
       },
     });
-  // update user's status
+  // update user status
   const { mutateAsync: updateStatus, status: activeStatus } =
     trpc.admin.users.updateStatus.useMutation({
       onSuccess: async () => {
@@ -79,112 +77,113 @@ const User: NextPageWithLayout = () => {
     }
   }, [id, number, utils]);
 
-  // conditional renders
-  if (status === "loading") {
-    return <Loader className="min-h-screen container-res" />;
-  }
-
-  if (status === "error") {
-    return (
-      <div className="grid min-h-screen place-items-center text-base container-res md:text-lg">
-        {`${error.message} | ${error.data?.httpStatus}`}
-      </div>
-    );
-  }
-
   return (
     <>
       <Head>
         <title>Update User | Top Ten Agro Chemicals</title>
       </Head>
       <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
-        {user ? (
-          <div className="grid gap-10">
-            {data?.users && <Searchbar<User> data={data.users} route="users" />}
+        {status === "loading" ? (
+          <div
+            role="status"
+            className="text-sm font-medium text-title md:text-base"
+          >
+            Loading...
+          </div>
+        ) : status === "error" ? (
+          <div
+            role="status"
+            className="text-sm font-medium text-title md:text-base"
+          >
+            {`${error.message} | ${error.data?.httpStatus}`}
+          </div>
+        ) : (
+          <div className="grid gap-8">
+            {data?.users ? (
+              <Searchbar<User> data={data.users} route="users" />
+            ) : null}
             <div className="grid gap-4">
-              <p className="text-base font-medium text-success md:text-lg">
-                Update
-              </p>
-              <div className="flex flex-wrap items-center gap-2.5">
-                <Listbox
-                  aria-label="update user role"
-                  as="div"
-                  className="w-40"
-                  value={selectedRole ?? ""}
-                  onChange={(role: USER_ROLE) => {
-                    setSelectedRole(role);
-                    updateRole({ id, role });
-                  }}
-                  disabled={session.data?.user?.id === id || !user.active}
-                >
-                  <div className="relative mt-1">
-                    <Listbox.Button
-                      className="relative w-full cursor-pointer bg-white py-2 pl-3 pr-10 text-left text-xs font-medium ring-1 ring-lowkey transition
+              <Listbox
+                aria-label="update user role"
+                as="div"
+                value={selectedRole ?? ""}
+                onChange={(role: USER_ROLE) => {
+                  setSelectedRole(role);
+                  updateRole({ id, role });
+                }}
+                disabled={session.data?.user?.id === id || !user.active}
+              >
+                <div className="relative mt-1">
+                  <Listbox.Button
+                    className="relative w-full cursor-pointer bg-white py-2 pl-3 pr-10 text-left text-xs font-medium ring-1 ring-lowkey transition
                       focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300
                       enabled:hover:bg-layout disabled:cursor-not-allowed md:text-sm
                     "
-                    >
-                      <span className="block truncate">
-                        {roleStatus === "loading"
-                          ? "Loading..."
-                          : selectedRole
-                          ? titleCase(selectedRole)
-                          : "-"}
-                      </span>
-                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                        <ChevronUpDownIcon
-                          className="h-5 w-5 text-neutral-400"
-                          aria-hidden="true"
-                        />
-                      </span>
-                    </Listbox.Button>
-                    <Transition
-                      as={Fragment}
-                      leave="transition ease-in duration-100"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
-                      <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto bg-white py-1 text-xs shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none md:text-sm">
-                        {Object.values(USER_ROLE).map((role) => (
-                          <Listbox.Option
-                            key={role}
-                            className={({ active }) =>
-                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                active
-                                  ? "bg-amber-100 text-amber-900"
-                                  : "text-title"
-                              }`
-                            }
-                            value={role}
-                          >
-                            {({ selected }) => (
-                              <>
-                                <span
-                                  className={`block truncate ${
-                                    selected ? "font-medium" : "font-normal"
-                                  }`}
-                                >
-                                  {titleCase(role)}
+                  >
+                    <span className="block truncate">
+                      {roleStatus === "loading"
+                        ? "Loading..."
+                        : selectedRole
+                        ? titleCase(selectedRole)
+                        : "-"}
+                    </span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <ChevronUpDownIcon
+                        className="h-5 w-5 text-neutral-400"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto bg-white py-1 text-xs shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none md:text-sm">
+                      {Object.values(USER_ROLE).map((role) => (
+                        <Listbox.Option
+                          key={role}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                              active
+                                ? "bg-amber-100 text-amber-900"
+                                : "text-title"
+                            }`
+                          }
+                          value={role}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected ? "font-medium" : "font-normal"
+                                }`}
+                              >
+                                {titleCase(role)}
+                              </span>
+                              {selected ? (
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                  <CheckIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
                                 </span>
-                                {selected ? (
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                    <CheckIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                ) : null}
-                              </>
-                            )}
-                          </Listbox.Option>
-                        ))}
-                      </Listbox.Options>
-                    </Transition>
-                  </div>
-                </Listbox>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
+              <div className="flex flex-col items-center justify-between gap-5 xs:flex-row">
                 <Button
                   aria-label="update user status"
-                  className={user.active ? "bg-red-500" : "bg-primary-700"}
+                  className={`w-full ${
+                    user.active ? "bg-red-500" : "bg-primary-700"
+                  }`}
                   onClick={() => updateStatus({ id, active: !user.active })}
                   disabled={session.data?.user?.id === id}
                 >
@@ -196,7 +195,7 @@ const User: NextPageWithLayout = () => {
                 </Button>
                 <Button
                   aria-label="delete user"
-                  className="bg-red-500"
+                  className="w-full bg-red-500"
                   onClick={() => deleteUser(id)}
                   disabled={session.data?.user?.id === id}
                 >
@@ -204,12 +203,9 @@ const User: NextPageWithLayout = () => {
                 </Button>
               </div>
             </div>
+
             <UserDetails user={user} />
           </div>
-        ) : (
-          <p className="text-sm font-medium text-title md:text-base">
-            No user with this id
-          </p>
         )}
       </main>
     </>
@@ -268,7 +264,7 @@ const UserDetails = ({
     <div className="flex flex-wrap justify-between gap-5">
       {currentUser.map((userItem, i) => (
         <div key={i} className="flex flex-col gap-2.5">
-          <p className="text-base font-medium text-success md:text-lg">
+          <p className="text-base font-semibold text-title md:text-lg">
             {userItem.head}
           </p>
           <>

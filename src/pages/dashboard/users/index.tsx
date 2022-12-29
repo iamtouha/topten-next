@@ -14,15 +14,16 @@ import Router from "next/router";
 import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 
-type UserWithProfile = User & {
-  profile: Profile | null;
-};
-
 // components imports
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
+type UserWithProfile = User & {
+  profile: Profile | null;
+};
+
 const Users: NextPageWithLayout = () => {
+  // tanstack/react-table
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
     name: false,
@@ -30,17 +31,6 @@ const Users: NextPageWithLayout = () => {
     updatedBy: false,
     updatedAt: false,
   });
-
-  // trpc
-  const {
-    data: users,
-    isLoading,
-    isError,
-  } = trpc.admin.users.list.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
-
-  // table column
   const columns = useMemo<ColumnDef<UserWithProfile, any>[]>(
     () => [
       {
@@ -97,6 +87,15 @@ const Users: NextPageWithLayout = () => {
     ],
     []
   );
+
+  // trpc
+  const {
+    data: users,
+    isLoading,
+    isError,
+  } = trpc.admin.users.list.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>

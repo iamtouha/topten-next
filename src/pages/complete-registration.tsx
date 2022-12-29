@@ -1,4 +1,5 @@
 import styles from "@/styles/completeregistration.module.css";
+import type { NextPageWithLayout } from "./_app";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -9,17 +10,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { trpc } from "../utils/trpc";
-import type { NextPageWithLayout } from "./_app";
 
 // components imports
 import Button from "@/components/Button";
 import StaticLayout from "@/components/layouts/StaticLayout";
-
-type InputFields = {
-  fullName: string;
-  phone: string;
-  designation: string;
-};
 
 const schema = z.object({
   fullName: z
@@ -34,14 +28,16 @@ const schema = z.object({
     .string()
     .min(4, { message: "Designation must be at least 4 characters" }),
 });
+type Inputs = z.infer<typeof schema>;
 
 const CompleteRegistration: NextPageWithLayout = () => {
   const { data: session } = useSession({ required: true });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InputFields>({
+  } = useForm<Inputs>({
     defaultValues: {
       fullName: "",
       phone: "",
@@ -49,6 +45,7 @@ const CompleteRegistration: NextPageWithLayout = () => {
     },
     resolver: zodResolver(schema),
   });
+
   const createProfileMutation = trpc.user.createProfile.useMutation({
     onSuccess: () => {
       toast.success("Registration completed!", {
@@ -67,7 +64,7 @@ const CompleteRegistration: NextPageWithLayout = () => {
     }
   }, [session?.user?.profileId]);
 
-  const onSubmit = async (data: InputFields) => {
+  const onSubmit = async (data: Inputs) => {
     await createProfileMutation.mutateAsync({ ...data });
   };
 

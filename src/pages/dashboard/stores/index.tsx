@@ -13,15 +13,17 @@ import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
 import { useMemo, useState } from "react";
+import { titleCase } from "@/utils/format";
 
 // components imports
 import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { titleCase } from "@/utils/format";
 
 type fieldValue = string | undefined;
+
 const Stores: NextPageWithLayout = () => {
+  // tanstack/react-table
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
   ]);
@@ -32,29 +34,17 @@ const Stores: NextPageWithLayout = () => {
     updatedBy: false,
     updatedAt: false,
   });
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-
-  const { data, isLoading, isError, isRefetching } =
-    trpc.admin.stores.get.useQuery(
-      {
-        page: pagination.pageIndex,
-        perPage: pagination.pageSize,
-        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        sortBy: sorting[0]?.id as
-          | "name"
-          | "published"
-          | "type"
-          | "createdAt"
-          | undefined,
-        sortDesc: sorting[0]?.desc,
-      },
-      { refetchOnWindowFocus: false }
-    );
-
-  // table column
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
   const columns = useMemo<ColumnDef<Store, any>[]>(
     () => [
       { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
@@ -104,6 +94,24 @@ const Stores: NextPageWithLayout = () => {
     ],
     []
   );
+
+  // trpc
+  const { data, isLoading, isError, isRefetching } =
+    trpc.admin.stores.get.useQuery(
+      {
+        page: pagination.pageIndex,
+        perPage: pagination.pageSize,
+        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
+        sortBy: sorting[0]?.id as
+          | "name"
+          | "published"
+          | "type"
+          | "createdAt"
+          | undefined,
+        sortDesc: sorting[0]?.desc,
+      },
+      { refetchOnWindowFocus: false }
+    );
 
   return (
     <>
