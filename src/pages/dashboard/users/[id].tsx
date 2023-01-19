@@ -33,7 +33,7 @@ const User: NextPageWithLayout = () => {
   useMemo(() => {
     setSelectedRole(user?.role as USER_ROLE);
   }, [user?.role]);
-  const { mutateAsync: updateRole, status: roleStatus } =
+  const { mutate: updateRole, status: roleStatus } =
     trpc.admin.users.updateRole.useMutation({
       onSuccess: async (user) => {
         setSelectedRole(user.role);
@@ -44,7 +44,7 @@ const User: NextPageWithLayout = () => {
       },
     });
   // update user status
-  const { mutateAsync: updateStatus, status: activeStatus } =
+  const { mutate: updateStatus, status: activeStatus } =
     trpc.admin.users.updateStatus.useMutation({
       onSuccess: async () => {
         toast.success("User status updated!");
@@ -54,7 +54,7 @@ const User: NextPageWithLayout = () => {
       },
     });
   // delete user
-  const { mutateAsync: deleteUser } = trpc.admin.users.delete.useMutation({
+  const { mutate: deleteUser } = trpc.admin.users.delete.useMutation({
     onSuccess: async () => {
       toast.success("User deleted!", { toastId: "deleteUserSuccess" });
       await Router.push("/dashboard/users");
@@ -182,7 +182,7 @@ const User: NextPageWithLayout = () => {
                 <Button
                   aria-label="update user status"
                   className={`w-full ${
-                    user.active ? "bg-red-500" : "bg-primary-700"
+                    user.active ? "bg-red-500" : "bg--primary-700"
                   }`}
                   onClick={() => updateStatus({ id, active: !user.active })}
                   disabled={session.data?.user?.id === id}
@@ -190,12 +190,12 @@ const User: NextPageWithLayout = () => {
                   {activeStatus === "loading"
                     ? "Loading..."
                     : user.active
-                    ? "Inactive"
-                    : "Active"}
+                    ? "Deactivate"
+                    : "Activate"}
                 </Button>
                 <Button
                   aria-label="delete user"
-                  className="w-full bg-red-500"
+                  className="w-full bg-red-100 text-red-500"
                   onClick={() => deleteUser(id)}
                   disabled={session.data?.user?.id === id}
                 >
