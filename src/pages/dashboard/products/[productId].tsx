@@ -43,7 +43,7 @@ const UpdateProduct: NextPageWithLayout = () => {
     error,
   } = trpc.admin.products.getOne.useQuery(productId);
   // update product
-  const { mutateAsync: updateProduct, status: updateStatus } =
+  const { mutate: updateProduct, status: updateStatus } =
     trpc.admin.products.update.useMutation({
       onSuccess: async () => {
         toast.success("Product updated!");
@@ -53,19 +53,17 @@ const UpdateProduct: NextPageWithLayout = () => {
       },
     });
   // delete product
-  const { mutateAsync: deleteProduct } = trpc.admin.products.delete.useMutation(
-    {
-      onSuccess: async () => {
-        toast.success("Product deleted!", {
-          toastId: "deleteProductSuccess",
-        });
-        await Router.push("/dashboard/products");
-      },
-      onError: async (e) => {
-        toast.error(e.message, { toastId: "deleteProductError" });
-      },
-    }
-  );
+  const { mutate: deleteProduct } = trpc.admin.products.delete.useMutation({
+    onSuccess: async () => {
+      toast.success("Product deleted!", {
+        toastId: "deleteProductSuccess",
+      });
+      await Router.push("/dashboard/products");
+    },
+    onError: async (e) => {
+      toast.error(e.message, { toastId: "deleteProductError" });
+    },
+  });
   // react-hook-form
   const {
     register,
@@ -75,8 +73,8 @@ const UpdateProduct: NextPageWithLayout = () => {
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
   });
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await updateProduct({
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    updateProduct({
       id: productId,
       name: data.name,
       size: data.size,
