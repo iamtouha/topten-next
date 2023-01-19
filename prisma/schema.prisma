@@ -100,7 +100,7 @@ model Role {
   addedBy   String?
   updatedAt DateTime @updatedAt
   updatedBy String?
-  post      POST
+  type      ROLE_TYPE
   store     Store    @relation(fields: [storeId], references: [id])
   profile   Profile  @relation(fields: [profileId], references: [id])
 
@@ -214,7 +214,7 @@ enum USER_ROLE {
   USER
 }
 
-enum POST {
+enum ROLE_TYPE {
   DIRECTOR
   MANAGER
   OFFICER
