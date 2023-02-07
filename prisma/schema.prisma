@@ -108,7 +108,6 @@ model Role {
 model Product {
   id           String        @id @default(cuid())
   name         String
-  size         String
   price        Float
   updatedAt    DateTime      @updatedAt
   updatedBy    String?

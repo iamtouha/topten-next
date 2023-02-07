@@ -14,9 +14,6 @@ const schema = z.object({
   name: z
     .string()
     .min(1, { message: "Product name must be at least 1 character" }),
-  size: z
-    .string()
-    .min(1, { message: "Product size must be at least 1 character" }),
   price: z
     .number({
       invalid_type_error: "Please input only numbers",
@@ -30,7 +27,7 @@ const AddProduct: NextPageWithLayout = () => {
   const { mutateAsync: addProduct, status: addStatus } =
     trpc.admin.products.create.useMutation({
       onSuccess: async (product) => {
-        toast.success(`${product.name}-${product.size} added successfully!`);
+        toast.success(`${product.name} added successfully!`);
       },
       onError: (e) => {
         toast.error(e.message, { toastId: "addProductError" });
@@ -80,26 +77,7 @@ const AddProduct: NextPageWithLayout = () => {
               </p>
             ) : null}
           </div>
-          <div className="grid w-full gap-2">
-            <label
-              htmlFor="add-product-size"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product size
-            </label>
-            <input
-              type="text"
-              id="add-product-size"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product size"
-              {...register("size", { required: true })}
-            />
-            {errors.size ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.size.message}
-              </p>
-            ) : null}
-          </div>
+
           <div className="grid w-full gap-2">
             <label
               htmlFor="add-product-price"

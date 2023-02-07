@@ -48,7 +48,6 @@ const Products: NextPageWithLayout = () => {
     () => [
       { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
       { accessorKey: "name", header: "Name" },
-      { accessorKey: "size", header: "Size" },
       {
         accessorKey: "price",
         header: "Price",
@@ -96,11 +95,9 @@ const Products: NextPageWithLayout = () => {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,
         name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        size: columnFilters.find((f) => f.id === "size")?.value as fieldValue,
         sortBy: sorting[0]?.id as
           | "name"
           | "createdAt"
-          | "size"
           | "price"
           | "published"
           | undefined,

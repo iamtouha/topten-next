@@ -13,28 +13,16 @@ export const productsAdminRouter = router({
         page: z.number().int().default(0),
         perPage: z.number().int().default(10),
         name: z.string().optional(),
-        size: z.string().optional(),
-        sortBy: z
-          .enum(["name", "size", "published", "price", "createdAt"])
-          .optional(),
+        sortBy: z.enum(["name", "published", "price", "createdAt"]).optional(),
         sortDesc: z.boolean().default(false),
       })
     )
     .query(async ({ ctx, input }) => {
-      const needFilter = input.size || input.name;
-
       const params: Prisma.ProductFindManyArgs = {
         orderBy: input.sortBy
           ? { [input.sortBy]: input.sortDesc ? "desc" : "asc" }
           : undefined,
-        where: needFilter
-          ? {
-              AND: {
-                name: input.name ? { contains: input.name } : undefined,
-                size: input.size ? { contains: input.size } : undefined,
-              },
-            }
-          : undefined,
+        where: input.name ? { name: input.name } : undefined,
       };
 
       const [count, products] = await ctx.prisma.$transaction([
@@ -50,7 +38,6 @@ export const productsAdminRouter = router({
   getOne: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const product = await ctx.prisma.product.findUnique({
       where: { id: input },
-      include: { stocks: true },
     });
     if (!product) {
       throw new TRPCError({ code: "NOT_FOUND", message: "User not found!" });
@@ -62,17 +49,15 @@ export const productsAdminRouter = router({
     .input(
       z.object({
         name: z.string(),
-        size: z.string(),
         price: z.number().min(0),
         published: z.boolean().default(true),
       })
     )
     .mutation(({ ctx, input }) => {
-      const { name, size, price, published } = input;
+      const { name, price, published } = input;
       return ctx.prisma.product.create({
         data: {
           name,
-          size,
           price,
           published,
           createdBy: ctx.session.user.email,
@@ -85,18 +70,16 @@ export const productsAdminRouter = router({
       z.object({
         id: z.string(),
         name: z.string().min(1),
-        size: z.string().min(1),
         price: z.number().min(0),
         published: z.boolean().default(true),
       })
     )
     .mutation(({ ctx, input }) => {
-      const { id, name, size, price, published } = input;
+      const { id, name, price, published } = input;
       return ctx.prisma.product.update({
         where: { id },
         data: {
           name,
-          size,
           price,
           published,
           updatedBy: ctx.session.user.email,

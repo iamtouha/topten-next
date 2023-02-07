@@ -21,9 +21,6 @@ const schema = z.object({
   name: z
     .string()
     .min(1, { message: "Product name must be at least 1 character" }),
-  size: z
-    .string()
-    .min(1, { message: "Product size must be at least 1 character" }),
   price: z
     .number({
       invalid_type_error: "Please input only numbers",
@@ -77,7 +74,6 @@ const UpdateProduct: NextPageWithLayout = () => {
     updateProduct({
       id: productId,
       name: data.name,
-      size: data.size,
       price: data.price,
     });
   };
@@ -86,7 +82,6 @@ const UpdateProduct: NextPageWithLayout = () => {
     if (!product) return;
     reset({
       name: product.name,
-      size: product.size,
       price: product.price,
     });
   }, [product, reset]);
@@ -157,29 +152,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                     </p>
                   ) : null}
                 </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="update-product-size"
-                    className="text-xs font-medium text-title md:text-sm"
-                  >
-                    Product size
-                  </label>
-                  <input
-                    type="text"
-                    id="update-product-size"
-                    className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                    placeholder="Product size"
-                    {...register("size", { required: true })}
-                    defaultValue={
-                      updateStatus === "loading" ? "" : product?.size
-                    }
-                  />
-                  {errors.size ? (
-                    <p className="text-sm font-medium text-danger">
-                      {errors.size.message}
-                    </p>
-                  ) : null}
-                </div>
+
                 <div className="grid gap-2">
                   <label
                     htmlFor="update-product-price"
@@ -262,7 +235,6 @@ const ProductDetails = ({
 }) => {
   const currentProduct = [
     { key: "Name", value: product?.name },
-    { key: "Size", value: product?.size },
     {
       key: "Price",
       value: formatPrice(product?.price),
@@ -298,23 +270,6 @@ const ProductDetails = ({
           </div>
         ))}
       </div>
-      {product.stocks.length > 0
-        ? product.stocks.map((stock, i) => (
-            <div key={i} className="grid gap-2.5">
-              <p className="text-base font-semibold text-title md:text-lg">
-                Stock
-              </p>
-              <div className="grid gap-y-2.5 pt-2.5 sm:grid-cols-2">
-                <div className="flex gap-2">
-                  <p className="text-sm font-medium md:text-base">Quantity:</p>
-                  <p className="text-sm text-neutral-900 md:text-base">
-                    {stock.quantity}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))
-        : null}
     </div>
   );
 };

@@ -7,9 +7,10 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const dashboardRoutes = [
   { name: "Users & Employees", path: "/dashboard/users" },
-  { name: "Products", path: "/dashboard/products" },
   { name: "Stores", path: "/dashboard/stores" },
-  { name: "Invoices", path: "/dashboard/invoices" },
+  { name: "Products", path: "/dashboard/products" },
+  { name: "Customers", path: "/dashboard/customers" },
+  { name: "Orders", path: "/dashboard/orders" },
 ];
 
 const Dashboard: NextPageWithLayout = () => {
