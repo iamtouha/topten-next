@@ -8,7 +8,10 @@ export const usersAdminRouter = router({
     return await ctx.prisma.user.findMany({ include: { profile: true } });
   }),
   profileList: adminProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.profile.findMany();
+    return await ctx.prisma.profile.findMany({
+      where: { user: { active: true } },
+      select: { id: true, fullName: true },
+    });
   }),
   get: adminProcedure
     .input(

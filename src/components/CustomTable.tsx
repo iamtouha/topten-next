@@ -85,15 +85,23 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
-  const { manualFiltering, manualSorting, manualPagination } = props;
+  const { manualFiltering, manualSorting, manualPagination, state } = props;
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState<string>("");
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [sorting, setSorting] = useState<SortingState>(
+    state?.sorting ? [...state?.sorting] : []
+  );
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    state?.columnFilters ? [...state?.columnFilters] : []
+  );
+  const [globalFilter, setGlobalFilter] = useState<string>(
+    state?.globalFilter ?? ""
+  );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    state?.columnVisibility ? { ...state?.columnVisibility } : {}
+  );
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+    pageIndex: state?.pagination?.pageIndex ?? 0,
+    pageSize: state?.pagination?.pageSize ?? 10,
   });
   const pagination = useMemo(
     () => ({
@@ -111,7 +119,6 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
       globalFilter,
       pagination,
       columnVisibility,
-      ...props.state,
     },
     filterFns: { fuzzy: fuzzyFilter },
     manualSorting,

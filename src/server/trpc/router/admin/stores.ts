@@ -1,4 +1,4 @@
-import { STORE_TYPE, type Prisma } from "@prisma/client";
+import { ROLE_TYPE, STORE_TYPE, type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { router, adminProcedure } from "../../trpc";
@@ -99,4 +99,35 @@ export const storesAdminRouter = router({
   delete: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     return await ctx.prisma.store.delete({ where: { id: input } });
   }),
+  addRole: adminProcedure
+    .input(
+      z.object({
+        storeId: z.string(),
+        profileId: z.string(),
+        roleType: z.nativeEnum(ROLE_TYPE),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      const { profileId, storeId, roleType } = input;
+      return ctx.prisma.role.create({
+        data: {
+          profileId,
+          storeId,
+          type: roleType,
+          addedBy: ctx.session.user.email,
+        },
+      });
+    }),
+  deleteRole: adminProcedure
+    .input(
+      z.object({
+        storeId: z.string(),
+        profileId: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.role.delete({
+        where: { storeId_profileId: input },
+      });
+    }),
 });
