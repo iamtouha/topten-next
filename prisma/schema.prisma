@@ -77,10 +77,9 @@ model Store {
   name      String
   address   String
   published Boolean
-  type      STORE_TYPE
-  roles     Role[]
-  stocks    Stock[]
-  restocks  Restock[]
+  roles     Role[] 
+  // stocks    Stock[]
+  // restocks  Restock[]
   customers Customer[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt 
@@ -88,12 +87,9 @@ model Store {
   updatedBy   String?
 }
 
-enum STORE_TYPE {
-  INVENTORY
-  DISTRIBUTION
-}
 
 model Role {
+  id        String   @id @default(cuid())
   storeId   String
   profileId String
   addedAt   DateTime @default(now())
@@ -101,10 +97,10 @@ model Role {
   updatedAt DateTime @updatedAt
   updatedBy String?
   type      ROLE_TYPE
-  store     Store    @relation(fields: [storeId], references: [id])
-  profile   Profile  @relation(fields: [profileId], references: [id])
-
-  @@id([storeId, profileId])
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  @@unique([storeId, profileId], name: "RoleIdentifier")
   @@index([storeId])
   @@index([profileId])
 }
@@ -119,50 +115,50 @@ model Product {
   createdAt    DateTime      @default(now())
   createdBy    String?
   published    Boolean
-  stocks       Stock[]
-  restockItems RestockItem[]
+  // stocks       Stock[]
+  // restockItems RestockItem[]
   orderItems   OrderItem[]
 }
 
-model Stock {
-  productId String
-  storeId   String
-  quantity  Int
-  addedAt   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  product   Product  @relation(fields: [productId], references: [id])
-  store     Store    @relation(fields: [storeId], references: [id])
+// model Stock {
+//   productId String
+//   storeId   String
+//   quantity  Int
+//   addedAt   DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   product   Product  @relation(fields: [productId], references: [id])
+//   store     Store    @relation(fields: [storeId], references: [id])
 
-  @@id([productId, storeId])
-  @@index([productId])
-  @@index([storeId])
-}
+//   @@id([productId, storeId])
+//   @@index([productId])
+//   @@index([storeId])
+// }
 
-model Restock {
-  id        String        @id @default(cuid())
-  storeId   String
-  quantity  Int
-  addedAt   DateTime      @default(now())
-  addedBy   String?
-  updatedAt DateTime      @updatedAt
-  updatedBy String?
-  store     Store         @relation(fields: [storeId], references: [id])
-  items     RestockItem[]
+// model Restock {
+//   id        String        @id @default(cuid())
+//   storeId   String
+//   quantity  Int
+//   addedAt   DateTime      @default(now())
+//   addedBy   String?
+//   updatedAt DateTime      @updatedAt
+//   updatedBy String?
+//   store     Store         @relation(fields: [storeId], references: [id])
+//   items     RestockItem[]
 
-  @@index([storeId])
-}
+//   @@index([storeId])
+// }
 
-model RestockItem {
-  productId String
-  restockId String
-  quantity  Int
-  product   Product @relation(fields: [productId], references: [id])
-  restock   Restock @relation(fields: [restockId], references: [id])
+// model RestockItem {
+//   productId String
+//   restockId String
+//   quantity  Int
+//   product   Product @relation(fields: [productId], references: [id])
+//   restock   Restock @relation(fields: [restockId], references: [id])
 
-  @@id([productId, restockId])
-  @@index([productId])
-  @@index([restockId])
-}
+//   @@id([productId, restockId])
+//   @@index([productId])
+//   @@index([restockId])
+// }
 
 model Customer {
   id        String   @id @default(cuid())

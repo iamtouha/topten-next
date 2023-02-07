@@ -1,4 +1,4 @@
-import { ROLE_TYPE, STORE_TYPE, type Prisma } from "@prisma/client";
+import { ROLE_TYPE, type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { router, adminProcedure } from "../../trpc";
@@ -13,13 +13,12 @@ export const storesAdminRouter = router({
         page: z.number().int().default(0),
         perPage: z.number().int().default(10),
         name: z.string().optional(),
-        sortBy: z.enum(["name", "published", "type", "createdAt"]).optional(),
+        sortBy: z.enum(["name", "published", "createdAt"]).optional(),
         sortDesc: z.boolean().default(false),
       })
     )
     .query(async ({ ctx, input }) => {
       const needFilter = input.name;
-
       const params: Prisma.StoreFindManyArgs = {
         orderBy: input.sortBy
           ? { [input.sortBy]: input.sortDesc ? "desc" : "asc" }
@@ -55,18 +54,16 @@ export const storesAdminRouter = router({
       z.object({
         name: z.string(),
         address: z.string(),
-        type: z.nativeEnum(STORE_TYPE),
         published: z.boolean().default(true),
       })
     )
     .mutation(({ ctx, input }) => {
-      const { name, address, type, published } = input;
+      const { name, address, published } = input;
       return ctx.prisma.store.create({
         data: {
           name,
           address,
           published,
-          type,
           createdBy: ctx.session.user.email,
         },
       });
@@ -78,19 +75,17 @@ export const storesAdminRouter = router({
         id: z.string(),
         name: z.string().min(1),
         address: z.string().min(1),
-        type: z.nativeEnum(STORE_TYPE),
         published: z.boolean().default(true),
       })
     )
     .mutation(({ ctx, input }) => {
-      const { id, name, address, type, published } = input;
+      const { id, name, address, published } = input;
       return ctx.prisma.store.update({
         where: { id },
         data: {
           name,
           address,
           published,
-          type,
           updatedBy: ctx.session.user.email,
         },
       });
@@ -118,16 +113,9 @@ export const storesAdminRouter = router({
         },
       });
     }),
-  deleteRole: adminProcedure
-    .input(
-      z.object({
-        storeId: z.string(),
-        profileId: z.string(),
-      })
-    )
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.role.delete({
-        where: { storeId_profileId: input },
-      });
-    }),
+  deleteRole: adminProcedure.input(z.string()).mutation(({ ctx, input }) => {
+    return ctx.prisma.role.delete({
+      where: { id: input },
+    });
+  }),
 });

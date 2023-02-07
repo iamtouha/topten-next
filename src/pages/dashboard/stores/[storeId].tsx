@@ -1,13 +1,7 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  STORE_TYPE,
-  ROLE_TYPE,
-  type Store,
-  USER_ROLE,
-  Role,
-} from "@prisma/client";
+import { ROLE_TYPE, type Store, USER_ROLE, Role } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Head from "next/head";
@@ -32,7 +26,6 @@ const schema = z.object({
   address: z
     .string()
     .min(1, { message: "Store name must be at least 1 character" }),
-  type: z.nativeEnum(STORE_TYPE),
 });
 type Inputs = z.infer<typeof schema>;
 
@@ -68,6 +61,7 @@ const UpdateStore: NextPageWithLayout = () => {
   const deleteRoleMutation = trpc.admin.stores.deleteRole.useMutation({
     onSuccess: (data) => {
       toast.success(`${data.type.toLowerCase()} role deleted`);
+      refetchStore();
     },
     onError: () => {
       toast.error("Delete Role Error");
@@ -108,7 +102,6 @@ const UpdateStore: NextPageWithLayout = () => {
       id: storeId,
       name: data.name,
       address: data.address,
-      type: data.type,
     });
   };
   // reset form on store change
@@ -117,7 +110,6 @@ const UpdateStore: NextPageWithLayout = () => {
     reset({
       name: store.name,
       address: store.address,
-      type: store.type,
     });
   }, [store, reset]);
   // get all stores
@@ -209,36 +201,7 @@ const UpdateStore: NextPageWithLayout = () => {
                       </p>
                     ) : null}
                   </div>
-                  <div className="grid gap-2">
-                    <label
-                      htmlFor="update-store-type"
-                      className="text-xs font-medium text-title md:text-sm"
-                    >
-                      Store type
-                    </label>
-                    <select
-                      id="update-store-type"
-                      className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
-                      {...register("type", { required: true })}
-                      defaultValue={
-                        updateStatus === "loading" ? "" : store?.type
-                      }
-                    >
-                      <option value="" hidden>
-                        Select store type
-                      </option>
-                      {Object.values(STORE_TYPE).map((type) => (
-                        <option key={type} value={type}>
-                          {titleCase(type)}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.type ? (
-                      <p className="text-sm font-medium text-danger">
-                        {errors.type.message}
-                      </p>
-                    ) : null}
-                  </div>
+
                   <Button
                     aria-label="update store"
                     className="mt-2.5 w-full bg-primary-700 py-2.5"
@@ -337,9 +300,7 @@ const UpdateStore: NextPageWithLayout = () => {
                     ...role,
                   };
                 })}
-                deleteRole={(profileId) =>
-                  deleteRoleMutation.mutate({ storeId: store.id, profileId })
-                }
+                deleteRole={deleteRoleMutation.mutate}
               />
             </div>
           </>
@@ -362,10 +323,7 @@ const StoreDetails = ({
   const currentStore = [
     { key: "Name", value: store?.name },
     { key: "Address", value: store?.address },
-    {
-      key: "Type",
-      value: store.type === STORE_TYPE.INVENTORY ? "Inventory" : "Distribution",
-    },
+
     {
       key: "Created at",
       value: dayjs(store?.createdAt).format("DD/MM/YYYY, hh:mmA"),
@@ -432,7 +390,7 @@ const RolesTable = ({ roles, deleteRole }: RolesTableProps) => {
           return (
             <Button
               className="bg-red-100 px-2 py-1 text-red-500"
-              onClick={() => deleteRole(props.row.original.profileId)}
+              onClick={() => deleteRole(props.row.original.id)}
             >
               Delete
             </Button>

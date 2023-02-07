@@ -3,7 +3,6 @@ import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
 import { titleCase } from "@/utils/format";
-import { STORE_TYPE } from "@prisma/client";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
@@ -19,7 +18,6 @@ const schema = z.object({
   address: z
     .string()
     .min(1, { message: "Store name must be at least 1 character" }),
-  type: z.nativeEnum(STORE_TYPE),
 });
 type Inputs = z.infer<typeof schema>;
 
@@ -98,33 +96,7 @@ const AddStore: NextPageWithLayout = () => {
               </p>
             ) : null}
           </div>
-          <div className="grid w-full gap-2">
-            <label
-              htmlFor="add-store-type"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Store type
-            </label>
-            <select
-              id="add-store-type"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
-              {...register("type", { required: true })}
-            >
-              <option value="" hidden>
-                Select store type
-              </option>
-              {Object.values(STORE_TYPE).map((type) => (
-                <option key={type} value={type}>
-                  {titleCase(type)}
-                </option>
-              ))}
-            </select>
-            {errors.type ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.type.message}
-              </p>
-            ) : null}
-          </div>
+
           <Button
             aria-label="add store"
             className="mt-2.5 w-full bg-primary-700 py-3"

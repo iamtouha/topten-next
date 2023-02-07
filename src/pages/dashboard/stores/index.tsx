@@ -50,12 +50,7 @@ const Stores: NextPageWithLayout = () => {
       { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
       { accessorKey: "name", header: "Name" },
       { accessorKey: "address", header: "Address" },
-      {
-        accessorKey: "type",
-        header: "Type",
-        cell: ({ cell }) =>
-          cell.getValue() ? titleCase(cell.getValue()) : "-",
-      },
+
       {
         accessorKey: "published",
         header: "Status",
@@ -105,7 +100,6 @@ const Stores: NextPageWithLayout = () => {
         sortBy: sorting[0]?.id as
           | "name"
           | "published"
-          | "type"
           | "createdAt"
           | undefined,
         sortDesc: sorting[0]?.desc,
