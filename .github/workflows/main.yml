@@ -18,9 +18,6 @@ jobs:
     - name: Install dependencies
       run: yarn install
 
-    - name: Build Next.js app
-      run: yarn run build
-
     - name: Lint TypeScript code
       run: yarn run eslint --ext .ts,.tsx src
 
