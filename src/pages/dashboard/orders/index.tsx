@@ -22,15 +22,7 @@ type UserWithProfile = User & {
   profile: Profile | null;
 };
 
-const Invoices: NextPageWithLayout = () => {
-  // tanstack/react-table
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    id: false,
-    name: false,
-    createdBy: false,
-    updatedBy: false,
-    updatedAt: false,
-  });
+const Orders: NextPageWithLayout = () => {
   const columns = useMemo<ColumnDef<UserWithProfile, any>[]>(
     () => [
       {
@@ -107,8 +99,6 @@ const Invoices: NextPageWithLayout = () => {
           tableTitle={`Invoices (${users?.length ?? 0} entries)`}
           columns={columns}
           data={users ?? []}
-          state={{ columnVisibility }}
-          setColumnVisibility={setColumnVisibility}
           isLoading={isLoading}
           isError={isError}
           rowHoverEffect
@@ -124,6 +114,6 @@ const Invoices: NextPageWithLayout = () => {
   );
 };
 
-Invoices.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Orders.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default Invoices;
+export default Orders;
