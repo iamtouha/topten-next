@@ -26,7 +26,7 @@ const AddProduct: NextPageWithLayout = () => {
   // trpc
   const { mutateAsync: addProduct, status: addStatus } =
     trpc.admin.products.create.useMutation({
-      onSuccess: async (product) => {
+      onSuccess: (product) => {
         toast.success(`${product.name} added successfully!`);
       },
       onError: (e) => {
@@ -51,11 +51,11 @@ const AddProduct: NextPageWithLayout = () => {
       <Head>
         <title>Add Product | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
+      <main className="container max-w-screen-sm pt-5 pb-10">
         <form
           aria-label="add product form"
           className="grid w-full gap-2.5 whitespace-nowrap"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
         >
           <div className="grid w-full gap-2">
             <label

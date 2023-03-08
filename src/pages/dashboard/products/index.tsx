@@ -1,24 +1,24 @@
+import type { NextPageWithLayout } from "@/pages/_app";
 import { api as trpc } from "@/utils/api";
-import Head from "next/head";
-import { useMemo, useState } from "react";
+import { formatPrice } from "@/utils/format";
+import type { Product } from "@prisma/client";
 import type {
+  ColumnDef,
   ColumnFiltersState,
   PaginationState,
   SortingState,
   VisibilityState,
-  ColumnDef,
 } from "@tanstack/react-table";
-import type { Product } from "@prisma/client";
-import type { NextPageWithLayout } from "@/pages/_app";
+import dayjs from "dayjs";
+import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
-import dayjs from "dayjs";
-import { formatPrice } from "@/utils/format";
+import { useMemo, useState } from "react";
 
 // components imports
-import DashboardLayout from "@/components/layouts/DashboardLayout";
-import CustomTable from "@/components/CustomTable";
 import Button from "@/components/Button";
+import CustomTable from "@/components/CustomTable";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 type fieldValue = string | undefined;
 
@@ -52,14 +52,14 @@ const Products: NextPageWithLayout = () => {
         accessorKey: "price",
         header: "Price",
         cell: ({ cell }) =>
-          cell.getValue() ? formatPrice(cell.getValue()) : "-",
+          cell.getValue() ? formatPrice(Number(cell.getValue())) : "-",
         enableColumnFilter: false,
       },
       {
         accessorKey: "createdAt",
         header: "Created At",
         cell: ({ cell }) =>
-          dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a"),
+          dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a"),
         enableColumnFilter: false,
       },
       {
@@ -73,7 +73,7 @@ const Products: NextPageWithLayout = () => {
         header: "Updated At",
         cell: ({ cell, row }) =>
           row.getValue("updatedBy")
-            ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
+            ? dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a")
             : "-",
         enableSorting: false,
         enableColumnFilter: false,
@@ -111,7 +111,7 @@ const Products: NextPageWithLayout = () => {
       <Head>
         <title>Products | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
+      <main className="container max-w-screen-xl pt-5 pb-10">
         <CustomTable<Product>
           tableTitle={
             <>
@@ -144,8 +144,8 @@ const Products: NextPageWithLayout = () => {
           disableGlobalFilter
           bodyRowProps={(row) => ({
             onClick: () => {
-              const productId = row.getValue("id") as string;
-              Router.push("/dashboard/products/" + productId);
+              const productId = row.original.id;
+              void Router.push(`/dashboard/products/${productId}`);
             },
           })}
         />

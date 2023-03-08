@@ -16,7 +16,7 @@ const Account: NextPage = () => {
       </Head>
       <main
         className={`${
-          status === "loading" && "pt-0"
+          status === "loading" ? "pt-0" : ""
         } flex h-screen max-w-screen-sm flex-col items-center justify-center gap-8 pb-40 container-res`}
       >
         {session ? (
@@ -32,7 +32,7 @@ const Account: NextPage = () => {
             <Button
               aria-label="sign out"
               className="bg-red-500"
-              onClick={() => signOut()}
+              onClick={() => void signOut()}
             >
               Sign out
             </Button>

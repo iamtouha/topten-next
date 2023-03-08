@@ -2,7 +2,6 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import { api as trpc } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
-import { titleCase } from "@/utils/format";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
@@ -25,7 +24,7 @@ const AddStore: NextPageWithLayout = () => {
   // trpc
   const { mutateAsync: addStore, status: addStatus } =
     trpc.admin.stores.create.useMutation({
-      onSuccess: async (store) => {
+      onSuccess: (store) => {
         toast.success(`${store.name}-${store.address} added successfully!`);
       },
       onError: (e) => {
@@ -50,11 +49,11 @@ const AddStore: NextPageWithLayout = () => {
       <Head>
         <title>Add Product | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
+      <main className="container max-w-screen-sm pt-5 pb-10">
         <form
           aria-label="add store form"
           className="grid w-full gap-2.5 whitespace-nowrap"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
         >
           <div className="grid w-full gap-2">
             <label

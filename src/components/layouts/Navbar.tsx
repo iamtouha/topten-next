@@ -2,8 +2,9 @@ import styles from "@/styles/layouts/navbar.module.css";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { type NextRouter, useRouter } from "next/router";
+import { useRouter, type NextRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 // components imports
 import Button from "../Button";
@@ -50,20 +51,17 @@ const Navbar = () => {
     return () => body?.classList.remove(stopOverflowY);
   }, [isMobile]);
 
-  // add activeClass to activeLink
   const router = useRouter();
-
-  // auth
   const { data: session, status } = useSession();
 
   return (
     <nav
       aria-label="navbar"
-      className={
-        isScrolled
-          ? `${styles.section} ${styles.sectionScrolled}`
-          : styles.section
-      }
+      className={twMerge(
+        styles.navbar,
+        isMobile ? styles.navbarMobile : "",
+        isScrolled ? styles.navbarScrolled : ""
+      )}
     >
       <div className={styles.wrapper}>
         <Link href={"/"} onClick={() => setIsMobile(false)}>
@@ -86,9 +84,11 @@ const Navbar = () => {
         session?.user?.role === USER_ROLE.SUPER_ADMIN ? (
           <Link
             href={"/dashboard"}
-            className={`${
-              router.pathname.startsWith("/dashboard") ? styles.activeLink : ""
-            } ${styles.link} mr-6 ml-auto`}
+            className={twMerge(
+              router.pathname.startsWith("/dashboard") ? styles.activeLink : "",
+              styles.link,
+              "mr-6 ml-auto"
+            )}
           >
             {"Dashboard"}
           </Link>
@@ -97,15 +97,17 @@ const Navbar = () => {
           <div className={styles.authButtonWrapper}>
             {session ? (
               <Link href={"/app/account"}>
-                <img
+                <Image
                   src={session.user?.image as string}
                   alt={session.user?.name as string}
                   width={48}
                   height={48}
-                  className={`${
+                  className={twMerge(
+                    styles.avatar,
                     router.pathname === "/app/account" &&
-                    "ring-2 ring-primary-700"
-                  } cursor-pointer rounded-full transition-opacity hover:opacity-80 active:opacity-100`}
+                      "ring-2 ring-primary-700",
+                    "cursor-pointer rounded-full transition-opacity hover:opacity-80 active:opacity-100"
+                  )}
                   loading="lazy"
                 />
               </Link>
@@ -150,20 +152,21 @@ const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
 
   return (
     <ul
-      className={`${styles.links} ${styles.mobileLinks} ${
+      className={twMerge(
+        styles.links,
+        styles.mobileLinks,
         isMobile ? styles.mobileLinksActive : ""
-      }`}
+      )}
     >
       {mobileLinks.map((navLink, i) => {
         return (
           <li key={i} onClick={() => setIsMobile(false)}>
             <Link
               href={navLink.url}
-              className={
-                router.pathname === navLink.url
-                  ? `${styles.activeLink} ${styles.link}`
-                  : styles.link
-              }
+              className={twMerge(
+                styles.link,
+                router.pathname === navLink.url ? styles.activeLink : ""
+              )}
             >
               {navLink.label}
             </Link>
@@ -190,17 +193,16 @@ const MobileLinks = ({ router, isMobile, setIsMobile }: MobileLinksProps) => {
 
 const DesktopLinks = ({ router }: { router: NextRouter }) => {
   return (
-    <ul className={`${styles.links} ${styles.desktopLinks}`}>
+    <ul className={twMerge(styles.links, styles.desktopLinks)}>
       {desktopLinks.map((navLink, i) => {
         return (
           <li key={i}>
             <Link
               href={navLink.url}
-              className={
-                router.pathname === navLink.url
-                  ? `${styles.activeLink} ${styles.link}`
-                  : styles.link
-              }
+              className={twMerge(
+                styles.link,
+                router.pathname === navLink.url ? styles.activeLink : ""
+              )}
             >
               {navLink.label}
             </Link>

@@ -1,15 +1,15 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import { trpc, type RouterOutputs } from "@/utils/trpc";
+import { api, type RouterOutputs } from "@/utils/api";
 import { titleCase } from "@/utils/format";
 import { Listbox, Transition } from "@headlessui/react";
 import { User, USER_ROLE } from "@prisma/client";
+import { useIsMutating } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Router from "next/router";
-import { useSession } from "next-auth/react";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useIsMutating } from "@tanstack/react-query";
 
 // components imports
 import Button from "@/components/Button";
@@ -24,8 +24,8 @@ const User: NextPageWithLayout = () => {
   const session = useSession();
 
   // trpc
-  const utils = trpc.useContext();
-  const { data: user, status, error } = trpc.admin.users.getOne.useQuery(id);
+  const utils = api.useContext();
+  const { data: user, status, error } = api.admin.users.getOne.useQuery(id);
   // update user role
   const [selectedRole, setSelectedRole] = useState<USER_ROLE>(
     user?.role as USER_ROLE
@@ -34,37 +34,37 @@ const User: NextPageWithLayout = () => {
     setSelectedRole(user?.role as USER_ROLE);
   }, [user?.role]);
   const { mutate: updateRole, status: roleStatus } =
-    trpc.admin.users.updateRole.useMutation({
-      onSuccess: async (user) => {
-        setSelectedRole(user.role);
-        toast.success("User role updated!");
+    api.admin.users.updateRole.useMutation({
+      onSuccess: (user) => {
+        void setSelectedRole(user.role);
+        void toast.success("User role updated!");
       },
-      onError: async (e) => {
-        toast.error(e.message, { toastId: "editRoleError" });
+      onError: (e) => {
+        void toast.error(e.message, { toastId: "editRoleError" });
       },
     });
   // update user status
   const { mutate: updateStatus, status: activeStatus } =
-    trpc.admin.users.updateStatus.useMutation({
-      onSuccess: async () => {
+    api.admin.users.updateStatus.useMutation({
+      onSuccess: () => {
         toast.success("User status updated!");
       },
-      onError: async (e) => {
+      onError: (e) => {
         toast.error(e.message, { toastId: "toggleUserError" });
       },
     });
   // delete user
-  const { mutate: deleteUser } = trpc.admin.users.delete.useMutation({
+  const { mutate: deleteUser } = api.admin.users.delete.useMutation({
     onSuccess: async () => {
-      toast.success("User deleted!", { toastId: "deleteUserSuccess" });
       await Router.push("/dashboard/users");
+      void toast.success("User deleted!", { toastId: "deleteUserSuccess" });
     },
-    onError: async (e) => {
+    onError: (e) => {
       toast.error(e.message, { toastId: "deleteUserError" });
     },
   });
   // get all users
-  const { data } = trpc.admin.users.get.useQuery({
+  const { data } = api.admin.users.get.useQuery({
     sortBy: "createdAt",
     sortDesc: true,
   });
@@ -72,8 +72,8 @@ const User: NextPageWithLayout = () => {
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.admin.users.getOne.invalidate(id);
-      utils.admin.users.get.invalidate();
+      void utils.admin.users.getOne.invalidate(id);
+      void utils.admin.users.get.invalidate();
     }
   }, [id, number, utils]);
 
@@ -82,7 +82,7 @@ const User: NextPageWithLayout = () => {
       <Head>
         <title>Update User | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-sm pt-5 pb-10 container-res">
+      <main className="container min-h-screen max-w-screen-sm pt-5 pb-10">
         {status === "loading" ? (
           <div
             role="status"
@@ -95,7 +95,7 @@ const User: NextPageWithLayout = () => {
             role="status"
             className="text-sm font-medium text-title md:text-base"
           >
-            {`${error.message} | ${error.data?.httpStatus}`}
+            {`${error.message} | ${error.data?.httpStatus ?? ""}`}
           </div>
         ) : (
           <div className="grid gap-8">

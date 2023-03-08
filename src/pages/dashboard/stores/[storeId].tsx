@@ -1,22 +1,21 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import { trpc, type RouterOutputs } from "@/utils/trpc";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ROLE_TYPE, type Store, USER_ROLE, Role } from "@prisma/client";
-import { useIsMutating } from "@tanstack/react-query";
+import { Role, ROLE_TYPE, type Store } from "@prisma/client";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Router from "next/router";
-import { titleCase } from "@/utils/format";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
 
 // components imports
 import Button from "@/components/Button";
+import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Searchbar from "@/components/Searchbar";
-import CustomTable from "@/components/CustomTable";
+import { api, RouterOutputs } from "@/utils/api";
 import { ColumnDef } from "@tanstack/react-table";
 
 const schema = z.object({
@@ -39,29 +38,29 @@ const UpdateStore: NextPageWithLayout = () => {
     status,
     error,
     refetch: refetchStore,
-  } = trpc.admin.stores.getOne.useQuery(storeId, {
+  } = api.admin.stores.getOne.useQuery(storeId, {
     refetchOnWindowFocus: false,
   });
 
   // select role
-  const { data: profiles } = trpc.admin.users.profileList.useQuery(undefined, {
+  const { data: profiles } = api.admin.users.profileList.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
-  const { mutate: addRole } = trpc.admin.stores.addRole.useMutation({
+  const { mutate: addRole } = api.admin.stores.addRole.useMutation({
     onSuccess: (data) => {
       toast.success(`${data.type.toLowerCase()} role added`);
       setSelectedProfileId("");
       setSelectedRole("");
-      refetchStore();
+      void refetchStore();
     },
     onError: () => {
       toast.error("Create Role Error");
     },
   });
-  const deleteRoleMutation = trpc.admin.stores.deleteRole.useMutation({
+  const deleteRoleMutation = api.admin.stores.deleteRole.useMutation({
     onSuccess: (data) => {
       toast.success(`${data.type.toLowerCase()} role deleted`);
-      refetchStore();
+      void refetchStore();
     },
     onError: () => {
       toast.error("Delete Role Error");
@@ -70,23 +69,23 @@ const UpdateStore: NextPageWithLayout = () => {
 
   // update store
   const { mutate: updateStore, status: updateStatus } =
-    trpc.admin.stores.update.useMutation({
-      onSuccess: async () => {
+    api.admin.stores.update.useMutation({
+      onSuccess: () => {
         toast.success("Store updated!");
       },
-      onError: async (e) => {
+      onError: (e) => {
         toast.error(e.message, { toastId: "updateStoreError " });
       },
     });
   // delete store
-  const { mutate: deleteStore } = trpc.admin.stores.delete.useMutation({
-    onSuccess: async () => {
+  const { mutate: deleteStore } = api.admin.stores.delete.useMutation({
+    onSuccess: () => {
       toast.success("Store deleted!", {
         toastId: "deleteStoreSuccess",
       });
-      await Router.push("/dashboard/stores");
+      void Router.push("/dashboard/stores");
     },
-    onError: async (e) => {
+    onError: (e) => {
       toast.error(e.message, { toastId: "deleteStoreError" });
     },
   });
@@ -97,7 +96,7 @@ const UpdateStore: NextPageWithLayout = () => {
     formState: { errors },
     reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
     updateStore({
       id: storeId,
       name: data.name,
@@ -113,7 +112,7 @@ const UpdateStore: NextPageWithLayout = () => {
     });
   }, [store, reset]);
   // get all stores
-  const { data: stores } = trpc.admin.stores.list.useQuery(undefined, {
+  const { data: stores } = api.admin.stores.list.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
 
@@ -127,7 +126,7 @@ const UpdateStore: NextPageWithLayout = () => {
       <Head>
         <title>Update Store | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res">
+      <main className="container max-w-screen-sm px-2 pt-5 pb-10">
         {status === "loading" ? (
           <div
             role="status"
@@ -140,7 +139,7 @@ const UpdateStore: NextPageWithLayout = () => {
             role="status"
             className="text-sm font-medium text-title md:text-base"
           >
-            {`${error.message} | ${error.data?.httpStatus}`}
+            {`${error.message} | ${error.data?.httpStatus ?? ""}`}
           </div>
         ) : (
           <>
@@ -153,7 +152,7 @@ const UpdateStore: NextPageWithLayout = () => {
                 <form
                   aria-label="update store form"
                   className="grid gap-2.5 whitespace-nowrap"
-                  onSubmit={handleSubmit(onSubmit)}
+                  onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
                 >
                   <div className="grid gap-2">
                     <label

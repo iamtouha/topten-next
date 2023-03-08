@@ -1,15 +1,16 @@
-import { Fragment, useState, useEffect } from "react";
 import styles from "@/styles/searchbar.module.css";
-import { Dialog, Combobox, Transition } from "@headlessui/react";
-import Router from "next/router";
+import { Combobox, Dialog, Transition } from "@headlessui/react";
 import type { Product, Store, User } from "@prisma/client";
+import Router from "next/router";
+import { Fragment, useEffect, useState } from "react";
 
 // icons imports
 import {
+  Bars3BottomLeftIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
-  Bars3BottomLeftIcon,
 } from "@heroicons/react/20/solid";
+import { twMerge } from "tailwind-merge";
 
 type SearchbarProps<TData> = {
   data: TData[];
@@ -90,14 +91,14 @@ const Searchbar = <TData extends User | Product | Store>({
                 <Dialog.Panel>
                   <Combobox
                     onChange={(value: TData) => {
-                      Router.push(`/dashboard/${route}/${value.id}`);
-                      setIsOpen(false);
+                      void Router.push(`/dashboard/${route}/${value.id}`);
+                      void setIsOpen(false);
                     }}
                   >
                     <div className={styles.inputWrapper}>
                       <Combobox.Button className={styles.iconWrapper}>
                         <MagnifyingGlassIcon
-                          className={`${styles.icon} text-neutral-500`}
+                          className={`${styles.icon ?? ""} text-neutral-500`}
                           aria-hidden="true"
                         />
                       </Combobox.Button>
@@ -120,7 +121,7 @@ const Searchbar = <TData extends User | Product | Store>({
                             <span className={styles.optionText}>
                               No item found
                             </span>
-                            <span className={`${styles.iconWrapper}`}>
+                            <span className={styles.iconWrapper}>
                               <XMarkIcon
                                 className={styles.icon}
                                 aria-hidden="true"
@@ -131,32 +132,27 @@ const Searchbar = <TData extends User | Product | Store>({
                           filteredData.map((item) => (
                             <Combobox.Option
                               key={item.id}
-                              className={({ active }) =>
-                                `${styles.option} ${
-                                  active
-                                    ? "bg-primary-600 text-white"
-                                    : "text-title"
-                                }`
-                              }
+                              className={twMerge(
+                                "ui-active:bg-primary-600 ui-active:text-white",
+                                "ui-active:text-white"
+                              )}
                               value={item}
                             >
-                              {({ active }) => (
-                                <>
-                                  <span className={styles.optionText}>
-                                    {item.name}
-                                  </span>
-                                  <span
-                                    className={`${styles.iconWrapper} ${
-                                      active ? "text-white" : "text-title"
-                                    }`}
-                                  >
-                                    <Bars3BottomLeftIcon
-                                      className={styles.icon}
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                </>
-                              )}
+                              <span className={styles.optionText}>
+                                {item.name}
+                              </span>
+                              <span
+                                className={twMerge(
+                                  styles.iconWrapper,
+                                  "ui-active:text-white",
+                                  "text-black"
+                                )}
+                              >
+                                <Bars3BottomLeftIcon
+                                  className={styles.icon}
+                                  aria-hidden="true"
+                                />
+                              </span>
                             </Combobox.Option>
                           ))
                         )}

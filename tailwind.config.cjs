@@ -6,6 +6,13 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    container: {
+      center: true,
+      padding: "1.5rem",
+      screens: {
+        "2xl": "1360px",
+      },
+    },
     extend: {
       colors: {
         primary: {
@@ -39,28 +46,8 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function ({ addUtilities }) {
-      addUtilities(customClasses);
-    }),
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
+    require("@headlessui/tailwindcss"),
   ],
 };
-
-const customClasses = [
-  {
-    ".container-res": {
-      "margin-left": "auto",
-      "margin-right": "auto",
-      "padding-left": "1rem",
-      "padding-right": "1rem",
-    },
-    "@media (min-width: 640px)": {
-      ".container-res": {
-        width: "89vw",
-        "padding-left": "0",
-        "padding-right": "0",
-      },
-    },
-  },
-];

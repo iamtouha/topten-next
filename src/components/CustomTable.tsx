@@ -1,36 +1,40 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
+import styles from "@/styles/customtable.module.css";
+import { Popover } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { rankItem } from "@tanstack/match-sorter-utils";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFacetedMinMaxValues,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type Column,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type FilterFn,
+  type PaginationState,
+  type Row,
+  type SortingState,
+  type Table,
+  type VisibilityState,
+} from "@tanstack/react-table";
 import {
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
-  type HTMLAttributes,
-  type SetStateAction,
   type Dispatch,
+  type HTMLAttributes,
+  type ReactNode,
+  type SetStateAction,
 } from "react";
-import {
-  type Column,
-  type Table,
-  type ColumnFiltersState,
-  type FilterFn,
-  type ColumnDef,
-  type SortingState,
-  type PaginationState,
-  type VisibilityState,
-  type Row,
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
-} from "@tanstack/react-table";
-import { rankItem } from "@tanstack/match-sorter-utils";
-import { Popover } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import styles from "@/styles/customtable.module.css";
 
 interface Props<TData, TValue = any> {
   tableTitle?: ReactNode;
@@ -73,6 +77,7 @@ interface Props<TData, TValue = any> {
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
+
   const itemRank = rankItem(row.getValue(columnId), value);
 
   // Store the itemRank info
@@ -426,11 +431,11 @@ const Filter = <TData, TValue = any>({
       }
       placeholder={`Range ${
         column.getFacetedMinMaxValues()?.[0]
-          ? `(${column.getFacetedMinMaxValues()?.[0]}`
+          ? `(${column.getFacetedMinMaxValues()?.[0] ?? 0}`
           : ""
       } ~ ${
         column.getFacetedMinMaxValues()?.[1]
-          ? `${column.getFacetedMinMaxValues()?.[1]}`
+          ? `${column.getFacetedMinMaxValues()?.[1] ?? 0})`
           : ""
       })`}
       className={"mt-1.5 w-36 border text-xs shadow md:text-sm"}

@@ -1,18 +1,12 @@
 import { type NextPageWithLayout } from "@/pages/_app";
-import { titleCase } from "@/utils/format";
 import { api as trpc } from "@/utils/api";
+import { titleCase } from "@/utils/format";
 import { type Profile, type User } from "@prisma/client";
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type PaginationState,
-  type SortingState,
-  type VisibilityState,
-} from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import Head from "next/head";
 import Router from "next/router";
-import { useMemo, useState } from "react";
-import dayjs from "dayjs";
+import { useMemo } from "react";
 
 // components imports
 import CustomTable from "@/components/CustomTable";
@@ -40,7 +34,7 @@ const Orders: NextPageWithLayout = () => {
             accessorKey: "role",
             header: "Role",
             cell: ({ cell }) =>
-              cell.getValue() ? titleCase(cell.getValue()) : "-",
+              cell.getValue() ? titleCase(cell.getValue() as string) : "-",
           },
           {
             accessorKey: "active",
@@ -54,7 +48,7 @@ const Orders: NextPageWithLayout = () => {
             enableGlobalFilter: false,
             cell: ({ cell }) =>
               cell.getValue()
-                ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
+                ? dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a")
                 : "-",
           },
         ],
@@ -104,8 +98,8 @@ const Orders: NextPageWithLayout = () => {
           rowHoverEffect
           bodyRowProps={(row) => ({
             onClick: () => {
-              const id = row.original.id as string;
-              Router.push(`/dashboard/users/${id}`);
+              const id = row.original.id;
+              void Router.push(`/dashboard/users/${id}`);
             },
           })}
         />

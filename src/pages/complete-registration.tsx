@@ -1,5 +1,4 @@
 import styles from "@/styles/completeregistration.module.css";
-import type { NextPageWithLayout } from "./_app";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -9,11 +8,12 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { trpc } from "../utils/trpc";
+import type { NextPageWithLayout } from "./_app";
 
 // components imports
 import Button from "@/components/Button";
 import StaticLayout from "@/components/layouts/StaticLayout";
+import { api } from "@/utils/api";
 
 const schema = z.object({
   fullName: z
@@ -46,7 +46,7 @@ const CompleteRegistration: NextPageWithLayout = () => {
     resolver: zodResolver(schema),
   });
 
-  const createProfileMutation = trpc.user.createProfile.useMutation({
+  const createProfileMutation = api.user.createProfile.useMutation({
     onSuccess: () => {
       toast.success("Registration completed!", {
         toastId: "createProfileSuccess",
@@ -60,7 +60,7 @@ const CompleteRegistration: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (session?.user?.profileId) {
-      Router.push("/app");
+      void Router.push("/app");
     }
   }, [session?.user?.profileId]);
 
@@ -77,12 +77,12 @@ const CompleteRegistration: NextPageWithLayout = () => {
           content="Complete your registration on Top Ten Agro Chemicals"
         />
       </Head>
-      <main className="max-w-screen-sm py-5 container-res">
+      <main className="container-res max-w-screen-sm py-5">
         <h1 className={styles.formTitle}>Complete registration</h1>
         <form
           aria-label="create-profile form"
           className={styles.form}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
         >
           <div className={styles.inputWrapper}>
             <label

@@ -4,7 +4,7 @@ type LoaderProps = {
   children?: ReactNode;
 } & HTMLAttributes<HTMLDivElement>;
 
-const Loader = ({ className, children, ...props }: LoaderProps) => {
+const Loader = ({ className = "", children, ...props }: LoaderProps) => {
   return (
     <div
       aria-label="spinner progressbar"

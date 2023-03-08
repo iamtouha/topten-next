@@ -36,9 +36,11 @@ const Four0Four: NextPageWithLayout = ({ statusCode }) => {
           content="The page you are looking for is unavailable."
         />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center gap-7 container-res">
+      <main className="container-res flex min-h-screen flex-col items-center justify-center gap-7">
         <h1 className="text-2xl font-semibold md:text-3xl">
-          {`${statusCode} | ${statusMesasge}`}
+          {`${
+            typeof statusCode === "number" ? statusCode : "Unknown error"
+          } | ${statusMesasge}}`}
         </h1>
         <Button
           aria-label="go back to the previous page"

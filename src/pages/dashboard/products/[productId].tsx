@@ -1,6 +1,5 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import { formatPrice } from "@/utils/format";
-import { trpc, type RouterOutputs } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Product } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ import * as z from "zod";
 import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Searchbar from "@/components/Searchbar";
+import { api, RouterOutputs } from "@/utils/api";
 
 const schema = z.object({
   name: z
@@ -33,31 +33,31 @@ const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
 
   // trpc
-  const utils = trpc.useContext();
+  const utils = api.useContext();
   const {
     data: product,
     status,
     error,
-  } = trpc.admin.products.getOne.useQuery(productId);
+  } = api.admin.products.getOne.useQuery(productId);
   // update product
   const { mutate: updateProduct, status: updateStatus } =
-    trpc.admin.products.update.useMutation({
-      onSuccess: async () => {
+    api.admin.products.update.useMutation({
+      onSuccess: () => {
         toast.success("Product updated!");
       },
-      onError: async (e) => {
+      onError: (e) => {
         toast.error(e.message, { toastId: "updateProductError" });
       },
     });
   // delete product
-  const { mutate: deleteProduct } = trpc.admin.products.delete.useMutation({
-    onSuccess: async () => {
+  const { mutate: deleteProduct } = api.admin.products.delete.useMutation({
+    onSuccess: () => {
       toast.success("Product deleted!", {
         toastId: "deleteProductSuccess",
       });
-      await Router.push("/dashboard/products");
+      void Router.push("/dashboard/products");
     },
-    onError: async (e) => {
+    onError: (e) => {
       toast.error(e.message, { toastId: "deleteProductError" });
     },
   });
@@ -86,15 +86,15 @@ const UpdateProduct: NextPageWithLayout = () => {
     });
   }, [product, reset]);
   // get all products
-  const { data: products } = trpc.admin.products.list.useQuery(undefined, {
+  const { data: products } = api.admin.products.list.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
   // refetch
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.admin.products.getOne.invalidate(productId);
-      utils.admin.products.list.invalidate();
+      void utils.admin.products.getOne.invalidate(productId);
+      void utils.admin.products.list.invalidate();
     }
   }, [number, productId, utils]);
 
@@ -103,7 +103,7 @@ const UpdateProduct: NextPageWithLayout = () => {
       <Head>
         <title>Update Product | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="min-h-screen max-w-screen-sm px-2 pt-5 pb-10 container-res">
+      <main className="container-res min-h-screen max-w-screen-sm px-2 pt-5 pb-10">
         {status === "loading" ? (
           <div
             role="status"
@@ -116,7 +116,7 @@ const UpdateProduct: NextPageWithLayout = () => {
             role="status"
             className="text-sm font-medium text-title md:text-base"
           >
-            {`${error.message} | ${error.data?.httpStatus}`}
+            {`${error.message} | ${error.data?.httpStatus ?? ""}`}
           </div>
         ) : (
           <div className="grid gap-8">
@@ -127,7 +127,7 @@ const UpdateProduct: NextPageWithLayout = () => {
               <form
                 aria-label="update product form"
                 className="grid gap-2.5 whitespace-nowrap"
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
               >
                 <div className="grid gap-2">
                   <label

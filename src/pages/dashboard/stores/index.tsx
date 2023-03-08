@@ -13,7 +13,6 @@ import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
 import { useMemo, useState } from "react";
-import { titleCase } from "@/utils/format";
 
 // components imports
 import Button from "@/components/Button";
@@ -61,7 +60,7 @@ const Stores: NextPageWithLayout = () => {
         accessorKey: "createdAt",
         header: "Created At",
         cell: ({ cell }) =>
-          dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a"),
+          dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a"),
         enableColumnFilter: false,
       },
       {
@@ -75,7 +74,7 @@ const Stores: NextPageWithLayout = () => {
         header: "Updated At",
         cell: ({ cell, row }) =>
           row.getValue("updatedBy")
-            ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
+            ? dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a")
             : "-",
         enableSorting: false,
         enableColumnFilter: false,
@@ -145,8 +144,8 @@ const Stores: NextPageWithLayout = () => {
           disableGlobalFilter
           bodyRowProps={(row) => ({
             onClick: () => {
-              const storeId = row.getValue("id") as string;
-              Router.push("/dashboard/stores/" + storeId);
+              const storeId = row.original.id;
+              void Router.push(`/dashboard/stores/${storeId}`);
             },
           })}
         />

@@ -1,14 +1,12 @@
-import { useEffect, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
-import Router from "next/router";
-import { toast } from "react-toastify";
+import { type ReactNode } from "react";
 
 // components imports
+import { ShieldExclamationIcon } from "@heroicons/react/24/outline";
+import { USER_ROLE } from "@prisma/client";
+import LoadingScreen from "../screens/LoadingScreen";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import LoadingScreen from "../LoadingScreen";
-import { USER_ROLE } from "@prisma/client";
-import { ShieldExclamationIcon } from "@heroicons/react/24/outline";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession({ required: true });

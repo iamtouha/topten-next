@@ -7,7 +7,7 @@ type ButtonProps = {
   HTMLButtonElement
 >;
 
-const Button = ({ children, className, ...btnProps }: ButtonProps) => {
+const Button = ({ children, className = "", ...btnProps }: ButtonProps) => {
   return (
     <button
       className={`w-fit bg-primary-700 px-3.5 py-2 text-xs font-semibold text-white transition-opacity focus:outline-none enabled:hover:bg-opacity-80 enabled:active:bg-opacity-100 disabled:cursor-not-allowed md:text-sm ${className}`}
