@@ -1,5 +1,5 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import { trpc } from "@/utils/trpc";
+import { api as trpc } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
 import { useForm, type SubmitHandler } from "react-hook-form";

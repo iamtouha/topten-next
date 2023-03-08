@@ -1,6 +1,6 @@
 import { type NextPageWithLayout } from "@/pages/_app";
 import { titleCase } from "@/utils/format";
-import { trpc } from "@/utils/trpc";
+import { api as trpc } from "@/utils/api";
 import { type Profile, type User } from "@prisma/client";
 import {
   type ColumnDef,

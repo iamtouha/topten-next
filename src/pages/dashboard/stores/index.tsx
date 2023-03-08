@@ -1,5 +1,5 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import { trpc } from "@/utils/trpc";
+import { api as trpc } from "@/utils/api";
 import type { Store } from "@prisma/client";
 import type {
   ColumnDef,

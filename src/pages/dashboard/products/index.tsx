@@ -1,4 +1,4 @@
-import { trpc } from "@/utils/trpc";
+import { api as trpc } from "@/utils/api";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import type {
