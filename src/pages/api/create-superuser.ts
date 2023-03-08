@@ -1,5 +1,5 @@
+import { prisma } from "@/server/db";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../server/db/client";
 
 const createSuperUser = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await prisma.user.findFirst({

@@ -1,15 +1,15 @@
+import { env } from "@/env.mjs";
+import { prisma } from "@/server/db";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { type USER_ROLE } from "@prisma/client";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type NextAuthOptions,
   type DefaultSession,
-  DefaultUser,
+  type DefaultUser,
+  type NextAuthOptions,
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "@/env.mjs";
-import { prisma } from "@/server/db";
-import { USER_ROLE } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -81,5 +81,4 @@ export const getServerAuthSession = (ctx: {
   res: GetServerSidePropsContext["res"];
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
-  
 };
