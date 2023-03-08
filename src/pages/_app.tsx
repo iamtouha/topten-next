@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { trpc } from "../utils/trpc";
+import { api } from "../utils/api";
 import "@/styles/globals.css";
 
 // components imports
@@ -37,4 +37,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-export default trpc.withTRPC(MyApp);
+export default api.withTRPC(MyApp);
