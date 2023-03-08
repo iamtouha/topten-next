@@ -1,9 +1,9 @@
 import { ROLE_TYPE, type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { router, adminProcedure } from "../../trpc";
+import { createTRPCRouter, adminProcedure } from "../../trpc";
 
-export const storesAdminRouter = router({
+export const storesAdminRouter = createTRPCRouter({
   list: adminProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.store.findMany();
   }),

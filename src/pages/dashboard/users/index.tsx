@@ -48,7 +48,7 @@ const Users: NextPageWithLayout = () => {
             accessorKey: "role",
             header: "Role",
             cell: ({ cell }) =>
-              cell.getValue() ? titleCase(cell.getValue()) : "-",
+              cell.getValue() ? titleCase(cell.getValue() as string) : "-",
           },
           {
             accessorKey: "active",
@@ -62,7 +62,7 @@ const Users: NextPageWithLayout = () => {
             enableGlobalFilter: false,
             cell: ({ cell }) =>
               cell.getValue()
-                ? dayjs(cell.getValue()).format("DD/MM/YYYY, hh:mm a")
+                ? dayjs(cell.getValue() as string).format("DD/MM/YYYY, hh:mm a")
                 : "-",
           },
         ],

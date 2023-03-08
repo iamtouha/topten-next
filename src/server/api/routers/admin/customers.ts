@@ -1,9 +1,9 @@
 import { type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { router, adminProcedure } from "../../trpc";
+import { createTRPCRouter, adminProcedure } from "../../trpc";
 
-export const customersAdminRouter = router({
+export const customersAdminRouter = createTRPCRouter({
   get: adminProcedure
     .input(
       z.object({

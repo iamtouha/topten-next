@@ -1,9 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { router, protectedProcedure, employeeProcedure } from "../trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  employeeProcedure,
+} from "../trpc";
 
-export const storesRouter = router({
+export const storesRouter = createTRPCRouter({
   get: employeeProcedure.query(async ({ ctx }) => {
     return ctx.prisma.role.findMany({
       where: {

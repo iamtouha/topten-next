@@ -1,9 +1,13 @@
 import { USER_ROLE } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { router, protectedProcedure, employeeProcedure } from "../trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  employeeProcedure,
+} from "../trpc";
 
-export const userRouter = router({
+export const userRouter = createTRPCRouter({
   createProfile: protectedProcedure
     .input(
       z.object({

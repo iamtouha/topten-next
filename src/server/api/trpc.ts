@@ -65,6 +65,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
+import { USER_ROLE } from "@prisma/client";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
