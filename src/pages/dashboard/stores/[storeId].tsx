@@ -7,14 +7,14 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 // components imports
-import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Searchbar from "@/components/Searchbar";
+import Button from "@/components/ui/Button";
 import { api, RouterOutputs } from "@/utils/api";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -74,19 +74,17 @@ const UpdateStore: NextPageWithLayout = () => {
         toast.success("Store updated!");
       },
       onError: (e) => {
-        toast.error(e.message, { toastId: "updateStoreError " });
+        toast.error(e.message);
       },
     });
   // delete store
   const { mutate: deleteStore } = api.admin.stores.delete.useMutation({
     onSuccess: () => {
-      toast.success("Store deleted!", {
-        toastId: "deleteStoreSuccess",
-      });
+      toast.success("Store deleted!");
       void Router.push("/dashboard/stores");
     },
     onError: (e) => {
-      toast.error(e.message, { toastId: "deleteStoreError" });
+      toast.error(e.message);
     },
   });
   // react-hook-form

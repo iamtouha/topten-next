@@ -1,15 +1,13 @@
-import type { ReactElement, ReactNode } from "react";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ToastWrapper from "@/components/ui/ToastWrapper";
+import "@/styles/globals.css";
 import type { NextPage } from "next";
-import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { api } from "../utils/api";
-import "@/styles/globals.css";
-
-// components imports
-import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ToastWrapper from "@/components/ToastWrapper";
+import type { AppProps } from "next/app";
 import Head from "next/head";
+import type { ReactElement, ReactNode } from "react";
+import { api } from "../utils/api";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,

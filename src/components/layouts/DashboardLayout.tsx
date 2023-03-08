@@ -1,12 +1,12 @@
-import { useSession } from "next-auth/react";
-import { type ReactNode } from "react";
-
-// components imports
+import Meta from "@/components/layouts/Meta";
 import { ShieldExclamationIcon } from "@heroicons/react/24/outline";
 import { USER_ROLE } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import Head from "next/head";
+import { type ReactNode } from "react";
 import LoadingScreen from "../screens/LoadingScreen";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import Header from "./Header";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession({ required: true });
@@ -38,10 +38,14 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-      <Navbar />
-      <div className="mt-20"></div>
-      {children}
-      <Footer />
+      <Head>
+        <Meta />
+      </Head>
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <div className="flex-1">{children}</div>
+        <Footer />
+      </div>
     </>
   );
 };

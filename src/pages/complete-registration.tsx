@@ -6,13 +6,13 @@ import Link from "next/link";
 import Router from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import type { NextPageWithLayout } from "./_app";
 
 // components imports
-import Button from "@/components/Button";
 import StaticLayout from "@/components/layouts/StaticLayout";
+import Button from "@/components/ui/Button";
 import { api } from "@/utils/api";
 
 const schema = z.object({
@@ -48,13 +48,11 @@ const CompleteRegistration: NextPageWithLayout = () => {
 
   const createProfileMutation = api.user.createProfile.useMutation({
     onSuccess: () => {
-      toast.success("Registration completed!", {
-        toastId: "createProfileSuccess",
-      });
+      toast.success("Registration completed!");
       location.reload();
     },
     onError: () => {
-      toast.error("An Error occured!", { toastId: "createProfileError" });
+      toast.error("An Error occured!");
     },
   });
 
@@ -64,8 +62,8 @@ const CompleteRegistration: NextPageWithLayout = () => {
     }
   }, [session?.user?.profileId]);
 
-  const onSubmit = async (data: Inputs) => {
-    await createProfileMutation.mutateAsync({ ...data });
+  const onSubmit = (data: Inputs) => {
+    createProfileMutation.mutate({ ...data });
   };
 
   return (

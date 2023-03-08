@@ -88,7 +88,7 @@ const Orders: NextPageWithLayout = () => {
       <Head>
         <title>Invoices | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container mx-auto min-h-screen max-w-screen-xl px-2 pt-5 pb-10">
+      <main className="container max-w-screen-xl pt-5 pb-10">
         <CustomTable<UserWithProfile>
           tableTitle={`Invoices (${users?.length ?? 0} entries)`}
           columns={columns}

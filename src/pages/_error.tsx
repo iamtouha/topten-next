@@ -1,4 +1,4 @@
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
@@ -36,7 +36,7 @@ const Four0Four: NextPageWithLayout = ({ statusCode }) => {
           content="The page you are looking for is unavailable."
         />
       </Head>
-      <main className="container-res flex min-h-screen flex-col items-center justify-center gap-7">
+      <main className="container flex flex-col items-center justify-center gap-7">
         <h1 className="text-2xl font-semibold md:text-3xl">
           {`${
             typeof statusCode === "number" ? statusCode : "Unknown error"

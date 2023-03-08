@@ -1,9 +1,7 @@
-import Head from "next/head";
-import { type NextPageWithLayout } from "./_app";
-
-// components import
 import HeroSection from "@/components/home/HeroSection";
 import StaticLayout from "@/components/layouts/StaticLayout";
+import Head from "next/head";
+import { type NextPageWithLayout } from "./_app";
 
 const Home: NextPageWithLayout = () => {
   return (

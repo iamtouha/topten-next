@@ -16,9 +16,9 @@ import Router from "next/router";
 import { useMemo, useState } from "react";
 
 // components imports
-import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import Button from "@/components/ui/Button";
 
 type fieldValue = string | undefined;
 

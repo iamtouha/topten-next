@@ -8,13 +8,13 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 // components imports
-import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Searchbar from "@/components/Searchbar";
+import Button from "@/components/ui/Button";
 import { api, RouterOutputs } from "@/utils/api";
 
 const schema = z.object({
@@ -46,19 +46,17 @@ const UpdateProduct: NextPageWithLayout = () => {
         toast.success("Product updated!");
       },
       onError: (e) => {
-        toast.error(e.message, { toastId: "updateProductError" });
+        toast.error(e.message);
       },
     });
   // delete product
   const { mutate: deleteProduct } = api.admin.products.delete.useMutation({
     onSuccess: () => {
-      toast.success("Product deleted!", {
-        toastId: "deleteProductSuccess",
-      });
+      toast.success("Product deleted!");
       void Router.push("/dashboard/products");
     },
     onError: (e) => {
-      toast.error(e.message, { toastId: "deleteProductError" });
+      toast.error(e.message);
     },
   });
   // react-hook-form
@@ -103,7 +101,7 @@ const UpdateProduct: NextPageWithLayout = () => {
       <Head>
         <title>Update Product | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container-res min-h-screen max-w-screen-sm px-2 pt-5 pb-10">
+      <main className="container max-w-screen-sm px-2 pt-5 pb-10">
         {status === "loading" ? (
           <div
             role="status"

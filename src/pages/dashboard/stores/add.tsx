@@ -3,12 +3,13 @@ import { api as trpc } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 // components imports
-import Button from "@/components/Button";
+
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import Button from "@/components/ui/Button";
 
 const schema = z.object({
   name: z
@@ -28,7 +29,7 @@ const AddStore: NextPageWithLayout = () => {
         toast.success(`${store.name}-${store.address} added successfully!`);
       },
       onError: (e) => {
-        toast.error(e.message, { toastId: "addProductError" });
+        toast.error(e.message);
       },
     });
 

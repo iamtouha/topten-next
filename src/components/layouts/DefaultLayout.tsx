@@ -1,13 +1,13 @@
+import Meta from "@/components/layouts/Meta";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import Router from "next/router";
 import { useEffect, type ReactNode } from "react";
-import { toast } from "react-toastify";
-
-// components imports
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-hot-toast";
 import LoadingScreen from "../screens/LoadingScreen";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import Header from "./Header";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession({ required: true });
@@ -15,9 +15,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (session?.user && !session?.user?.profileId) {
       void Router.push("/complete-registration").then(() => {
-        toast.error("Complete your registration.", {
-          toastId: "completeRegistrationRedirect",
-        });
+        toast.error("Complete your registration.");
       });
     }
   }, [session?.user, session?.user?.profileId]);
@@ -46,10 +44,14 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-      <Navbar />
-      <div className="mt-20"></div>
-      {children}
-      <Footer />
+      <Head>
+        <Meta />
+      </Head>
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <div className="flex-1">{children}</div>
+        <Footer />
+      </div>
     </>
   );
 };

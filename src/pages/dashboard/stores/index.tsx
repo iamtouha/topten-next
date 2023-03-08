@@ -10,14 +10,14 @@ import type {
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import Head from "next/head";
-import Link from "next/link";
 import Router from "next/router";
 import { useMemo, useState } from "react";
 
 // components imports
-import Button from "@/components/Button";
+
 import CustomTable from "@/components/CustomTable";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import Button from "@/components/ui/Button";
 
 type fieldValue = string | undefined;
 
@@ -116,9 +116,13 @@ const Stores: NextPageWithLayout = () => {
           tableTitle={
             <>
               {`Stores (${data?.count ?? 0} entries)`}
-              <Link href={"/dashboard/stores/add"} className="ml-4">
-                <Button className="bg-primary-700">Add store</Button>
-              </Link>
+
+              <Button
+                className="ml-4"
+                onClick={() => void Router.push("/dashboard/stores/add")}
+              >
+                Add store
+              </Button>
             </>
           }
           columns={columns}

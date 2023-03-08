@@ -1,13 +1,10 @@
+import Button from "@/components/ui/Button";
 import Image from "next/image";
-import React from "react";
-
-// components imports
-import Button from "../Button";
 
 const HeroSection = () => {
   return (
     <section aria-label="hero section">
-      <div className="flex max-w-screen-xl flex-col-reverse items-center justify-between gap-10 py-5 container-res lg:flex-row lg:gap-28">
+      <div className="container flex max-w-screen-xl flex-col-reverse items-center justify-between gap-10 py-5 lg:flex-row lg:gap-28">
         <div className="grid flex-[0.4] gap-2">
           <h1 className="text-3xl font-bold text-neutral-800 md:text-4xl">
             Buy agro chemicals for the better utilization of your farm

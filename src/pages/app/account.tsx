@@ -3,8 +3,8 @@ import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 
 // components imports
-import Button from "@/components/Button";
-import Loader from "@/components/Loader";
+import Button from "@/components/ui/Button";
+import Loader from "@/components/ui/Loader";
 
 const Account: NextPage = () => {
   const { data: session, status } = useSession();
@@ -14,11 +14,7 @@ const Account: NextPage = () => {
       <Head>
         <title>Account | Top Ten Agro Chemicals</title>
       </Head>
-      <main
-        className={`${
-          status === "loading" ? "pt-0" : ""
-        } flex h-screen max-w-screen-sm flex-col items-center justify-center gap-8 pb-40 container-res`}
-      >
+      <main className="container grid max-w-screen-sm place-items-center gap-8 pt-32 pb-40">
         {session ? (
           <div className="grid place-items-center gap-2">
             <div className="flex items-center gap-2">

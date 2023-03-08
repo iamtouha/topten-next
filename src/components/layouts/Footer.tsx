@@ -1,4 +1,4 @@
-import styles from "@/styles/layouts/footer.module.css";
+import styles from "@/styles/footer.module.css";
 import dayjs from "dayjs";
 import Image from "next/image";
 

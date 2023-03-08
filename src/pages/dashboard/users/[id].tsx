@@ -9,12 +9,12 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Router from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 // components imports
-import Button from "@/components/Button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Searchbar from "@/components/Searchbar";
+import Button from "@/components/ui/Button";
 
 // icons imports
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
@@ -40,7 +40,7 @@ const User: NextPageWithLayout = () => {
         void toast.success("User role updated!");
       },
       onError: (e) => {
-        void toast.error(e.message, { toastId: "editRoleError" });
+        void toast.error(e.message);
       },
     });
   // update user status
@@ -50,17 +50,17 @@ const User: NextPageWithLayout = () => {
         toast.success("User status updated!");
       },
       onError: (e) => {
-        toast.error(e.message, { toastId: "toggleUserError" });
+        toast.error(e.message);
       },
     });
   // delete user
   const { mutate: deleteUser } = api.admin.users.delete.useMutation({
     onSuccess: async () => {
       await Router.push("/dashboard/users");
-      void toast.success("User deleted!", { toastId: "deleteUserSuccess" });
+      void toast.success("User deleted!");
     },
     onError: (e) => {
-      toast.error(e.message, { toastId: "deleteUserError" });
+      toast.error(e.message);
     },
   });
   // get all users
@@ -82,7 +82,7 @@ const User: NextPageWithLayout = () => {
       <Head>
         <title>Update User | Top Ten Agro Chemicals</title>
       </Head>
-      <main className="container min-h-screen max-w-screen-sm pt-5 pb-10">
+      <main className="container max-w-screen-sm pt-5 pb-10">
         {status === "loading" ? (
           <div
             role="status"

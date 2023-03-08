@@ -1,4 +1,7 @@
-import styles from "@/styles/layouts/navbar.module.css";
+import Button from "@/components/ui/Button";
+import styles from "@/styles/header.module.css";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { USER_ROLE } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,28 +9,19 @@ import { useRouter, type NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-// components imports
-import Button from "../Button";
-
-// images imports
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { USER_ROLE } from "@prisma/client";
-
 const desktopLinks = [
   { label: "Home", url: "/" },
   { label: "Stores", url: "/app/stores" },
   { label: "About", url: "/about" },
-  { label: "Playground", url: "/playground" },
 ];
 
 const mobileLinks = [
   { label: "Home", url: "/" },
   { label: "Stores", url: "/app/stores" },
   { label: "About", url: "/about" },
-  { label: "Playground", url: "/playground" },
 ];
 
-const Navbar = () => {
+const Header = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -55,7 +49,7 @@ const Navbar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <nav
+    <header
       aria-label="navbar"
       className={twMerge(
         styles.navbar,
@@ -135,11 +129,11 @@ const Navbar = () => {
           </button>
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 
-export default Navbar;
+export default Header;
 
 type MobileLinksProps = {
   router: NextRouter;
